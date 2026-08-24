@@ -1,0 +1,96 @@
+{
+  "id": "call-to-notion-slack",
+  "name": "Call → Notion Log → Slack Notify",
+  "description": "When a call finishes, log the transcript as a Notion page and notify the team in Slack.",
+  "plan": {
+    "version": 1,
+    "id": "template_call_to_notion_slack",
+    "name": "Call transcript to Notion to Slack",
+    "description": "Fetch the completed call transcript, log it as a Notion page, then notify the team in Slack.",
+    "prompt": "When a call finishes, log the transcript in Notion and notify the team on Slack.",
+    "trigger": {
+      "service": "elevenlabs",
+      "eventName": "elevenlabs.call.completed",
+      "description": "Fires when an ElevenLabs conversational AI call finishes and a transcript is available.",
+      "payloadSchema": {
+        "type": "object",
+        "required": ["conversation_id"],
+        "properties": {
+          "conversation_id": { "type": "string", "description": "ID of the completed ElevenLabs conversation." },
+          "agent_id": { "type": "string" }
+        }
+      },
+      "samplePayload": {
+        "conversation_id": "conv_a1b2c3d4",
+        "agent_id": "agent_9f8e7d6c"
+      }
+    },
+    "steps": [
+      {
+        "id": "step_1",
+        "order": 0,
+        "endpointId": "elevenlabs.get_conversation",
+        "title": "Fetch the call transcript",
+        "rationale": "Retrieve the completed conversation transcript to log and share.",
+        "mappings": [
+          {
+            "path": "conversation_id",
+            "target": "path",
+            "source": { "kind": "ref", "expression": "$trigger.payload.conversation_id" },
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "step_2",
+        "order": 1,
+        "endpointId": "notion.create_page",
+        "title": "Log the call as a Notion page",
+        "rationale": "Create a database entry for this call so it's searchable in Notion.",
+        "mappings": [
+          {
+            "path": "parent.database_id",
+            "target": "body",
+            "source": { "kind": "literal", "value": "d9824bdc-8445-4327-be8b-5b47500af6ce" },
+            "required": true,
+            "note": "Placeholder Notion database ID — replace with the real call-log database."
+          },
+          {
+            "path": "properties",
+            "target": "body",
+            "source": {
+              "kind": "literal",
+              "value": { "Name": { "title": [{ "text": { "content": "Call summary" } }] } }
+            },
+            "required": true,
+            "note": "Adjust property names/types to match your Notion database schema."
+          }
+        ]
+      },
+      {
+        "id": "step_3",
+        "order": 2,
+        "endpointId": "slack.post_message",
+        "title": "Notify the team on Slack",
+        "rationale": "Post a link to the new Notion page so the team can review the call.",
+        "mappings": [
+          {
+            "path": "channel",
+            "target": "body",
+            "source": { "kind": "literal", "value": "C0123ABC" },
+            "required": true,
+            "note": "Placeholder Slack channel ID — replace with the real channel."
+          },
+          {
+            "path": "text",
+            "target": "body",
+            "source": { "kind": "ref", "expression": "$steps.step_2.response.url" },
+            "required": true
+          }
+        ]
+      }
+    ],
+    "issues": [],
+    "createdAt": "2026-08-22T01:30:00.000Z"
+  }
+}

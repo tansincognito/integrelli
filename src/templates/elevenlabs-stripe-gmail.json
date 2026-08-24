@@ -1,0 +1,95 @@
+{
+  "id": "elevenlabs-stripe-gmail",
+  "name": "Call → Payment Link → Email Receipt",
+  "description": "When an ElevenLabs conversational AI call finishes, create a Stripe payment link and email it to the customer via Gmail.",
+  "plan": {
+    "version": 1,
+    "id": "template_elevenlabs_stripe_gmail",
+    "name": "Call to payment link to email",
+    "description": "Fetch the completed call transcript, create a Stripe payment link, and send it to the customer by email.",
+    "prompt": "When a call finishes, create a payment link and email it to the customer.",
+    "trigger": {
+      "service": "elevenlabs",
+      "eventName": "elevenlabs.call.completed",
+      "description": "Fires when an ElevenLabs conversational AI call finishes and a transcript is available.",
+      "payloadSchema": {
+        "type": "object",
+        "required": ["conversation_id"],
+        "properties": {
+          "conversation_id": { "type": "string", "description": "ID of the completed ElevenLabs conversation." },
+          "agent_id": { "type": "string" }
+        }
+      },
+      "samplePayload": {
+        "conversation_id": "conv_a1b2c3d4",
+        "agent_id": "agent_9f8e7d6c"
+      }
+    },
+    "steps": [
+      {
+        "id": "step_1",
+        "order": 0,
+        "endpointId": "elevenlabs.get_conversation",
+        "title": "Fetch the call transcript",
+        "rationale": "Retrieve the completed conversation so we know the call happened and can reference it.",
+        "mappings": [
+          {
+            "path": "conversation_id",
+            "target": "path",
+            "source": { "kind": "ref", "expression": "$trigger.payload.conversation_id" },
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "step_2",
+        "order": 1,
+        "endpointId": "stripe.create_payment_link",
+        "title": "Create a Stripe payment link",
+        "rationale": "Generate a hosted payment link for the customer to pay.",
+        "mappings": [
+          {
+            "path": "line_items[0].price",
+            "target": "body",
+            "source": { "kind": "literal", "value": "price_1PxxxAbc" },
+            "required": true,
+            "note": "Placeholder Stripe Price ID — replace with the real price for this workflow."
+          },
+          {
+            "path": "line_items[0].quantity",
+            "target": "body",
+            "source": { "kind": "literal", "value": 1 },
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "step_3",
+        "order": 2,
+        "endpointId": "gmail.send_message",
+        "title": "Email the payment link to the customer",
+        "rationale": "Send the generated payment link so the customer can pay.",
+        "mappings": [
+          {
+            "path": "userId",
+            "target": "path",
+            "source": { "kind": "literal", "value": "me" },
+            "required": true
+          },
+          {
+            "path": "raw",
+            "target": "body",
+            "source": {
+              "kind": "literal",
+              "value": "<base64url-encoded-RFC2822-email>"
+            },
+            "required": true,
+            "note": "Replace with the base64url-encoded email; include the payment link from $steps.step_2.response.url in the body before sending."
+          }
+        ]
+      }
+    ],
+    "issues": [],
+    "createdAt": "2026-08-22T01:30:00.000Z"
+  }
+}

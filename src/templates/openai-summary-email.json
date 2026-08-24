@@ -1,0 +1,92 @@
+{
+  "id": "openai-summary-email",
+  "name": "Summarize Text → Email",
+  "description": "Summarize a block of text with OpenAI, then email the summary via Gmail.",
+  "plan": {
+    "version": 1,
+    "id": "template_openai_summary_email",
+    "name": "Summarize and email",
+    "description": "Summarize the provided text with an OpenAI chat completion, then send the summary by email.",
+    "prompt": "Summarize this text and email me the summary.",
+    "trigger": {
+      "service": "manual",
+      "eventName": "manual.summarize_and_email",
+      "description": "Manually triggered: summarize provided text with OpenAI, then email the summary.",
+      "payloadSchema": {
+        "type": "object",
+        "required": ["text"],
+        "properties": {
+          "text": { "type": "string", "description": "Raw text to summarize." }
+        }
+      },
+      "samplePayload": {
+        "text": "Customer called about a billing issue and requested a refund for order #4521."
+      }
+    },
+    "steps": [
+      {
+        "id": "step_1",
+        "order": 0,
+        "endpointId": "openai.chat_completions",
+        "title": "Summarize the text",
+        "rationale": "Generate a concise summary of the provided text.",
+        "mappings": [
+          {
+            "path": "model",
+            "target": "body",
+            "source": { "kind": "literal", "value": "gpt-4o-mini" },
+            "required": true
+          },
+          {
+            "path": "messages[0].role",
+            "target": "body",
+            "source": { "kind": "literal", "value": "system" },
+            "required": false
+          },
+          {
+            "path": "messages[0].content",
+            "target": "body",
+            "source": { "kind": "literal", "value": "You are a helpful assistant that summarizes text concisely." },
+            "required": false
+          },
+          {
+            "path": "messages[1].role",
+            "target": "body",
+            "source": { "kind": "literal", "value": "user" },
+            "required": false
+          },
+          {
+            "path": "messages[1].content",
+            "target": "body",
+            "source": { "kind": "ref", "expression": "$trigger.payload.text" },
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "step_2",
+        "order": 1,
+        "endpointId": "gmail.send_message",
+        "title": "Email the summary",
+        "rationale": "Send the generated summary by email.",
+        "mappings": [
+          {
+            "path": "userId",
+            "target": "path",
+            "source": { "kind": "literal", "value": "me" },
+            "required": true
+          },
+          {
+            "path": "raw",
+            "target": "body",
+            "source": { "kind": "ref", "expression": "$steps.step_1.response.choices[0].message.content" },
+            "required": true,
+            "note": "Real deployment must base64url-encode a full RFC 2822 message; this ref illustrates sourcing the summary text."
+          }
+        ]
+      }
+    ],
+    "issues": [],
+    "createdAt": "2026-08-22T01:30:00.000Z"
+  }
+}

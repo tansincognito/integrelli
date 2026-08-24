@@ -1,0 +1,8 @@
+{
+  "model": "openai/text-embedding-3-small",
+  "dimensions": 1536,
+  "builtAt": "",
+  "corpusHash": "",
+  "entries": [],
+  "generated": false
+}

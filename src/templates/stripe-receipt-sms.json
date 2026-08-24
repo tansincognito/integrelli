@@ -1,0 +1,114 @@
+{
+  "id": "stripe-receipt-sms",
+  "name": "Payment → SMS Receipt → Airtable Row",
+  "description": "When a Stripe payment succeeds, text the customer a receipt and log the payment in Airtable.",
+  "plan": {
+    "version": 1,
+    "id": "template_stripe_receipt_sms",
+    "name": "Payment to SMS receipt to Airtable",
+    "description": "Look up the succeeded payment, text the customer a receipt via Twilio, and log the payment in Airtable.",
+    "prompt": "When a Stripe payment succeeds, text the customer a receipt and log it in Airtable.",
+    "trigger": {
+      "service": "stripe",
+      "eventName": "stripe.payment_intent.succeeded",
+      "description": "Fires when a Stripe PaymentIntent transitions to succeeded.",
+      "payloadSchema": {
+        "type": "object",
+        "required": ["payment_intent_id"],
+        "properties": {
+          "payment_intent_id": { "type": "string", "description": "ID of the succeeded PaymentIntent." }
+        }
+      },
+      "samplePayload": {
+        "payment_intent_id": "pi_3PxQ2rAbCdEfGhIj0k1L2m3N"
+      }
+    },
+    "steps": [
+      {
+        "id": "step_1",
+        "order": 0,
+        "endpointId": "stripe.retrieve_payment_intent",
+        "title": "Look up the payment",
+        "rationale": "Confirm the payment amount and status before notifying the customer.",
+        "mappings": [
+          {
+            "path": "payment_intent_id",
+            "target": "path",
+            "source": { "kind": "ref", "expression": "$trigger.payload.payment_intent_id" },
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "step_2",
+        "order": 1,
+        "endpointId": "twilio.create_message",
+        "title": "Text the customer a receipt",
+        "rationale": "Send an SMS confirming the payment was received.",
+        "mappings": [
+          {
+            "path": "AccountSid",
+            "target": "path",
+            "source": { "kind": "secret", "envVar": "TWILIO_ACCOUNT_SID" },
+            "required": true
+          },
+          {
+            "path": "To",
+            "target": "body",
+            "source": { "kind": "literal", "value": "+15558675309" },
+            "required": true,
+            "note": "Placeholder customer phone number — replace with the real recipient."
+          },
+          {
+            "path": "From",
+            "target": "body",
+            "source": { "kind": "literal", "value": "+15017122661" },
+            "required": true,
+            "note": "Placeholder Twilio sending number — replace with the real from-number."
+          },
+          {
+            "path": "Body",
+            "target": "body",
+            "source": { "kind": "literal", "value": "Your payment was received. Thank you!" },
+            "required": true,
+            "note": "Best-effort mapping — the flat mapping grammar cannot template amount/currency into a sentence; edit this text or add it manually before running live."
+          }
+        ]
+      },
+      {
+        "id": "step_3",
+        "order": 2,
+        "endpointId": "airtable.create_records",
+        "title": "Log the payment in Airtable",
+        "rationale": "Keep a record of the payment for bookkeeping.",
+        "mappings": [
+          {
+            "path": "baseId",
+            "target": "path",
+            "source": { "kind": "literal", "value": "appAbCdEfGhIjKlMn" },
+            "required": true,
+            "note": "Placeholder Airtable base ID."
+          },
+          {
+            "path": "tableIdOrName",
+            "target": "path",
+            "source": { "kind": "literal", "value": "Payments" },
+            "required": true
+          },
+          {
+            "path": "records[0].fields",
+            "target": "body",
+            "source": {
+              "kind": "literal",
+              "value": { "Amount": 0, "Status": "received" }
+            },
+            "required": true,
+            "note": "Replace with real field mapping matching your Airtable base schema."
+          }
+        ]
+      }
+    ],
+    "issues": [],
+    "createdAt": "2026-08-22T01:30:00.000Z"
+  }
+}
