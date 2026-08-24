@@ -1,10 +1,27 @@
+'use client';
+
 import { AlertTriangle } from 'lucide-react';
-import type { WorkflowPlan } from '@/types';
 import { TriggerCard } from './TriggerCard';
 import { StepCard } from './StepCard';
 import { Badge } from '@/components/ui/Badge';
+import { useIntegrelliStore } from '@/lib/state/store';
 
-export function WorkflowInspector({ plan }: { plan: WorkflowPlan }) {
+/** Reads `plan` from the store directly, so callers (AppShell) stay dumb. */
+export function WorkflowInspector() {
+  const plan = useIntegrelliStore((s) => s.plan);
+
+  if (!plan) {
+    return (
+      <div className="flex h-full items-center justify-center rounded-md border border-dashed border-border px-6 py-16 text-center">
+        <p className="max-w-sm text-xs text-muted">
+          No workflow yet. Describe one in the prompt bar above, or load a template, to see it
+          here — endpoints, headers, request mappings, and responses, all inspectable before you
+          run anything.
+        </p>
+      </div>
+    );
+  }
+
   const orderedSteps = [...plan.steps].sort((a, b) => a.order - b.order);
 
   return (
