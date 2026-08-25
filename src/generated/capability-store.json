@@ -1,0 +1,3748 @@
+{
+  "version": 1,
+  "built_at": "2026-08-25T08:44:03.871Z",
+  "providers": [
+    {
+      "id": "stripe",
+      "name": "Stripe",
+      "documentation_source": {
+        "id": "stripe.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/stripe.json",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "label": "Stripe OpenAPI 3.1 (trimmed local mirror)"
+      },
+      "versions": [
+        "stripe@2024-06-20"
+      ]
+    },
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "documentation_source": {
+        "id": "gmail.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/gmail.json",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "label": "Gmail API v1 (OpenAPI rendering of the discovery document, trimmed)"
+      },
+      "versions": [
+        "gmail@v1"
+      ]
+    },
+    {
+      "id": "slack",
+      "name": "Slack",
+      "documentation_source": {
+        "id": "slack.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/slack.json",
+        "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+        "label": "Slack Web API OpenAPI (trimmed local mirror)"
+      },
+      "versions": [
+        "slack@1.7.0"
+      ]
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "documentation_source": {
+        "id": "elevenlabs.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/elevenlabs.md",
+        "upstream_url": "https://elevenlabs.io/docs/api-reference",
+        "label": "ElevenLabs API reference (documentation prose)"
+      },
+      "versions": [
+        "elevenlabs@v1"
+      ]
+    },
+    {
+      "id": "hubspot",
+      "name": "HubSpot",
+      "documentation_source": {
+        "id": "hubspot.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/hubspot.md",
+        "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
+        "label": "HubSpot CRM contacts reference (documentation prose, no OpenAPI seeded)"
+      },
+      "versions": [
+        "hubspot@v3"
+      ]
+    }
+  ],
+  "api_versions": [
+    {
+      "id": "stripe@2024-06-20",
+      "provider_id": "stripe",
+      "version": "2024-06-20",
+      "status": "stable",
+      "source": {
+        "id": "stripe.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/stripe.json",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "label": "Stripe OpenAPI 3.1 (trimmed local mirror)"
+      },
+      "content_hash": "9f8f5912d317d2fb38630d1c89e778f37bf6bc6839f5ec261e270313b9873328",
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "gmail@v1",
+      "provider_id": "gmail",
+      "version": "v1",
+      "status": "stable",
+      "source": {
+        "id": "gmail.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/gmail.json",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "label": "Gmail API v1 (OpenAPI rendering of the discovery document, trimmed)"
+      },
+      "content_hash": "7a53024f4e11183d3a6a43a1dfae4dee1fdf9542f62b7436ffd7595c54f95c5f",
+      "last_verified": "2026-08-25T08:43:56.977Z"
+    },
+    {
+      "id": "slack@1.7.0",
+      "provider_id": "slack",
+      "version": "1.7.0",
+      "status": "stable",
+      "source": {
+        "id": "slack.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/slack.json",
+        "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+        "label": "Slack Web API OpenAPI (trimmed local mirror)"
+      },
+      "content_hash": "d8405cdc19479885d4277eea9870e5ffee8338785fdef0ee31156bc00fa75e66",
+      "last_verified": "2026-08-25T08:43:56.981Z"
+    },
+    {
+      "id": "elevenlabs@v1",
+      "provider_id": "elevenlabs",
+      "version": "v1",
+      "status": "stable",
+      "source": {
+        "id": "elevenlabs.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/elevenlabs.md",
+        "upstream_url": "https://elevenlabs.io/docs/api-reference",
+        "label": "ElevenLabs API reference (documentation prose)"
+      },
+      "content_hash": "535227745ecbdb7f48dd5a71cff56b9830dfd43ef80fc4e26a58698dc5a9081e",
+      "last_verified": "2026-08-25T08:43:56.984Z"
+    },
+    {
+      "id": "hubspot@v3",
+      "provider_id": "hubspot",
+      "version": "v3",
+      "status": "stable",
+      "source": {
+        "id": "hubspot.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/hubspot.md",
+        "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
+        "label": "HubSpot CRM contacts reference (documentation prose, no OpenAPI seeded)"
+      },
+      "content_hash": "76a2e2b8e877fb6db140160a6b62d544591126937b17c98ee7d86153ccbe9193",
+      "last_verified": "2026-08-25T08:43:56.987Z"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "stripe.create_checkout_session",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "create_checkout_session",
+      "description": "Creates a Checkout Session, a hosted payment page that collects a payment for a set of line items and returns a checkout URL.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "Idempotency-Key",
+          "name": "Idempotency-Key",
+          "type": "string",
+          "required": false,
+          "description": "Unique key that makes the request safe to retry.",
+          "semantic_type": "identifier",
+          "location": "header"
+        },
+        {
+          "path": "mode",
+          "name": "mode",
+          "type": "string",
+          "required": true,
+          "description": "The mode of the Checkout Session.",
+          "enum": [
+            "payment",
+            "setup",
+            "subscription"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "line_items",
+          "name": "line_items",
+          "type": "array",
+          "required": true,
+          "description": "Items the customer is purchasing.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "line_items[].price",
+          "name": "price",
+          "type": "string",
+          "required": false,
+          "description": "ID of an existing Price object.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "line_items[].quantity",
+          "name": "quantity",
+          "type": "integer",
+          "required": true,
+          "description": "Quantity of the line item.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "success_url",
+          "name": "success_url",
+          "type": "string",
+          "required": true,
+          "description": "URL the customer is redirected to after payment succeeds.",
+          "format": "uri",
+          "semantic_type": "url",
+          "location": "body"
+        },
+        {
+          "path": "cancel_url",
+          "name": "cancel_url",
+          "type": "string",
+          "required": false,
+          "description": "URL the customer is redirected to if they cancel.",
+          "format": "uri",
+          "semantic_type": "url",
+          "location": "body"
+        },
+        {
+          "path": "customer_email",
+          "name": "customer_email",
+          "type": "string",
+          "required": false,
+          "description": "Email address the receipt and prefilled form use.",
+          "format": "email",
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "client_reference_id",
+          "name": "client_reference_id",
+          "type": "string",
+          "required": false,
+          "description": "Opaque reference that ties the session to your own system.",
+          "semantic_type": "identifier",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the Checkout Session.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "checkout.session"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "url",
+          "name": "url",
+          "type": "string",
+          "required": true,
+          "description": "Hosted checkout page URL to send the customer to.",
+          "format": "uri",
+          "semantic_type": "url"
+        },
+        {
+          "path": "amount_total",
+          "name": "amount_total",
+          "type": "integer",
+          "required": false,
+          "description": "Total of all items, in the smallest currency unit.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "customer_email",
+          "name": "customer_email",
+          "type": "string",
+          "required": false,
+          "description": "Email address supplied for this session.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "payment_status",
+          "name": "payment_status",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "paid",
+            "unpaid",
+            "no_payment_required"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "open",
+            "complete",
+            "expired"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "expires_at",
+          "name": "expires_at",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp at which the session expires.",
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Creates a Checkout Session, a hosted payment page that collects a payment for a set of line items and returns a checkout URL.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1checkout~1sessions/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.961Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.create_payment_link",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "create_payment_link",
+      "description": "Creates a shareable payment link that collects a payment for a set of line items.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "line_items",
+          "name": "line_items",
+          "type": "array",
+          "required": true,
+          "description": "Items the payment link sells.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "line_items[].price",
+          "name": "price",
+          "type": "string",
+          "required": true,
+          "description": "ID of an existing Price object.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "line_items[].quantity",
+          "name": "quantity",
+          "type": "integer",
+          "required": true,
+          "description": "Quantity of the line item.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "after_completion",
+          "name": "after_completion",
+          "type": "object",
+          "required": false,
+          "description": "Behaviour after the customer completes the payment.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "after_completion.type",
+          "name": "type",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "hosted_confirmation",
+            "redirect"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the payment link.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "payment_link"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "url",
+          "name": "url",
+          "type": "string",
+          "required": true,
+          "description": "Public URL the customer opens to pay.",
+          "format": "uri",
+          "semantic_type": "url"
+        },
+        {
+          "path": "active",
+          "name": "active",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the link can currently be paid.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Creates a shareable payment link that collects a payment for a set of line items.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1payment_links/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.967Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.create_customer",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "create_customer",
+      "description": "Creates a new customer object.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "email",
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "description": "Customer email address.",
+          "format": "email",
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Customer full name.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "phone",
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "description": "Customer phone number.",
+          "semantic_type": "phone",
+          "location": "body"
+        },
+        {
+          "path": "description",
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Arbitrary description shown in the dashboard.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the customer.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "customer"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "email",
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "description": "Customer email address.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Customer full name.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "phone",
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "description": "Customer phone number.",
+          "semantic_type": "phone"
+        },
+        {
+          "path": "created",
+          "name": "created",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp of creation.",
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Creates a new customer object.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1customers/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.969Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.get_customer",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "get_customer",
+      "description": "Retrieves an existing customer by id.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "customer",
+          "name": "customer",
+          "type": "string",
+          "required": true,
+          "description": "Identifier of the customer to retrieve.",
+          "semantic_type": "text",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the customer.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "customer"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "email",
+          "name": "email",
+          "type": "string",
+          "required": false,
+          "description": "Customer email address.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Customer full name.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "phone",
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "description": "Customer phone number.",
+          "semantic_type": "phone"
+        },
+        {
+          "path": "created",
+          "name": "created",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp of creation.",
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Retrieves an existing customer by id.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1customers~1{customer}/get",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.971Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.create_refund",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "create_refund",
+      "description": "Refunds a charge that has previously been created, returning funds to the customer.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "payment_intent",
+          "name": "payment_intent",
+          "type": "string",
+          "required": false,
+          "description": "ID of the PaymentIntent to refund.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "charge",
+          "name": "charge",
+          "type": "string",
+          "required": false,
+          "description": "ID of the charge to refund.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "amount",
+          "name": "amount",
+          "type": "integer",
+          "required": false,
+          "description": "Amount to refund, in the smallest currency unit.",
+          "semantic_type": "currency_amount",
+          "location": "body"
+        },
+        {
+          "path": "reason",
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "Reason for the refund.",
+          "enum": [
+            "duplicate",
+            "fraudulent",
+            "requested_by_customer"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the refund.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "refund"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "amount",
+          "name": "amount",
+          "type": "integer",
+          "required": true,
+          "description": "Amount refunded, in the smallest currency unit.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "payment_intent",
+          "name": "payment_intent",
+          "type": "string",
+          "required": false,
+          "description": "ID of the PaymentIntent that was refunded.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "canceled"
+          ],
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Refunds a charge that has previously been created, returning funds to the customer.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1refunds/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.971Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.get_payment_intent",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "action",
+      "name": "get_payment_intent",
+      "description": "Retrieves the details of a PaymentIntent, including its current status.",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "payment_intent",
+          "name": "payment_intent",
+          "type": "string",
+          "required": true,
+          "description": "Identifier of the PaymentIntent to retrieve.",
+          "semantic_type": "text",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the PaymentIntent.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "payment_intent"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "amount",
+          "name": "amount",
+          "type": "integer",
+          "required": true,
+          "description": "Amount intended to be collected, in the smallest currency unit.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "currency",
+          "name": "currency",
+          "type": "string",
+          "required": true,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "requires_payment_method",
+            "processing",
+            "succeeded",
+            "canceled"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "customer",
+          "name": "customer",
+          "type": "string",
+          "required": false,
+          "description": "ID of the customer this PaymentIntent belongs to.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "receipt_email",
+          "name": "receipt_email",
+          "type": "string",
+          "required": false,
+          "description": "Email address the receipt was sent to.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "latest_charge",
+          "name": "latest_charge",
+          "type": "string",
+          "required": false,
+          "description": "ID of the most recent charge.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "STRIPE_API_KEY",
+        "scheme_description": "Stripe secret API key sent as a bearer token."
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented live-mode default: 100 read/write ops per second."
+      },
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Idempotency-Key request header",
+        "key_location": "header"
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Retrieves the details of a PaymentIntent, including its current status.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/paths/~1v1~1payment_intents~1{payment_intent}/get",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.973Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.payment_intent_succeeded",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "event",
+      "name": "payment_intent_succeeded",
+      "description": "Occurs when a payment succeeds: the PaymentIntent has moved to the succeeded status and funds are captured.",
+      "category": "payment",
+      "inputs": [],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the event.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "type",
+          "name": "type",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "payment_intent.succeeded"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "created",
+          "name": "created",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp at which the event occurred.",
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.object",
+          "name": "object",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.object.id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the PaymentIntent.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "data.object.object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "payment_intent"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.amount",
+          "name": "amount",
+          "type": "integer",
+          "required": true,
+          "description": "Amount intended to be collected, in the smallest currency unit.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "data.object.currency",
+          "name": "currency",
+          "type": "string",
+          "required": true,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "data.object.status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "requires_payment_method",
+            "processing",
+            "succeeded",
+            "canceled"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.customer",
+          "name": "customer",
+          "type": "string",
+          "required": false,
+          "description": "ID of the customer this PaymentIntent belongs to.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.receipt_email",
+          "name": "receipt_email",
+          "type": "string",
+          "required": false,
+          "description": "Email address the receipt was sent to.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "data.object.latest_charge",
+          "name": "latest_charge",
+          "type": "string",
+          "required": false,
+          "description": "ID of the most recent charge.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "none",
+        "scheme_description": "Delivered to a subscriber endpoint; verified by signature, not by our credential."
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Event id deduplication"
+      },
+      "side_effects": {
+        "kind": "trigger",
+        "description": "Emitted by Stripe when payment_intent.succeeded occurs.",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/webhooks/payment_intent.succeeded/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.974Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "stripe.checkout_session_completed",
+      "provider_id": "stripe",
+      "api_version_id": "stripe@2024-06-20",
+      "kind": "event",
+      "name": "checkout_session_completed",
+      "description": "Occurs when a customer completes a Checkout Session.",
+      "category": "payment",
+      "inputs": [],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the event.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "type",
+          "name": "type",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "checkout.session.completed"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "created",
+          "name": "created",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp at which the event occurred.",
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.object",
+          "name": "object",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.object.id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique identifier of the Checkout Session.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "data.object.object",
+          "name": "object",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "checkout.session"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.url",
+          "name": "url",
+          "type": "string",
+          "required": true,
+          "description": "Hosted checkout page URL to send the customer to.",
+          "format": "uri",
+          "semantic_type": "url"
+        },
+        {
+          "path": "data.object.amount_total",
+          "name": "amount_total",
+          "type": "integer",
+          "required": false,
+          "description": "Total of all items, in the smallest currency unit.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "data.object.currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "description": "Three-letter ISO currency code.",
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "data.object.customer_email",
+          "name": "customer_email",
+          "type": "string",
+          "required": false,
+          "description": "Email address supplied for this session.",
+          "format": "email",
+          "semantic_type": "email"
+        },
+        {
+          "path": "data.object.payment_status",
+          "name": "payment_status",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "paid",
+            "unpaid",
+            "no_payment_required"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "open",
+            "complete",
+            "expired"
+          ],
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.object.expires_at",
+          "name": "expires_at",
+          "type": "integer",
+          "required": false,
+          "description": "Unix timestamp at which the session expires.",
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "none",
+        "scheme_description": "Delivered to a subscriber endpoint; verified by signature, not by our credential."
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": true,
+        "mechanism": "Event id deduplication"
+      },
+      "side_effects": {
+        "kind": "trigger",
+        "description": "Emitted by Stripe when checkout.session.completed occurs.",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "stripe.openapi",
+        "pointer": "#/webhooks/checkout.session.completed/post",
+        "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.975Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.947Z"
+    },
+    {
+      "id": "gmail.send_message",
+      "provider_id": "gmail",
+      "api_version_id": "gmail@v1",
+      "kind": "action",
+      "name": "send_message",
+      "description": "Sends an email message to the recipients listed in the encoded message headers.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "userId",
+          "name": "userId",
+          "type": "string",
+          "required": true,
+          "description": "The user's email address, or the special value `me` for the authenticated user.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "raw",
+          "name": "raw",
+          "type": "string",
+          "required": true,
+          "description": "The entire RFC 2822 email message — To, Subject and body included — base64url encoded.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "threadId",
+          "name": "threadId",
+          "type": "string",
+          "required": false,
+          "description": "ID of the thread the message belongs to.",
+          "semantic_type": "identifier",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Immutable ID of the message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "threadId",
+          "name": "threadId",
+          "type": "string",
+          "required": false,
+          "description": "ID of the thread the message belongs to.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "labelIds",
+          "name": "labelIds",
+          "type": "array",
+          "required": false,
+          "description": "Labels applied to the message.",
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "GMAIL_ACCESS_TOKEN",
+        "scheme_description": "Google OAuth 2.0 access token with the listed Gmail scopes."
+      },
+      "permissions": [
+        "https://www.googleapis.com/auth/gmail.send"
+      ],
+      "rate_limits": {
+        "requests": 250,
+        "window_seconds": 1,
+        "note": "Documented per-user quota, in quota units per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Sends an email message to the recipients listed in the encoded message headers.",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "gmail.openapi",
+        "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages~1send/post",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.977Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.977Z"
+    },
+    {
+      "id": "gmail.get_message",
+      "provider_id": "gmail",
+      "api_version_id": "gmail@v1",
+      "kind": "action",
+      "name": "get_message",
+      "description": "Gets a single email message, including its headers and body snippet.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "userId",
+          "name": "userId",
+          "type": "string",
+          "required": true,
+          "description": "The user's email address, or `me`.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "The ID of the message to retrieve.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "format",
+          "name": "format",
+          "type": "string",
+          "required": false,
+          "description": "How much of the message to return: minimal, full, raw or metadata.",
+          "enum": [
+            "minimal",
+            "full",
+            "raw",
+            "metadata"
+          ],
+          "semantic_type": "text",
+          "location": "query"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Immutable ID of the message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "threadId",
+          "name": "threadId",
+          "type": "string",
+          "required": false,
+          "description": "ID of the thread the message belongs to.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "snippet",
+          "name": "snippet",
+          "type": "string",
+          "required": false,
+          "description": "Short part of the message text.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "internalDate",
+          "name": "internalDate",
+          "type": "string",
+          "required": false,
+          "description": "Epoch milliseconds at which the message was received.",
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "payload",
+          "name": "payload",
+          "type": "object",
+          "required": false,
+          "description": "Parsed message structure.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "payload.mimeType",
+          "name": "mimeType",
+          "type": "string",
+          "required": false,
+          "description": "MIME type of the top-level part.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "payload.headers",
+          "name": "headers",
+          "type": "array",
+          "required": false,
+          "description": "Message headers such as From, To and Subject.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "payload.headers[].name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Header name.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "payload.headers[].value",
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Header value.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "GMAIL_ACCESS_TOKEN",
+        "scheme_description": "Google OAuth 2.0 access token with the listed Gmail scopes."
+      },
+      "permissions": [
+        "https://www.googleapis.com/auth/gmail.readonly"
+      ],
+      "rate_limits": {
+        "requests": 250,
+        "window_seconds": 1,
+        "note": "Documented per-user quota, in quota units per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Gets a single email message, including its headers and body snippet.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "gmail.openapi",
+        "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages~1{id}/get",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.978Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.977Z"
+    },
+    {
+      "id": "gmail.list_messages",
+      "provider_id": "gmail",
+      "api_version_id": "gmail@v1",
+      "kind": "action",
+      "name": "list_messages",
+      "description": "Lists and searches the email messages in the user's mailbox.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "userId",
+          "name": "userId",
+          "type": "string",
+          "required": true,
+          "description": "The user's email address, or `me`.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "q",
+          "name": "q",
+          "type": "string",
+          "required": false,
+          "description": "Gmail search query, using the same syntax as the Gmail search box.",
+          "semantic_type": "text",
+          "location": "query"
+        },
+        {
+          "path": "maxResults",
+          "name": "maxResults",
+          "type": "integer",
+          "required": false,
+          "description": "Maximum number of messages to return.",
+          "semantic_type": "json",
+          "location": "query"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "messages",
+          "name": "messages",
+          "type": "array",
+          "required": false,
+          "description": "Matching messages, id and thread only.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "messages[].id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Immutable ID of the message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "messages[].threadId",
+          "name": "threadId",
+          "type": "string",
+          "required": false,
+          "description": "ID of the thread the message belongs to.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "messages[].labelIds",
+          "name": "labelIds",
+          "type": "array",
+          "required": false,
+          "description": "Labels applied to the message.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "resultSizeEstimate",
+          "name": "resultSizeEstimate",
+          "type": "integer",
+          "required": false,
+          "description": "Estimated total matches.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "nextPageToken",
+          "name": "nextPageToken",
+          "type": "string",
+          "required": false,
+          "description": "Token for the next page of results.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "GMAIL_ACCESS_TOKEN",
+        "scheme_description": "Google OAuth 2.0 access token with the listed Gmail scopes."
+      },
+      "permissions": [
+        "https://www.googleapis.com/auth/gmail.readonly"
+      ],
+      "rate_limits": {
+        "requests": 250,
+        "window_seconds": 1,
+        "note": "Documented per-user quota, in quota units per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Lists and searches the email messages in the user's mailbox.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "gmail.openapi",
+        "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages/get",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.979Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.977Z"
+    },
+    {
+      "id": "gmail.create_draft",
+      "provider_id": "gmail",
+      "api_version_id": "gmail@v1",
+      "kind": "action",
+      "name": "create_draft",
+      "description": "Creates a draft email message with the supplied encoded content.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "userId",
+          "name": "userId",
+          "type": "string",
+          "required": true,
+          "description": "The user's email address, or `me`.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "message",
+          "name": "message",
+          "type": "object",
+          "required": true,
+          "description": "The draft message content.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "message.raw",
+          "name": "raw",
+          "type": "string",
+          "required": true,
+          "description": "The entire RFC 2822 email message, base64url encoded.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Unique identifier of the draft.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "message",
+          "name": "message",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "message.id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Immutable ID of the message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "message.threadId",
+          "name": "threadId",
+          "type": "string",
+          "required": false,
+          "description": "ID of the thread the message belongs to.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "message.labelIds",
+          "name": "labelIds",
+          "type": "array",
+          "required": false,
+          "description": "Labels applied to the message.",
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "GMAIL_ACCESS_TOKEN",
+        "scheme_description": "Google OAuth 2.0 access token with the listed Gmail scopes."
+      },
+      "permissions": [
+        "https://www.googleapis.com/auth/gmail.compose"
+      ],
+      "rate_limits": {
+        "requests": 250,
+        "window_seconds": 1,
+        "note": "Documented per-user quota, in quota units per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Creates a draft email message with the supplied encoded content.",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "gmail.openapi",
+        "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1drafts/post",
+        "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.980Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.977Z"
+    },
+    {
+      "id": "slack.chat_post_message",
+      "provider_id": "slack",
+      "api_version_id": "slack@1.7.0",
+      "kind": "action",
+      "name": "chat_post_message",
+      "description": "Sends a message to a Slack channel, private group or direct message conversation.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "channel",
+          "name": "channel",
+          "type": "string",
+          "required": true,
+          "description": "Channel, private group or user ID to post to. Channel names are also accepted.",
+          "semantic_type": "identifier",
+          "location": "body"
+        },
+        {
+          "path": "text",
+          "name": "text",
+          "type": "string",
+          "required": false,
+          "description": "The message text. Required unless blocks or attachments are supplied.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "blocks",
+          "name": "blocks",
+          "type": "array",
+          "required": false,
+          "description": "Structured Block Kit blocks making up the message.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "thread_ts",
+          "name": "thread_ts",
+          "type": "string",
+          "required": false,
+          "description": "Timestamp of the parent message, to post this message as a threaded reply.",
+          "semantic_type": "identifier",
+          "location": "body"
+        },
+        {
+          "path": "unfurl_links",
+          "name": "unfurl_links",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether to unfurl links in the message.",
+          "semantic_type": "boolean_flag",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "ok",
+          "name": "ok",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the call succeeded.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "channel",
+          "name": "channel",
+          "type": "string",
+          "required": false,
+          "description": "ID of the channel the message landed in.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "ts",
+          "name": "ts",
+          "type": "string",
+          "required": false,
+          "description": "Timestamp identifier of the posted message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "message",
+          "name": "message",
+          "type": "object",
+          "required": false,
+          "description": "The message as stored by Slack.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "message.text",
+          "name": "text",
+          "type": "string",
+          "required": false,
+          "description": "Final message text.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "message.user",
+          "name": "user",
+          "type": "string",
+          "required": false,
+          "description": "ID of the posting user or bot.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "message.ts",
+          "name": "ts",
+          "type": "string",
+          "required": false,
+          "description": "Timestamp identifier of the message.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "error",
+          "name": "error",
+          "type": "string",
+          "required": false,
+          "description": "Error code when ok is false.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "SLACK_BOT_TOKEN",
+        "scheme_description": "Slack bot or user OAuth token sent as a bearer token."
+      },
+      "permissions": [
+        "chat:write"
+      ],
+      "rate_limits": {
+        "requests": 1,
+        "window_seconds": 1,
+        "note": "chat.postMessage is Tier-special: roughly 1 message per channel per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Sends a message to a Slack channel, private group or direct message conversation.",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "slack.openapi",
+        "pointer": "#/paths/~1chat.postMessage/post",
+        "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.981Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.981Z"
+    },
+    {
+      "id": "slack.conversations_list",
+      "provider_id": "slack",
+      "api_version_id": "slack@1.7.0",
+      "kind": "action",
+      "name": "conversations_list",
+      "description": "Lists all channels and conversations in a Slack workspace, so a channel can be found by name.",
+      "category": "messaging",
+      "inputs": [
+        {
+          "path": "types",
+          "name": "types",
+          "type": "string",
+          "required": false,
+          "description": "Comma-separated conversation types: public_channel, private_channel, mpim, im.",
+          "semantic_type": "text",
+          "location": "query"
+        },
+        {
+          "path": "limit",
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "Maximum number of conversations to return per page.",
+          "semantic_type": "json",
+          "location": "query"
+        },
+        {
+          "path": "exclude_archived",
+          "name": "exclude_archived",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether to exclude archived channels.",
+          "semantic_type": "boolean_flag",
+          "location": "query"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "ok",
+          "name": "ok",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the call succeeded.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "channels",
+          "name": "channels",
+          "type": "array",
+          "required": false,
+          "description": "Matching conversations.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "channels[].id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Channel ID.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "channels[].name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Channel name without the leading hash.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "channels[].is_channel",
+          "name": "is_channel",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether this is a public channel.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "channels[].is_private",
+          "name": "is_private",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether this conversation is private.",
+          "semantic_type": "boolean_flag"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "SLACK_BOT_TOKEN",
+        "scheme_description": "Slack bot or user OAuth token sent as a bearer token."
+      },
+      "permissions": [
+        "channels:read"
+      ],
+      "rate_limits": {
+        "requests": 1,
+        "window_seconds": 1,
+        "note": "chat.postMessage is Tier-special: roughly 1 message per channel per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Lists all channels and conversations in a Slack workspace, so a channel can be found by name.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "slack.openapi",
+        "pointer": "#/paths/~1conversations.list/get",
+        "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.982Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.981Z"
+    },
+    {
+      "id": "slack.conversations_create",
+      "provider_id": "slack",
+      "api_version_id": "slack@1.7.0",
+      "kind": "action",
+      "name": "conversations_create",
+      "description": "Creates a new Slack channel.",
+      "category": "messaging",
+      "inputs": [
+        {
+          "path": "name",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name of the channel to create.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "is_private",
+          "name": "is_private",
+          "type": "boolean",
+          "required": false,
+          "description": "Create a private channel instead of a public one.",
+          "semantic_type": "boolean_flag",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "ok",
+          "name": "ok",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the call succeeded.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "channel",
+          "name": "channel",
+          "type": "object",
+          "required": false,
+          "description": "The created channel.",
+          "semantic_type": "json"
+        },
+        {
+          "path": "channel.id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Channel ID.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "channel.name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Channel name.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "SLACK_BOT_TOKEN",
+        "scheme_description": "Slack bot or user OAuth token sent as a bearer token."
+      },
+      "permissions": [
+        "channels:manage"
+      ],
+      "rate_limits": {
+        "requests": 1,
+        "window_seconds": 1,
+        "note": "chat.postMessage is Tier-special: roughly 1 message per channel per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Creates a new Slack channel.",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "slack.openapi",
+        "pointer": "#/paths/~1conversations.create/post",
+        "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-08-25T08:43:56.983Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-08-25T08:43:56.981Z"
+    },
+    {
+      "id": "elevenlabs.text_to_speech",
+      "provider_id": "elevenlabs",
+      "api_version_id": "elevenlabs@v1",
+      "kind": "action",
+      "name": "text_to_speech",
+      "description": "Converts a block of text into spoken audio using the selected voice and returns a generated audio file together with the identifier of the generation request.",
+      "category": "media",
+      "inputs": [
+        {
+          "path": "voice_id",
+          "name": "voice_id",
+          "type": "string",
+          "required": true,
+          "description": "Identifier of the voice to speak with.",
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "text",
+          "name": "text",
+          "type": "string",
+          "required": true,
+          "description": "The text to convert into speech.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "model_id",
+          "name": "model_id",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the model to use, for example eleven_multilingual_v2.",
+          "semantic_type": "identifier",
+          "location": "body"
+        },
+        {
+          "path": "output_format",
+          "name": "output_format",
+          "type": "string",
+          "required": false,
+          "description": "Audio output format, for example mp3_44100_128.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "audio_url",
+          "name": "audio_url",
+          "type": "string",
+          "required": false,
+          "description": "URL of the generated audio file.",
+          "semantic_type": "url"
+        },
+        {
+          "path": "request_id",
+          "name": "request_id",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the generation request.",
+          "semantic_type": "identifier"
+        }
+      ],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "xi-api-key",
+        "env_var_name": "ELEVENLABS_API_KEY"
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Text to Speech",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "elevenlabs.docs",
+        "pointer": "ElevenLabs API v1 > Text to Speech",
+        "upstream_url": "https://elevenlabs.io/docs/api-reference",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-08-25T08:43:56.986Z"
+      },
+      "confidence": 0.8,
+      "last_verified": "2026-08-25T08:43:56.984Z"
+    },
+    {
+      "id": "elevenlabs.list_voices",
+      "provider_id": "elevenlabs",
+      "api_version_id": "elevenlabs@v1",
+      "kind": "action",
+      "name": "list_voices",
+      "description": "Returns every voice available to the account, including the voice identifiers required by the text to speech endpoint.",
+      "category": "media",
+      "inputs": [
+        {
+          "path": "show_legacy",
+          "name": "show_legacy",
+          "type": "boolean",
+          "required": false,
+          "description": "Include legacy voices in the response.",
+          "semantic_type": "boolean_flag",
+          "location": "query"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "voices",
+          "name": "voices",
+          "type": "array",
+          "required": false,
+          "description": "Available voices, each with a voice_id and a name.",
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "xi-api-key",
+        "env_var_name": "ELEVENLABS_API_KEY"
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "List Voices",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "elevenlabs.docs",
+        "pointer": "ElevenLabs API v1 > List Voices",
+        "upstream_url": "https://elevenlabs.io/docs/api-reference",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-08-25T08:43:56.986Z"
+      },
+      "confidence": 0.8,
+      "last_verified": "2026-08-25T08:43:56.984Z"
+    },
+    {
+      "id": "hubspot.create_contact",
+      "provider_id": "hubspot",
+      "api_version_id": "hubspot@v3",
+      "kind": "action",
+      "name": "create_contact",
+      "description": "Creates a new contact record in the CRM from a set of property values and returns the created contact with its identifier and creation timestamp.",
+      "category": "crm",
+      "inputs": [
+        {
+          "path": "properties",
+          "name": "properties",
+          "type": "object",
+          "required": true,
+          "description": "Map of contact property values to set.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "properties.email",
+          "name": "email",
+          "type": "string",
+          "required": true,
+          "description": "Primary email address of the contact.",
+          "format": "email",
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "properties.firstname",
+          "name": "firstname",
+          "type": "string",
+          "required": false,
+          "description": "First name of the contact.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "properties.lastname",
+          "name": "lastname",
+          "type": "string",
+          "required": false,
+          "description": "Last name of the contact.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "properties.phone",
+          "name": "phone",
+          "type": "string",
+          "required": false,
+          "description": "Phone number of the contact.",
+          "semantic_type": "phone",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the created contact.",
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "createdAt",
+          "name": "createdAt",
+          "type": "string",
+          "required": false,
+          "description": "Timestamp at which the contact was created.",
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "archived",
+          "name": "archived",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the contact is archived.",
+          "semantic_type": "boolean_flag"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "parameter_name": "Authorization",
+        "env_var_name": "HUBSPOT_ACCESS_TOKEN"
+      },
+      "permissions": [
+        "crm.objects.contacts.write"
+      ],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 10,
+        "note": "Documented default: 100 requests per 10 seconds per private app."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create Contact",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "hubspot.docs",
+        "pointer": "HubSpot CRM v3 > Create Contact",
+        "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-08-25T08:43:56.987Z"
+      },
+      "confidence": 0.55,
+      "last_verified": "2026-08-25T08:43:56.987Z"
+    },
+    {
+      "id": "hubspot.search_contacts",
+      "provider_id": "hubspot",
+      "api_version_id": "hubspot@v3",
+      "kind": "action",
+      "name": "search_contacts",
+      "description": "Searches contacts by property value, for example to find a contact by email address before creating a duplicate.",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "filterGroups",
+          "name": "filterGroups",
+          "type": "array",
+          "required": true,
+          "description": "Groups of property filters combined with OR.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "limit",
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "Maximum number of results to return.",
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "total",
+          "name": "total",
+          "type": "integer",
+          "required": false,
+          "description": "Total number of matching contacts.",
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "results",
+          "name": "results",
+          "type": "array",
+          "required": false,
+          "description": "Matching contact records.",
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "parameter_name": "Authorization",
+        "env_var_name": "HUBSPOT_ACCESS_TOKEN"
+      },
+      "permissions": [
+        "crm.objects.contacts.read"
+      ],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 10,
+        "note": "Documented default: 100 requests per 10 seconds per private app."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Search Contacts",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "hubspot.docs",
+        "pointer": "HubSpot CRM v3 > Search Contacts",
+        "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-08-25T08:43:56.988Z"
+      },
+      "confidence": 0.55,
+      "last_verified": "2026-08-25T08:43:56.987Z"
+    }
+  ],
+  "implementations": [
+    {
+      "id": "stripe.create_checkout_session#rest",
+      "capability_id": "stripe.create_checkout_session",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.stripe.com/v1/checkout/sessions",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "mode",
+          "line_items",
+          "success_url"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "payment",
+              "setup",
+              "subscription"
+            ],
+            "description": "The mode of the Checkout Session."
+          },
+          "line_items": {
+            "type": "array",
+            "description": "Items the customer is purchasing.",
+            "items": {
+              "type": "object",
+              "required": [
+                "quantity"
+              ],
+              "properties": {
+                "price": {
+                  "type": "string",
+                  "description": "ID of an existing Price object."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "description": "Quantity of the line item."
+                }
+              }
+            }
+          },
+          "success_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL the customer is redirected to after payment succeeds."
+          },
+          "cancel_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL the customer is redirected to if they cancel."
+          },
+          "customer_email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address the receipt and prefilled form use."
+          },
+          "client_reference_id": {
+            "type": "string",
+            "description": "Opaque reference that ties the session to your own system."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "url",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the Checkout Session."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "checkout.session"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Hosted checkout page URL to send the customer to."
+          },
+          "amount_total": {
+            "type": "integer",
+            "description": "Total of all items, in the smallest currency unit."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code."
+          },
+          "customer_email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address supplied for this session."
+          },
+          "payment_status": {
+            "type": "string",
+            "enum": [
+              "paid",
+              "unpaid",
+              "no_payment_required"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "complete",
+              "expired"
+            ]
+          },
+          "expires_at": {
+            "type": "integer",
+            "description": "Unix timestamp at which the session expires."
+          }
+        }
+      },
+      "request_content_type": "application/x-www-form-urlencoded"
+    },
+    {
+      "id": "stripe.create_payment_link#rest",
+      "capability_id": "stripe.create_payment_link",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.stripe.com/v1/payment_links",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "line_items"
+        ],
+        "properties": {
+          "line_items": {
+            "type": "array",
+            "description": "Items the payment link sells.",
+            "items": {
+              "type": "object",
+              "required": [
+                "price",
+                "quantity"
+              ],
+              "properties": {
+                "price": {
+                  "type": "string",
+                  "description": "ID of an existing Price object."
+                },
+                "quantity": {
+                  "type": "integer",
+                  "description": "Quantity of the line item."
+                }
+              }
+            }
+          },
+          "after_completion": {
+            "type": "object",
+            "description": "Behaviour after the customer completes the payment.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "hosted_confirmation",
+                  "redirect"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "url",
+          "active"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the payment link."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "payment_link"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public URL the customer opens to pay."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether the link can currently be paid."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code."
+          }
+        }
+      },
+      "request_content_type": "application/x-www-form-urlencoded"
+    },
+    {
+      "id": "stripe.create_customer#rest",
+      "capability_id": "stripe.create_customer",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.stripe.com/v1/customers",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Customer email address."
+          },
+          "name": {
+            "type": "string",
+            "description": "Customer full name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone number."
+          },
+          "description": {
+            "type": "string",
+            "description": "Arbitrary description shown in the dashboard."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the customer."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "customer"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Customer email address."
+          },
+          "name": {
+            "type": "string",
+            "description": "Customer full name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone number."
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp of creation."
+          }
+        }
+      },
+      "request_content_type": "application/x-www-form-urlencoded"
+    },
+    {
+      "id": "stripe.get_customer#rest",
+      "capability_id": "stripe.get_customer",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.stripe.com/v1/customers/{customer}",
+      "path_parameters": [
+        "customer"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the customer."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "customer"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Customer email address."
+          },
+          "name": {
+            "type": "string",
+            "description": "Customer full name."
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone number."
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp of creation."
+          }
+        }
+      }
+    },
+    {
+      "id": "stripe.create_refund#rest",
+      "capability_id": "stripe.create_refund",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.stripe.com/v1/refunds",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "payment_intent": {
+            "type": "string",
+            "description": "ID of the PaymentIntent to refund."
+          },
+          "charge": {
+            "type": "string",
+            "description": "ID of the charge to refund."
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount to refund, in the smallest currency unit."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "duplicate",
+              "fraudulent",
+              "requested_by_customer"
+            ],
+            "description": "Reason for the refund."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "amount",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the refund."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "refund"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount refunded, in the smallest currency unit."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code."
+          },
+          "payment_intent": {
+            "type": "string",
+            "description": "ID of the PaymentIntent that was refunded."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "succeeded",
+              "failed",
+              "canceled"
+            ]
+          }
+        }
+      },
+      "request_content_type": "application/x-www-form-urlencoded"
+    },
+    {
+      "id": "stripe.get_payment_intent#rest",
+      "capability_id": "stripe.get_payment_intent",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.stripe.com/v1/payment_intents/{payment_intent}",
+      "path_parameters": [
+        "payment_intent"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "amount",
+          "currency",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the PaymentIntent."
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "payment_intent"
+            ]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount intended to be collected, in the smallest currency unit."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "requires_payment_method",
+              "processing",
+              "succeeded",
+              "canceled"
+            ]
+          },
+          "customer": {
+            "type": "string",
+            "description": "ID of the customer this PaymentIntent belongs to."
+          },
+          "receipt_email": {
+            "type": "string",
+            "format": "email",
+            "description": "Email address the receipt was sent to."
+          },
+          "latest_charge": {
+            "type": "string",
+            "description": "ID of the most recent charge."
+          }
+        }
+      }
+    },
+    {
+      "id": "stripe.payment_intent_succeeded#webhook",
+      "capability_id": "stripe.payment_intent_succeeded",
+      "protocol": "webhook",
+      "method": "POST",
+      "endpoint": "payment_intent.succeeded",
+      "path_parameters": [],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the event."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "payment_intent.succeeded"
+            ]
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp at which the event occurred."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "object"
+            ],
+            "properties": {
+              "object": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "object",
+                  "amount",
+                  "currency",
+                  "status"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Unique identifier of the PaymentIntent."
+                  },
+                  "object": {
+                    "type": "string",
+                    "enum": [
+                      "payment_intent"
+                    ]
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount intended to be collected, in the smallest currency unit."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "Three-letter ISO currency code."
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "requires_payment_method",
+                      "processing",
+                      "succeeded",
+                      "canceled"
+                    ]
+                  },
+                  "customer": {
+                    "type": "string",
+                    "description": "ID of the customer this PaymentIntent belongs to."
+                  },
+                  "receipt_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address the receipt was sent to."
+                  },
+                  "latest_charge": {
+                    "type": "string",
+                    "description": "ID of the most recent charge."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "stripe.checkout_session_completed#webhook",
+      "capability_id": "stripe.checkout_session_completed",
+      "protocol": "webhook",
+      "method": "POST",
+      "endpoint": "checkout.session.completed",
+      "path_parameters": [],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the event."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "checkout.session.completed"
+            ]
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp at which the event occurred."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "object"
+            ],
+            "properties": {
+              "object": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "object",
+                  "url",
+                  "status"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Unique identifier of the Checkout Session."
+                  },
+                  "object": {
+                    "type": "string",
+                    "enum": [
+                      "checkout.session"
+                    ]
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Hosted checkout page URL to send the customer to."
+                  },
+                  "amount_total": {
+                    "type": "integer",
+                    "description": "Total of all items, in the smallest currency unit."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "Three-letter ISO currency code."
+                  },
+                  "customer_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address supplied for this session."
+                  },
+                  "payment_status": {
+                    "type": "string",
+                    "enum": [
+                      "paid",
+                      "unpaid",
+                      "no_payment_required"
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "open",
+                      "complete",
+                      "expired"
+                    ]
+                  },
+                  "expires_at": {
+                    "type": "integer",
+                    "description": "Unix timestamp at which the session expires."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "gmail.send_message#rest",
+      "capability_id": "gmail.send_message",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://gmail.googleapis.com/gmail/v1/users/{userId}/messages/send",
+      "path_parameters": [
+        "userId"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "raw"
+        ],
+        "properties": {
+          "raw": {
+            "type": "string",
+            "description": "The entire RFC 2822 email message — To, Subject and body included — base64url encoded."
+          },
+          "threadId": {
+            "type": "string",
+            "description": "ID of the thread the message belongs to."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Immutable ID of the message."
+          },
+          "threadId": {
+            "type": "string",
+            "description": "ID of the thread the message belongs to."
+          },
+          "labelIds": {
+            "type": "array",
+            "description": "Labels applied to the message.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "gmail.get_message#rest",
+      "capability_id": "gmail.get_message",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://gmail.googleapis.com/gmail/v1/users/{userId}/messages/{id}",
+      "path_parameters": [
+        "userId",
+        "id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Immutable ID of the message."
+          },
+          "threadId": {
+            "type": "string",
+            "description": "ID of the thread the message belongs to."
+          },
+          "snippet": {
+            "type": "string",
+            "description": "Short part of the message text."
+          },
+          "internalDate": {
+            "type": "string",
+            "description": "Epoch milliseconds at which the message was received."
+          },
+          "payload": {
+            "type": "object",
+            "description": "Parsed message structure.",
+            "properties": {
+              "mimeType": {
+                "type": "string",
+                "description": "MIME type of the top-level part."
+              },
+              "headers": {
+                "type": "array",
+                "description": "Message headers such as From, To and Subject.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Header name."
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "Header value."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "gmail.list_messages#rest",
+      "capability_id": "gmail.list_messages",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://gmail.googleapis.com/gmail/v1/users/{userId}/messages",
+      "path_parameters": [
+        "userId"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "description": "Matching messages, id and thread only.",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Immutable ID of the message."
+                },
+                "threadId": {
+                  "type": "string",
+                  "description": "ID of the thread the message belongs to."
+                },
+                "labelIds": {
+                  "type": "array",
+                  "description": "Labels applied to the message.",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "resultSizeEstimate": {
+            "type": "integer",
+            "description": "Estimated total matches."
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "Token for the next page of results."
+          }
+        }
+      }
+    },
+    {
+      "id": "gmail.create_draft#rest",
+      "capability_id": "gmail.create_draft",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://gmail.googleapis.com/gmail/v1/users/{userId}/drafts",
+      "path_parameters": [
+        "userId"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "object",
+            "required": [
+              "raw"
+            ],
+            "description": "The draft message content.",
+            "properties": {
+              "raw": {
+                "type": "string",
+                "description": "The entire RFC 2822 email message, base64url encoded."
+              }
+            }
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier of the draft."
+          },
+          "message": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Immutable ID of the message."
+              },
+              "threadId": {
+                "type": "string",
+                "description": "ID of the thread the message belongs to."
+              },
+              "labelIds": {
+                "type": "array",
+                "description": "Labels applied to the message.",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "slack.chat_post_message#rest",
+      "capability_id": "slack.chat_post_message",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://slack.com/api/chat.postMessage",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "channel"
+        ],
+        "properties": {
+          "channel": {
+            "type": "string",
+            "description": "Channel, private group or user ID to post to. Channel names are also accepted."
+          },
+          "text": {
+            "type": "string",
+            "description": "The message text. Required unless blocks or attachments are supplied."
+          },
+          "blocks": {
+            "type": "array",
+            "description": "Structured Block Kit blocks making up the message.",
+            "items": {
+              "type": "object"
+            }
+          },
+          "thread_ts": {
+            "type": "string",
+            "description": "Timestamp of the parent message, to post this message as a threaded reply."
+          },
+          "unfurl_links": {
+            "type": "boolean",
+            "description": "Whether to unfurl links in the message."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Whether the call succeeded."
+          },
+          "channel": {
+            "type": "string",
+            "description": "ID of the channel the message landed in."
+          },
+          "ts": {
+            "type": "string",
+            "description": "Timestamp identifier of the posted message."
+          },
+          "message": {
+            "type": "object",
+            "description": "The message as stored by Slack.",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Final message text."
+              },
+              "user": {
+                "type": "string",
+                "description": "ID of the posting user or bot."
+              },
+              "ts": {
+                "type": "string",
+                "description": "Timestamp identifier of the message."
+              }
+            }
+          },
+          "error": {
+            "type": "string",
+            "description": "Error code when ok is false."
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "slack.conversations_list#rest",
+      "capability_id": "slack.conversations_list",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://slack.com/api/conversations.list",
+      "path_parameters": [],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Whether the call succeeded."
+          },
+          "channels": {
+            "type": "array",
+            "description": "Matching conversations.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Channel ID."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Channel name without the leading hash."
+                },
+                "is_channel": {
+                  "type": "boolean",
+                  "description": "Whether this is a public channel."
+                },
+                "is_private": {
+                  "type": "boolean",
+                  "description": "Whether this conversation is private."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "slack.conversations_create#rest",
+      "capability_id": "slack.conversations_create",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://slack.com/api/conversations.create",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the channel to create."
+          },
+          "is_private": {
+            "type": "boolean",
+            "description": "Create a private channel instead of a public one."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "required": [
+          "ok"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Whether the call succeeded."
+          },
+          "channel": {
+            "type": "object",
+            "description": "The created channel.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Channel ID."
+              },
+              "name": {
+                "type": "string",
+                "description": "Channel name."
+              }
+            }
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "elevenlabs.text_to_speech#rest",
+      "capability_id": "elevenlabs.text_to_speech",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+      "path_parameters": [
+        "voice_id"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to convert into speech."
+          },
+          "model_id": {
+            "type": "string",
+            "description": "Identifier of the model to use, for example eleven_multilingual_v2."
+          },
+          "output_format": {
+            "type": "string",
+            "description": "Audio output format, for example mp3_44100_128."
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "audio_url": {
+            "type": "string",
+            "description": "URL of the generated audio file."
+          },
+          "request_id": {
+            "type": "string",
+            "description": "Identifier of the generation request."
+          }
+        },
+        "required": []
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "elevenlabs.list_voices#rest",
+      "capability_id": "elevenlabs.list_voices",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.elevenlabs.io/v1/voices",
+      "path_parameters": [],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "voices": {
+            "type": "array",
+            "description": "Available voices, each with a voice_id and a name."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "id": "hubspot.create_contact#rest",
+      "capability_id": "hubspot.create_contact",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "description": "Map of contact property values to set.",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "Primary email address of the contact.",
+                "format": "email"
+              },
+              "firstname": {
+                "type": "string",
+                "description": "First name of the contact."
+              },
+              "lastname": {
+                "type": "string",
+                "description": "Last name of the contact."
+              },
+              "phone": {
+                "type": "string",
+                "description": "Phone number of the contact."
+              }
+            },
+            "required": [
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "properties"
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifier of the created contact."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Timestamp at which the contact was created."
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the contact is archived."
+          }
+        },
+        "required": []
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "hubspot.search_contacts#rest",
+      "capability_id": "hubspot.search_contacts",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts/search",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "filterGroups": {
+            "type": "array",
+            "description": "Groups of property filters combined with OR."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of results to return."
+          }
+        },
+        "required": [
+          "filterGroups"
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of matching contacts."
+          },
+          "results": {
+            "type": "array",
+            "description": "Matching contact records."
+          }
+        },
+        "required": []
+      },
+      "request_content_type": "application/json"
+    }
+  ],
+  "ingestion_issues": []
+}

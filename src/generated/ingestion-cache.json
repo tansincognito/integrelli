@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "entries": {
+    "stripe.openapi": {
+      "content_hash": "9f8f5912d317d2fb38630d1c89e778f37bf6bc6839f5ec261e270313b9873328",
+      "fetched_at": "2026-08-25T08:43:56.947Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "stripe.create_checkout_session",
+        "stripe.create_payment_link",
+        "stripe.create_customer",
+        "stripe.get_customer",
+        "stripe.create_refund",
+        "stripe.get_payment_intent",
+        "stripe.payment_intent_succeeded",
+        "stripe.checkout_session_completed"
+      ]
+    },
+    "gmail.openapi": {
+      "content_hash": "7a53024f4e11183d3a6a43a1dfae4dee1fdf9542f62b7436ffd7595c54f95c5f",
+      "fetched_at": "2026-08-25T08:43:56.977Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "gmail.send_message",
+        "gmail.get_message",
+        "gmail.list_messages",
+        "gmail.create_draft"
+      ]
+    },
+    "slack.openapi": {
+      "content_hash": "d8405cdc19479885d4277eea9870e5ffee8338785fdef0ee31156bc00fa75e66",
+      "fetched_at": "2026-08-25T08:43:56.981Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "slack.chat_post_message",
+        "slack.conversations_list",
+        "slack.conversations_create"
+      ]
+    },
+    "elevenlabs.docs": {
+      "content_hash": "535227745ecbdb7f48dd5a71cff56b9830dfd43ef80fc4e26a58698dc5a9081e",
+      "fetched_at": "2026-08-25T08:43:56.984Z",
+      "extractor_signature": "markdown-heuristic",
+      "capability_ids": [
+        "elevenlabs.text_to_speech",
+        "elevenlabs.list_voices"
+      ]
+    },
+    "hubspot.docs": {
+      "content_hash": "76a2e2b8e877fb6db140160a6b62d544591126937b17c98ee7d86153ccbe9193",
+      "fetched_at": "2026-08-25T08:43:56.987Z",
+      "extractor_signature": "markdown-heuristic",
+      "capability_ids": [
+        "hubspot.create_contact",
+        "hubspot.search_contacts"
+      ]
+    }
+  }
+}

@@ -9,7 +9,8 @@
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "embed": "tsx scripts/build-embeddings.ts"
+    "embed": "tsx scripts/build-embeddings.ts",
+    "ingest": "tsx scripts/ingest.ts"
   },
   "dependencies": {
     "next": "^15.3.0",

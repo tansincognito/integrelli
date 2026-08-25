@@ -1,0 +1,355 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Stripe API",
+    "version": "2024-06-20",
+    "description": "Trimmed local mirror of the Stripe OpenAPI specification, covering the payment capabilities seeded on Day 1. Upstream: https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json"
+  },
+  "servers": [{ "url": "https://api.stripe.com" }],
+  "security": [{ "bearerAuth": [] }],
+  "paths": {
+    "/v1/checkout/sessions": {
+      "post": {
+        "operationId": "PostCheckoutSessions",
+        "summary": "Creates a Checkout Session, a hosted payment page that collects a payment for a set of line items and returns a checkout URL.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Unique key that makes the request safe to retry.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["mode", "line_items", "success_url"],
+                "properties": {
+                  "mode": {
+                    "type": "string",
+                    "enum": ["payment", "setup", "subscription"],
+                    "description": "The mode of the Checkout Session."
+                  },
+                  "line_items": {
+                    "type": "array",
+                    "description": "Items the customer is purchasing.",
+                    "items": {
+                      "type": "object",
+                      "required": ["quantity"],
+                      "properties": {
+                        "price": { "type": "string", "description": "ID of an existing Price object." },
+                        "quantity": { "type": "integer", "description": "Quantity of the line item." }
+                      }
+                    }
+                  },
+                  "success_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL the customer is redirected to after payment succeeds."
+                  },
+                  "cancel_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL the customer is redirected to if they cancel."
+                  },
+                  "customer_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address the receipt and prefilled form use."
+                  },
+                  "client_reference_id": {
+                    "type": "string",
+                    "description": "Opaque reference that ties the session to your own system."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout Session",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/checkout_session" } } }
+          }
+        }
+      }
+    },
+    "/v1/payment_links": {
+      "post": {
+        "operationId": "PostPaymentLinks",
+        "summary": "Creates a shareable payment link that collects a payment for a set of line items.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["line_items"],
+                "properties": {
+                  "line_items": {
+                    "type": "array",
+                    "description": "Items the payment link sells.",
+                    "items": {
+                      "type": "object",
+                      "required": ["price", "quantity"],
+                      "properties": {
+                        "price": { "type": "string", "description": "ID of an existing Price object." },
+                        "quantity": { "type": "integer", "description": "Quantity of the line item." }
+                      }
+                    }
+                  },
+                  "after_completion": {
+                    "type": "object",
+                    "description": "Behaviour after the customer completes the payment.",
+                    "properties": {
+                      "type": { "type": "string", "enum": ["hosted_confirmation", "redirect"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment Link",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/payment_link" } } }
+          }
+        }
+      }
+    },
+    "/v1/customers": {
+      "post": {
+        "operationId": "PostCustomers",
+        "summary": "Creates a new customer object.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email", "description": "Customer email address." },
+                  "name": { "type": "string", "description": "Customer full name." },
+                  "phone": { "type": "string", "description": "Customer phone number." },
+                  "description": { "type": "string", "description": "Arbitrary description shown in the dashboard." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/customer" } } }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer}": {
+      "get": {
+        "operationId": "GetCustomersCustomer",
+        "summary": "Retrieves an existing customer by id.",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "path",
+            "required": true,
+            "description": "Identifier of the customer to retrieve.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/customer" } } }
+          }
+        }
+      }
+    },
+    "/v1/refunds": {
+      "post": {
+        "operationId": "PostRefunds",
+        "summary": "Refunds a charge that has previously been created, returning funds to the customer.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payment_intent": { "type": "string", "description": "ID of the PaymentIntent to refund." },
+                  "charge": { "type": "string", "description": "ID of the charge to refund." },
+                  "amount": { "type": "integer", "description": "Amount to refund, in the smallest currency unit." },
+                  "reason": {
+                    "type": "string",
+                    "enum": ["duplicate", "fraudulent", "requested_by_customer"],
+                    "description": "Reason for the refund."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Refund",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/refund" } } }
+          }
+        }
+      }
+    },
+    "/v1/payment_intents/{payment_intent}": {
+      "get": {
+        "operationId": "GetPaymentIntentsIntent",
+        "summary": "Retrieves the details of a PaymentIntent, including its current status.",
+        "parameters": [
+          {
+            "name": "payment_intent",
+            "in": "path",
+            "required": true,
+            "description": "Identifier of the PaymentIntent to retrieve.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PaymentIntent",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/payment_intent" } } }
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "payment_intent.succeeded": {
+      "post": {
+        "summary": "Occurs when a payment succeeds: the PaymentIntent has moved to the succeeded status and funds are captured.",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/event_payment_intent_succeeded" } }
+          }
+        },
+        "responses": { "200": { "description": "Acknowledged" } }
+      }
+    },
+    "checkout.session.completed": {
+      "post": {
+        "summary": "Occurs when a customer completes a Checkout Session.",
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/event_checkout_session_completed" } }
+          }
+        },
+        "responses": { "200": { "description": "Acknowledged" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Stripe secret API key sent as a bearer token."
+      }
+    },
+    "schemas": {
+      "checkout_session": {
+        "type": "object",
+        "required": ["id", "object", "url", "status"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the Checkout Session." },
+          "object": { "type": "string", "enum": ["checkout.session"] },
+          "url": { "type": "string", "format": "uri", "description": "Hosted checkout page URL to send the customer to." },
+          "amount_total": { "type": "integer", "description": "Total of all items, in the smallest currency unit." },
+          "currency": { "type": "string", "description": "Three-letter ISO currency code." },
+          "customer_email": { "type": "string", "format": "email", "description": "Email address supplied for this session." },
+          "payment_status": { "type": "string", "enum": ["paid", "unpaid", "no_payment_required"] },
+          "status": { "type": "string", "enum": ["open", "complete", "expired"] },
+          "expires_at": { "type": "integer", "description": "Unix timestamp at which the session expires." }
+        }
+      },
+      "payment_link": {
+        "type": "object",
+        "required": ["id", "object", "url", "active"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the payment link." },
+          "object": { "type": "string", "enum": ["payment_link"] },
+          "url": { "type": "string", "format": "uri", "description": "Public URL the customer opens to pay." },
+          "active": { "type": "boolean", "description": "Whether the link can currently be paid." },
+          "currency": { "type": "string", "description": "Three-letter ISO currency code." }
+        }
+      },
+      "customer": {
+        "type": "object",
+        "required": ["id", "object"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the customer." },
+          "object": { "type": "string", "enum": ["customer"] },
+          "email": { "type": "string", "format": "email", "description": "Customer email address." },
+          "name": { "type": "string", "description": "Customer full name." },
+          "phone": { "type": "string", "description": "Customer phone number." },
+          "created": { "type": "integer", "description": "Unix timestamp of creation." }
+        }
+      },
+      "refund": {
+        "type": "object",
+        "required": ["id", "object", "amount", "status"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the refund." },
+          "object": { "type": "string", "enum": ["refund"] },
+          "amount": { "type": "integer", "description": "Amount refunded, in the smallest currency unit." },
+          "currency": { "type": "string", "description": "Three-letter ISO currency code." },
+          "payment_intent": { "type": "string", "description": "ID of the PaymentIntent that was refunded." },
+          "status": { "type": "string", "enum": ["pending", "succeeded", "failed", "canceled"] }
+        }
+      },
+      "payment_intent": {
+        "type": "object",
+        "required": ["id", "object", "amount", "currency", "status"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the PaymentIntent." },
+          "object": { "type": "string", "enum": ["payment_intent"] },
+          "amount": { "type": "integer", "description": "Amount intended to be collected, in the smallest currency unit." },
+          "currency": { "type": "string", "description": "Three-letter ISO currency code." },
+          "status": { "type": "string", "enum": ["requires_payment_method", "processing", "succeeded", "canceled"] },
+          "customer": { "type": "string", "description": "ID of the customer this PaymentIntent belongs to." },
+          "receipt_email": { "type": "string", "format": "email", "description": "Email address the receipt was sent to." },
+          "latest_charge": { "type": "string", "description": "ID of the most recent charge." }
+        }
+      },
+      "event_payment_intent_succeeded": {
+        "type": "object",
+        "required": ["id", "type", "data"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the event." },
+          "type": { "type": "string", "enum": ["payment_intent.succeeded"] },
+          "created": { "type": "integer", "description": "Unix timestamp at which the event occurred." },
+          "data": {
+            "type": "object",
+            "required": ["object"],
+            "properties": { "object": { "$ref": "#/components/schemas/payment_intent" } }
+          }
+        }
+      },
+      "event_checkout_session_completed": {
+        "type": "object",
+        "required": ["id", "type", "data"],
+        "properties": {
+          "id": { "type": "string", "description": "Unique identifier of the event." },
+          "type": { "type": "string", "enum": ["checkout.session.completed"] },
+          "created": { "type": "integer", "description": "Unix timestamp at which the event occurred." },
+          "data": {
+            "type": "object",
+            "required": ["object"],
+            "properties": { "object": { "$ref": "#/components/schemas/checkout_session" } }
+          }
+        }
+      }
+    }
+  }
+}
