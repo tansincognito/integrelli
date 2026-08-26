@@ -72,8 +72,11 @@ function buildAdapter(plan: WorkflowPlan, options: RunOptions, stepsToRun: Workf
     });
     return new MockAdapter({
       faults: options.faults,
-      endpointById,
-      stepEndpointId,
+      getResponseSchema: (stepId) => {
+        const endpointId = stepEndpointId.get(stepId);
+        const endpoint = endpointId ? endpointById.get(endpointId) : undefined;
+        return endpoint ? { schema: endpoint.responseSchema, example: endpoint.exampleResponse } : undefined;
+      },
       stepIndex,
     });
   }

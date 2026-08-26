@@ -1,7 +1,10 @@
 'use client';
 
-import { AlertTriangle, ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
+import { useState } from 'react';
+import { AlertTriangle, ArrowLeft, CheckCircle2, Play, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import type { ExecutionTrace } from '@/types';
+import { TraceView } from '@/components/run/TraceView';
 import type { PlanResponseBody } from './types';
 
 /**
@@ -21,6 +24,30 @@ export function PlanResult({
   onBack: () => void;
 }) {
   const validation = body.validation;
+  const [seed, setSeed] = useState('integrelli');
+  const [trace, setTrace] = useState<ExecutionTrace | null>(null);
+  const [isRunning, setRunning] = useState(false);
+  const [runError, setRunError] = useState<string | null>(null);
+
+  const runWorkflow = async () => {
+    if (!body.plan) return;
+    setRunning(true);
+    setRunError(null);
+    try {
+      const res = await fetch('/api/workflow/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: body.plan, seed, faults: [] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? `Execute failed with status ${res.status}`);
+      setTrace(data.trace);
+    } catch (err) {
+      setRunError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRunning(false);
+    }
+  };
 
   return (
     <section className="mx-auto w-full max-w-4xl">
@@ -85,6 +112,35 @@ export function PlanResult({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+        </div>
+      )}
+
+      {validation?.valid && body.plan && (
+        <div className="mt-6 rounded-xl border border-border-strong bg-panel px-5 py-4">
+          <p className="font-mono text-xs uppercase tracking-wider text-muted">Run (mock mode)</p>
+          <div className="mt-3 flex items-center gap-2">
+            <input
+              value={seed}
+              onChange={(e) => setSeed(e.target.value)}
+              className="w-40 rounded border border-border bg-black/30 px-2 py-1 font-mono text-xs"
+              aria-label="Seed"
+            />
+            <button
+              type="button"
+              onClick={runWorkflow}
+              disabled={isRunning}
+              className="flex items-center gap-1.5 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Play size={13} />
+              {isRunning ? 'Running…' : 'Run'}
+            </button>
+          </div>
+          {runError && <p className="mt-2 text-xs text-danger">{runError}</p>}
+          {trace && (
+            <div className="mt-4">
+              <TraceView trace={trace} />
             </div>
           )}
         </div>
