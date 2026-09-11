@@ -1,5 +1,13 @@
 import type { JsonSchema, JsonValue } from '@/types/endpoint';
-import type { Attempt, ExecutionTrace, FaultInjection, PreparedRequest, StepResult, StepStatus } from '@/types/execution';
+import type {
+  Attempt,
+  ExecutionMode,
+  ExecutionTrace,
+  FaultInjection,
+  PreparedRequest,
+  StepResult,
+  StepStatus,
+} from '@/types/execution';
 import type { PlanIssue } from '@/types/workflow';
 import type { Capability, CapabilityAuthentication, InputLocation } from '@/knowledge/capability';
 import type { Implementation } from '@/knowledge/implementation';
@@ -11,13 +19,20 @@ import { hashString, seededRng } from './rng';
 import { redactStepResult } from './redact';
 import { shouldRetry, computeBackoffMs, getRetryAfterSeconds, parseRateLimitHeaders } from './retry';
 import { MockAdapter, getFaultForStep, isFaultAttempt } from './mock-adapter';
+import { LiveAdapter } from './live-adapter';
+import { LiveModeGateError } from './live-mode-gate-error';
+import type { HttpAdapter } from './adapter';
 
 /**
  * Execution engine for the ingested capability graph (`src/generated/capability-store.json`),
  * parallel to `engine.ts`'s `runWorkflow` which only knows the hand-authored
- * `EndpointSpec` pack. Mock/test mode only — live mode for this graph is a
- * separate piece of work (see plan doc); a `mode: 'live'` request is rejected
- * by the route before this module is ever reached.
+ * `EndpointSpec` pack. Supports both mock/test and live mode; the live-mode
+ * gate mirrors `engine.ts`'s `buildAdapter` (env vars present + explicit
+ * opt-in), plus a capability-graph-specific check: any step whose capability
+ * needs `oauth2` auth (or declares a credential-bearing auth kind with no
+ * `env_var_name` on record) blocks live mode outright — no token-exchange
+ * flow exists yet, so `buildAuthHeaders` below would otherwise send that
+ * step live with zero authentication.
  *
  * Reuses `validatePlan`'s `resolved_mappings` (source/destination already
  * resolved to concrete step+field or a literal, type-checked) instead of
@@ -26,7 +41,77 @@ import { MockAdapter, getFaultForStep, isFaultAttempt } from './mock-adapter';
 
 export interface CapabilityRunOptions {
   seed: string;
+  mode: ExecutionMode;
   faults: FaultInjection[];
+}
+
+/** Env var(s) live mode needs for this capability's auth, or `null` if the auth kind can't be satisfied at all (oauth2, or a credential kind with no env var on record). */
+function envVarsForCapabilityAuth(auth: CapabilityAuthentication): string[] | null {
+  switch (auth.kind) {
+    case 'bearer':
+    case 'header':
+    case 'basic':
+    case 'query':
+      return auth.env_var_name ? [auth.env_var_name] : null;
+    case 'oauth2':
+      return null;
+    case 'none':
+      return [];
+    default: {
+      const exhaustive: never = auth.kind;
+      throw new Error(`Unknown auth kind: ${String(exhaustive)}`);
+    }
+  }
+}
+
+function buildCapabilityAdapter(
+  options: CapabilityRunOptions,
+  stepCapability: Map<string, Capability>,
+  stepImplementation: Map<string, Implementation>,
+  stepIndex: Map<string, number>
+): HttpAdapter {
+  if (options.mode === 'test') {
+    return new MockAdapter({
+      faults: options.faults,
+      getResponseSchema: (stepId) => {
+        const implementation = stepImplementation.get(stepId);
+        if (!implementation?.response_schema) return undefined;
+        return { schema: implementation.response_schema as unknown as JsonSchema, example: {} };
+      },
+      stepIndex,
+    });
+  }
+
+  const missingEnvVars = new Set<string>();
+  const unsupportedAuth: string[] = [];
+  for (const capability of stepCapability.values()) {
+    const vars = envVarsForCapabilityAuth(capability.authentication);
+    if (vars === null) {
+      unsupportedAuth.push(`${capability.id} (${capability.authentication.kind})`);
+      continue;
+    }
+    for (const v of vars) missingEnvVars.add(v);
+  }
+  for (const v of [...missingEnvVars]) {
+    if (process.env[v] !== undefined) missingEnvVars.delete(v);
+  }
+
+  if (unsupportedAuth.length > 0) {
+    throw new LiveModeGateError(
+      `Live mode is disabled: no OAuth2/token flow exists yet for: ${unsupportedAuth.join(', ')}.`,
+      []
+    );
+  }
+  if (missingEnvVars.size > 0) {
+    throw new LiveModeGateError(
+      `Live mode is disabled: missing required env vars: ${[...missingEnvVars].join(', ')}.`,
+      [...missingEnvVars]
+    );
+  }
+  if (process.env.INTEGRELLI_ALLOW_LIVE !== 'true') {
+    throw new LiveModeGateError('Live mode is disabled: INTEGRELLI_ALLOW_LIVE is not "true".', []);
+  }
+  return new LiveAdapter();
 }
 
 function toFlatValue(value: JsonValue): string {
@@ -169,15 +254,7 @@ export async function runCapabilityWorkflow(
     stepImplementation.set(step.id, implementation);
   });
 
-  const adapter = new MockAdapter({
-    faults: options.faults,
-    getResponseSchema: (stepId) => {
-      const implementation = stepImplementation.get(stepId);
-      if (!implementation?.response_schema) return undefined;
-      return { schema: implementation.response_schema as unknown as JsonSchema, example: {} };
-    },
-    stepIndex,
-  });
+  const adapter = buildCapabilityAdapter(options, stepCapability, stepImplementation, stepIndex);
 
   const mappingsByStep = new Map<string, ResolvedMapping[]>();
   for (const mapping of validation.resolved_mappings) {
@@ -371,7 +448,7 @@ export async function runCapabilityWorkflow(
   return {
     traceId,
     planId: plan.name,
-    mode: 'test',
+    mode: options.mode,
     seed: options.seed,
     faults: options.faults,
     steps: results,

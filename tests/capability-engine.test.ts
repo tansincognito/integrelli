@@ -44,7 +44,7 @@ describe('capability-graph plan executes cleanly across seeds', () => {
   for (const seed of SEEDS) {
     it(`succeeds with seed "${seed}"`, async () => {
       const validation = validatePlan(PLAN);
-      const trace = await runCapabilityWorkflow(PLAN, validation, { seed, faults: [] });
+      const trace = await runCapabilityWorkflow(PLAN, validation, { seed, mode: 'test', faults: [] });
 
       expect(trace.status).toBe('success');
       expect(trace.steps).toHaveLength(PLAN.steps.length);

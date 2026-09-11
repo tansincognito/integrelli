@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { validatePlan, type WorkflowPlan } from '@/planner';
 import { runCapabilityWorkflow } from '@/lib/exec/capability-engine';
+import { LiveModeGateError } from '@/lib/exec/live-mode-gate-error';
 import type { FaultInjection } from '@/types/execution';
 
 export const runtime = 'nodejs';
@@ -48,13 +49,6 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const { plan: rawPlan, seed, mode, faults } = parsed.data;
 
-  if (mode === 'live') {
-    return NextResponse.json(
-      { error: 'Live mode is not yet supported for the capability graph. Use mode "test" (or omit mode).' },
-      { status: 400 }
-    );
-  }
-
   const validation = validatePlan(rawPlan);
   if (!validation.valid) {
     return NextResponse.json(
@@ -66,10 +60,17 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     const trace = await runCapabilityWorkflow(rawPlan as WorkflowPlan, validation, {
       seed,
+      mode: mode ?? 'test',
       faults: faults as FaultInjection[],
     });
     return NextResponse.json({ trace }, { status: 200 });
   } catch (err) {
+    if (err instanceof LiveModeGateError) {
+      return NextResponse.json(
+        { error: err.message, missingEnvVars: err.missingEnvVars },
+        { status: 400 }
+      );
+    }
     console.error('[integrelli] /api/workflow/execute failed:', err);
     const message = err instanceof Error ? err.message : 'Unknown execution error.';
     return NextResponse.json({ error: message }, { status: 500 });
