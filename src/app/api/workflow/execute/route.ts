@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { validatePlan, type WorkflowPlan } from '@/planner';
 import { runCapabilityWorkflow } from '@/lib/exec/capability-engine';
 import { LiveModeGateError } from '@/lib/exec/live-mode-gate-error';
+import { evaluateTrace } from '@/lib/eval/evaluate-trace';
+import { recordTrace } from '@/lib/storage/trace-store';
 import type { FaultInjection } from '@/types/execution';
 
 export const runtime = 'nodejs';
@@ -63,7 +65,16 @@ export async function POST(request: Request): Promise<NextResponse> {
       mode: mode ?? 'test',
       faults: faults as FaultInjection[],
     });
-    return NextResponse.json({ trace }, { status: 200 });
+    const evaluation = evaluateTrace(trace);
+
+    try {
+      await recordTrace({ trace, plan: rawPlan as WorkflowPlan, evaluation, recordedAt: new Date().toISOString() });
+    } catch (persistErr) {
+      // Persistence is a side channel, not the request's contract - never fail an executed run over a disk write.
+      console.error('[integrelli] failed to persist trace:', persistErr);
+    }
+
+    return NextResponse.json({ trace, evaluation }, { status: 200 });
   } catch (err) {
     if (err instanceof LiveModeGateError) {
       return NextResponse.json(
