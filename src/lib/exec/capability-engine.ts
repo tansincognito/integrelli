@@ -21,6 +21,7 @@ import { shouldRetry, computeBackoffMs, getRetryAfterSeconds, parseRateLimitHead
 import { MockAdapter, getFaultForStep, isFaultAttempt } from './mock-adapter';
 import { LiveAdapter } from './live-adapter';
 import { LiveModeGateError } from './live-mode-gate-error';
+import { readOAuthRefreshConfig } from './oauth-token';
 import type { HttpAdapter } from './adapter';
 
 /**
@@ -28,11 +29,13 @@ import type { HttpAdapter } from './adapter';
  * parallel to `engine.ts`'s `runWorkflow` which only knows the hand-authored
  * `EndpointSpec` pack. Supports both mock/test and live mode; the live-mode
  * gate mirrors `engine.ts`'s `buildAdapter` (env vars present + explicit
- * opt-in), plus a capability-graph-specific check: any step whose capability
- * needs `oauth2` auth (or declares a credential-bearing auth kind with no
- * `env_var_name` on record) blocks live mode outright — no token-exchange
- * flow exists yet, so `buildAuthHeaders` below would otherwise send that
- * step live with zero authentication.
+ * opt-in). For `oauth2` capabilities specifically: live mode prefers a
+ * refresh-token exchange (`./oauth-token`) when the provider's four
+ * `<PROVIDER>_OAUTH_*` env vars are set, and otherwise falls back to the
+ * capability's own static `authentication.env_var_name` (a manually-supplied,
+ * non-refreshing access token) — same "missing env var" gate as any other
+ * auth kind. Only a capability with neither a refresh config nor a static
+ * env var name on record blocks live mode outright.
  *
  * Reuses `validatePlan`'s `resolved_mappings` (source/destination already
  * resolved to concrete step+field or a literal, type-checked) instead of
@@ -45,8 +48,8 @@ export interface CapabilityRunOptions {
   faults: FaultInjection[];
 }
 
-/** Env var(s) live mode needs for this capability's auth, or `null` if the auth kind can't be satisfied at all (oauth2, or a credential kind with no env var on record). */
-function envVarsForCapabilityAuth(auth: CapabilityAuthentication): string[] | null {
+/** Env var(s) live mode needs for this capability's auth, or `null` if the auth kind can't be satisfied at all. */
+function envVarsForCapabilityAuth(auth: CapabilityAuthentication, providerId: string): string[] | null {
   switch (auth.kind) {
     case 'bearer':
     case 'header':
@@ -54,7 +57,9 @@ function envVarsForCapabilityAuth(auth: CapabilityAuthentication): string[] | nu
     case 'query':
       return auth.env_var_name ? [auth.env_var_name] : null;
     case 'oauth2':
-      return null;
+      // A full refresh config needs nothing further at gate time; it exchanges live, per-request.
+      if (readOAuthRefreshConfig(providerId)) return [];
+      return auth.env_var_name ? [auth.env_var_name] : null;
     case 'none':
       return [];
     default: {
@@ -85,7 +90,7 @@ function buildCapabilityAdapter(
   const missingEnvVars = new Set<string>();
   const unsupportedAuth: string[] = [];
   for (const capability of stepCapability.values()) {
-    const vars = envVarsForCapabilityAuth(capability.authentication);
+    const vars = envVarsForCapabilityAuth(capability.authentication, capability.provider_id);
     if (vars === null) {
       unsupportedAuth.push(`${capability.id} (${capability.authentication.kind})`);
       continue;
@@ -98,7 +103,9 @@ function buildCapabilityAdapter(
 
   if (unsupportedAuth.length > 0) {
     throw new LiveModeGateError(
-      `Live mode is disabled: no OAuth2/token flow exists yet for: ${unsupportedAuth.join(', ')}.`,
+      `Live mode is disabled: no credential is configured for: ${unsupportedAuth.join(', ')}. ` +
+        `For oauth2, set either the <PROVIDER>_OAUTH_{CLIENT_ID,CLIENT_SECRET,REFRESH_TOKEN,TOKEN_URL} ` +
+        `env vars, or the capability's static access-token env var.`,
       []
     );
   }
@@ -128,7 +135,10 @@ function substituteBraceParams(template: string, params: Record<string, string>)
   );
 }
 
-function buildAuthHeaders(auth: CapabilityAuthentication): { headers: Record<string, string>; query: Record<string, string> } {
+function buildAuthHeaders(
+  auth: CapabilityAuthentication,
+  providerId: string
+): { headers: Record<string, string>; query: Record<string, string> } {
   switch (auth.kind) {
     case 'bearer':
       return auth.env_var_name ? { headers: { Authorization: `Bearer <${auth.env_var_name}>` }, query: {} } : { headers: {}, query: {} };
@@ -143,6 +153,11 @@ function buildAuthHeaders(auth: CapabilityAuthentication): { headers: Record<str
         ? { headers: {}, query: { [auth.parameter_name]: `<${auth.env_var_name}>` } }
         : { headers: {}, query: {} };
     case 'oauth2':
+      // Prefer a live refresh exchange; fall back to the capability's static access-token env var.
+      if (readOAuthRefreshConfig(providerId)) {
+        return { headers: { Authorization: `Bearer <OAUTH:${providerId.toUpperCase()}>` }, query: {} };
+      }
+      return auth.env_var_name ? { headers: { Authorization: `Bearer <${auth.env_var_name}>` }, query: {} } : { headers: {}, query: {} };
     case 'none':
       return { headers: {}, query: {} };
     default: {
@@ -354,7 +369,7 @@ export async function runCapabilityWorkflow(
       }
     }
 
-    const auth = buildAuthHeaders(capability.authentication);
+    const auth = buildAuthHeaders(capability.authentication, capability.provider_id);
     Object.assign(headers, auth.headers);
     Object.assign(query, auth.query);
 
