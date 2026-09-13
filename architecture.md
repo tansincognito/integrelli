@@ -802,7 +802,132 @@ The trigger is roughly 2,000 capabilities or a 50 MB embedding file.
 
 ---
 
-## 17. Future Architecture
+## 17. Day 2 Review
+
+### Against Day 1's recommendations
+
+Day 1 listed six things to do next (§16, "Day 2 recommendations"). Day 2 did
+none of them — it went a different direction: closing the live-mode gap on
+the capability-graph execution engine instead. Honest accounting:
+
+1. Configure a gateway key, measure real extraction/embeddings/planner output
+   — **not done**. `AI_GATEWAY_API_KEY` is still unset; the connected Vercel
+   team's AI Gateway credit still shows $0. Planning is still unmeasured.
+2. Ingest one real upstream spec end to end — **not done**. Still the Day 1
+   fixtures (`src/ingestion/sources/openapi/*.json`, `docs/*.md`).
+3. Compare the two extractors, calibrate confidence — **not done**.
+4. Implement the transform registry, starting with `rfc822_base64url` — **done**,
+   but before Day 2 started: `applyTransform` in
+   `src/lib/exec/capability-engine.ts` already covers `identity`, `to_string`,
+   `json_stringify`, `to_minor_units`, `rfc822_base64url` as of the "execute
+   ingested capability-graph plans" commit that closed out Day 1.
+5. Put an allowlist on ingested endpoint hosts — **not done. Still open, still
+   the most serious known security gap** (§16 flagged it as such; nothing
+   changed it).
+6. Start the execution engine against the capability model — **done**, same
+   commit as #4, before Day 2 started. Day 2 built on top of it.
+
+### What Day 2 actually built
+
+**Live mode for the capability graph.** §16 shipped `runCapabilityWorkflow` in
+mock mode only; a `mode: 'live'` request was hard-rejected at the route. Day 2
+wired the same gate the legacy pack already had (env vars present +
+`INTEGRELLI_ALLOW_LIVE=true`) into `capability-engine.ts`'s
+`buildCapabilityAdapter`, reusing the legacy pack's `LiveAdapter` verbatim —
+it never assumed which pack called it. `LiveModeGateError` moved to its own
+module (`live-mode-gate-error.ts`) so both packs' routes share one error
+shape instead of two near-identical classes.
+
+**OAuth2.** The capability graph's `oauth2` auth kind (Gmail's four
+capabilities) had no path to live mode at all — `buildAuthHeaders` no-op'd on
+it. Day 2 added a generic RFC 6749 refresh-token grant
+(`src/lib/exec/oauth-token.ts`, in-memory cached, provider-agnostic — reads
+`<PROVIDER>_OAUTH_{CLIENT_ID,CLIENT_SECRET,REFRESH_TOKEN,TOKEN_URL}`) and wired
+it as the preferred path, falling back to a capability's static
+`env_var_name` (what ingestion actually recorded for Gmail:
+`GMAIL_ACCESS_TOKEN`) when no refresh config is present. Traces still store
+only the masked `<OAUTH:PROVIDER>` placeholder, never a resolved token — the
+existing "secrets resolved only inside `LiveAdapter.send`" invariant held
+without modification.
+
+**A live/test toggle in the console.** `PlanResult.tsx` never sent `mode` in
+its execute request and hardcoded a "mock mode" label — live mode being
+wired server-side was unreachable from the actual app. Added a toggle with a
+two-click confirm on live (explicit "real provider APIs, real side effects"
+warning) and `missingEnvVars` rendered next to a gate error. Verified in a
+real browser, not just by build passing.
+
+**A rule-based evaluator and trace persistence.** Neither existed. §16's
+"Known bottlenecks" and "Technical debt" didn't mention them because nothing
+upstream of execution needed them yet — once live mode was real, an
+executed run's only record was the HTTP response handed back to whoever
+called `/api/workflow/execute`; close the tab and it's gone. `evaluateTrace`
+(`src/lib/eval/evaluate-trace.ts`) is a deterministic pass/fail check — 2xx
+status and no error-severity `PlanIssue` per step, no LLM judgment call, no
+attempt at grading business-logic correctness. `trace-store.ts` writes one
+JSON file per trace under `.data/traces/`, same "committed JSON, not a
+database" posture the capability store already takes (§16 "Decisions to
+revisit" #1 applies here too, for the same reason and the same threshold).
+`GET /api/workflow/traces` and `GET /api/workflow/traces/:id` read it back.
+
+### Two corrections to earlier claims this session
+
+Investigating "what's dead code" and "what's safe to delete" produced two
+wrong answers before the real ones:
+
+- `src/lib/retrieval/*` was called dead code. It is not: `/api/plan/route.ts`
+  (legacy pack) imports `retrieve.ts` from it, and `src/retrieval/{search,ranking}.ts`
+  (capability-graph pack) import `similarity.ts` from it directly. Both packs
+  depend on this directory; neither can lose it independently.
+- The legacy `EndpointSpec` pack was called redundant now that the capability
+  graph has live mode too. It is not, for a UI reason rather than a backend
+  one: `PromptBar.tsx` + `RunPanel.tsx` (the `/workspace` route) call the
+  legacy pack's `/api/plan` + `/api/execute`; `PromptConsole.tsx` +
+  `PlanResult.tsx` (the `/` route, the console shell) call the capability
+  graph's routes. Two live UI surfaces, not one superseding the other.
+  Deleting the legacy pack needs a UI decision first — which surface is "the
+  app" — not just a backend equivalence argument.
+
+### New technical debt
+
+- The OAuth2 token cache (`oauth-token.ts`) is process-memory only: lost on
+  every dev-server restart, and in a horizontally-scaled deployment each
+  instance would exchange independently rather than sharing one cached
+  token. Fine for one developer; a real multi-instance deployment wants a
+  shared cache.
+- `trace-store.ts` has no rotation, size cap, or pagination beyond
+  `listTraceSummaries`'s `limit` argument, and `listTraceSummaries` reads
+  every stored file to build one page of summaries — the same "fine at
+  19-capability scale, not at 2,000" caveat §16 already applied to
+  `loadStore()` and `buildGraph()` applies here from day one.
+- The live-mode gate now has two independently-implemented copies
+  (`engine.ts`'s `buildAdapter`, `capability-engine.ts`'s
+  `buildCapabilityAdapter`) that only share `LiveAdapter` and
+  `LiveModeGateError`. Not wrong, since the two packs' `Capability`/
+  `EndpointSpec` auth shapes genuinely differ, but a third pack would be the
+  signal to factor out the shared part.
+
+### Day 3 recommendations
+
+1. Everything §16 already recommended and Day 2 skipped (gateway key, real
+   upstream ingestion, extractor comparison, endpoint allowlist) is still
+   open, and the allowlist gap is still the most serious one — live mode
+   existing now makes an unvetted ingested endpoint a real HTTP call
+   instead of a hypothetical one.
+2. Build the OAuth2 *consent* flow (the "click Connect Gmail, get a refresh
+   token" half). Day 2 built the exchange (refresh token → access token),
+   not how a refresh token is obtained in the first place; today that's a
+   manual step via Google's OAuth playground.
+3. Decide which console is "the app" (`/` vs `/workspace`) before touching
+   the legacy pack again — that decision, not a backend equivalence
+   argument, is what unblocks deleting it.
+4. If trace volume grows past a handful of manual test runs, move
+   `trace-store.ts` off flat files before it becomes the next `loadStore()`-
+   shaped bottleneck rather than after.
+
+---
+
+## 18. Future Architecture
 
 ```text
                     ┌─────────────────────────────────────┐
