@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { AlertTriangle, ArrowLeft, CheckCircle2, Play, XCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, CheckCircle2, Play, XCircle, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import type { ExecutionTrace } from '@/types';
 import { TraceView } from '@/components/run/TraceView';
 import type { PlanResponseBody } from './types';
+
+type RunMode = 'test' | 'live';
 
 /**
  * What the planner produced, and what the validator made of it.
@@ -25,28 +27,44 @@ export function PlanResult({
 }) {
   const validation = body.validation;
   const [seed, setSeed] = useState('integrelli');
+  const [mode, setMode] = useState<RunMode>('test');
+  const [confirmingLive, setConfirmingLive] = useState(false);
   const [trace, setTrace] = useState<ExecutionTrace | null>(null);
   const [isRunning, setRunning] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
+  const [missingEnvVars, setMissingEnvVars] = useState<string[]>([]);
 
-  const runWorkflow = async () => {
+  const runWorkflow = async (runMode: RunMode) => {
     if (!body.plan) return;
     setRunning(true);
     setRunError(null);
+    setMissingEnvVars([]);
     try {
       const res = await fetch('/api/workflow/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: body.plan, seed, faults: [] }),
+        body: JSON.stringify({ plan: body.plan, seed, mode: runMode, faults: [] }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? `Execute failed with status ${res.status}`);
+      if (!res.ok) {
+        setMissingEnvVars(data.missingEnvVars ?? []);
+        throw new Error(data.error ?? `Execute failed with status ${res.status}`);
+      }
       setTrace(data.trace);
     } catch (err) {
       setRunError(err instanceof Error ? err.message : String(err));
     } finally {
       setRunning(false);
     }
+  };
+
+  const handleRunClick = () => {
+    if (mode === 'live' && !confirmingLive) {
+      setConfirmingLive(true);
+      return;
+    }
+    setConfirmingLive(false);
+    void runWorkflow(mode);
   };
 
   return (
@@ -119,25 +137,86 @@ export function PlanResult({
 
       {validation?.valid && body.plan && (
         <div className="mt-6 rounded-xl border border-border-strong bg-panel px-5 py-4">
-          <p className="font-mono text-xs uppercase tracking-wider text-muted">Run (mock mode)</p>
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-xs uppercase tracking-wider text-muted">Run</p>
+            <div className="flex items-center rounded-md border border-border p-0.5 text-xs font-mono">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode('test');
+                  setConfirmingLive(false);
+                }}
+                className={cn(
+                  'rounded px-2.5 py-1 transition-colors',
+                  mode === 'test' ? 'bg-accent text-accent-foreground' : 'text-muted hover:text-foreground'
+                )}
+              >
+                mock
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('live')}
+                className={cn(
+                  'flex items-center gap-1 rounded px-2.5 py-1 transition-colors',
+                  mode === 'live' ? 'bg-danger text-white' : 'text-muted hover:text-foreground'
+                )}
+              >
+                <Zap size={11} />
+                live
+              </button>
+            </div>
+          </div>
+
           <div className="mt-3 flex items-center gap-2">
             <input
               value={seed}
               onChange={(e) => setSeed(e.target.value)}
               className="w-40 rounded border border-border bg-black/30 px-2 py-1 font-mono text-xs"
               aria-label="Seed"
+              disabled={mode === 'live'}
+              title={mode === 'live' ? 'Seed only affects mock-mode synthesis.' : undefined}
             />
             <button
               type="button"
-              onClick={runWorkflow}
+              onClick={handleRunClick}
               disabled={isRunning}
-              className="flex items-center gap-1.5 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+              className={cn(
+                'flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+                mode === 'live'
+                  ? 'bg-danger text-white hover:bg-danger/90'
+                  : 'bg-accent text-accent-foreground hover:bg-accent/90'
+              )}
             >
               <Play size={13} />
-              {isRunning ? 'Running…' : 'Run'}
+              {isRunning ? 'Running…' : mode === 'live' && confirmingLive ? 'Confirm live run' : mode === 'live' ? 'Run live' : 'Run'}
             </button>
+            {mode === 'live' && confirmingLive && !isRunning && (
+              <button
+                type="button"
+                onClick={() => setConfirmingLive(false)}
+                className="font-mono text-xs text-muted hover:text-foreground"
+              >
+                cancel
+              </button>
+            )}
           </div>
-          {runError && <p className="mt-2 text-xs text-danger">{runError}</p>}
+
+          {mode === 'live' && confirmingLive && !isRunning && (
+            <p className="mt-2 flex items-center gap-1.5 text-xs text-danger">
+              <AlertTriangle size={12} />
+              This will call real provider APIs with real credentials and real side effects. Click again to confirm.
+            </p>
+          )}
+
+          {runError && (
+            <div className="mt-2 text-xs text-danger">
+              <p>{runError}</p>
+              {missingEnvVars.length > 0 && (
+                <p className="mt-1 text-muted-strong">missing: {missingEnvVars.join(', ')}</p>
+              )}
+            </div>
+          )}
+
           {trace && (
             <div className="mt-4">
               <TraceView trace={trace} />
