@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Square API (trimmed local mirror)", "version": "2026-08-19" },
+  "servers": [{ "url": "https://connect.squareup.com" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "amount_money": {
+            "type": "object",
+            "properties": { "amount": { "type": "integer" }, "currency": { "type": "string" } }
+          },
+          "receipt_url": { "type": "string" }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "given_name": { "type": "string" },
+          "family_name": { "type": "string" },
+          "email_address": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v2/payments": {
+      "post": {
+        "summary": "Create a payment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["source_id", "idempotency_key", "amount_money"],
+                "properties": {
+                  "source_id": { "type": "string", "description": "A card nonce or other payment source token." },
+                  "idempotency_key": { "type": "string" },
+                  "amount_money": {
+                    "type": "object",
+                    "properties": { "amount": { "type": "integer" }, "currency": { "type": "string" } }
+                  },
+                  "customer_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Payment" } } } }
+        }
+      }
+    },
+    "/v2/customers": {
+      "post": {
+        "summary": "Create a customer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "given_name": { "type": "string" },
+                  "family_name": { "type": "string" },
+                  "email_address": { "type": "string" },
+                  "idempotency_key": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Customer" } } } }
+        }
+      }
+    }
+  }
+}

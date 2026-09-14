@@ -1,0 +1,248 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Gmail API",
+    "version": "v1",
+    "description": "Trimmed OpenAPI rendering of the Gmail v1 discovery document, covering the message capabilities seeded on Day 1. Upstream: https://gmail.googleapis.com/$discovery/rest?version=v1"
+  },
+  "servers": [{ "url": "https://gmail.googleapis.com" }],
+  "paths": {
+    "/gmail/v1/users/{userId}/messages/send": {
+      "post": {
+        "operationId": "gmail.users.messages.send",
+        "summary": "Sends an email message to the recipients listed in the encoded message headers.",
+        "security": [{ "oauth2": ["https://www.googleapis.com/auth/gmail.send"] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user's email address, or the special value `me` for the authenticated user.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["raw"],
+                "properties": {
+                  "raw": {
+                    "type": "string",
+                    "description": "The entire RFC 2822 email message — To, Subject and body included — base64url encoded."
+                  },
+                  "threadId": {
+                    "type": "string",
+                    "description": "ID of the thread the message belongs to."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/message" } } }
+          }
+        }
+      }
+    },
+    "/gmail/v1/users/{userId}/messages/{id}": {
+      "get": {
+        "operationId": "gmail.users.messages.get",
+        "summary": "Gets a single email message, including its headers and body snippet.",
+        "security": [{ "oauth2": ["https://www.googleapis.com/auth/gmail.readonly"] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user's email address, or `me`.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the message to retrieve.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "How much of the message to return: minimal, full, raw or metadata.",
+            "schema": { "type": "string", "enum": ["minimal", "full", "raw", "metadata"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/message_full" } } }
+          }
+        }
+      }
+    },
+    "/gmail/v1/users/{userId}/messages": {
+      "get": {
+        "operationId": "gmail.users.messages.list",
+        "summary": "Lists and searches the email messages in the user's mailbox.",
+        "security": [{ "oauth2": ["https://www.googleapis.com/auth/gmail.readonly"] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user's email address, or `me`.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Gmail search query, using the same syntax as the Gmail search box.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of messages to return.",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "messages": {
+                      "type": "array",
+                      "description": "Matching messages, id and thread only.",
+                      "items": { "$ref": "#/components/schemas/message" }
+                    },
+                    "resultSizeEstimate": { "type": "integer", "description": "Estimated total matches." },
+                    "nextPageToken": { "type": "string", "description": "Token for the next page of results." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gmail/v1/users/{userId}/drafts": {
+      "post": {
+        "operationId": "gmail.users.drafts.create",
+        "summary": "Creates a draft email message with the supplied encoded content.",
+        "security": [{ "oauth2": ["https://www.googleapis.com/auth/gmail.compose"] }],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "The user's email address, or `me`.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message"],
+                "properties": {
+                  "message": {
+                    "type": "object",
+                    "required": ["raw"],
+                    "description": "The draft message content.",
+                    "properties": {
+                      "raw": {
+                        "type": "string",
+                        "description": "The entire RFC 2822 email message, base64url encoded."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Draft",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string", "description": "Unique identifier of the draft." },
+                    "message": { "$ref": "#/components/schemas/message" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oauth2": {
+        "type": "oauth2",
+        "description": "Google OAuth 2.0 access token with the listed Gmail scopes."
+      }
+    },
+    "schemas": {
+      "message": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "description": "Immutable ID of the message." },
+          "threadId": { "type": "string", "description": "ID of the thread the message belongs to." },
+          "labelIds": {
+            "type": "array",
+            "description": "Labels applied to the message.",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "message_full": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": { "type": "string", "description": "Immutable ID of the message." },
+          "threadId": { "type": "string", "description": "ID of the thread the message belongs to." },
+          "snippet": { "type": "string", "description": "Short part of the message text." },
+          "internalDate": { "type": "string", "description": "Epoch milliseconds at which the message was received." },
+          "payload": {
+            "type": "object",
+            "description": "Parsed message structure.",
+            "properties": {
+              "mimeType": { "type": "string", "description": "MIME type of the top-level part." },
+              "headers": {
+                "type": "array",
+                "description": "Message headers such as From, To and Subject.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string", "description": "Header name." },
+                    "value": { "type": "string", "description": "Header value." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

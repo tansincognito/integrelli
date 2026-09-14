@@ -1,0 +1,191 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Slack Web API",
+    "version": "1.7.0",
+    "description": "Trimmed local mirror of the Slack Web API OpenAPI specification, covering the messaging capabilities seeded on Day 1. Upstream: https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json"
+  },
+  "servers": [{ "url": "https://slack.com/api" }],
+  "paths": {
+    "/chat.postMessage": {
+      "post": {
+        "operationId": "chat_postMessage",
+        "summary": "Sends a message to a Slack channel, private group or direct message conversation.",
+        "security": [{ "slackAuth": ["chat:write"] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["channel"],
+                "properties": {
+                  "channel": {
+                    "type": "string",
+                    "description": "Channel, private group or user ID to post to. Channel names are also accepted."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "The message text. Required unless blocks or attachments are supplied."
+                  },
+                  "blocks": {
+                    "type": "array",
+                    "description": "Structured Block Kit blocks making up the message.",
+                    "items": { "type": "object" }
+                  },
+                  "thread_ts": {
+                    "type": "string",
+                    "description": "Timestamp of the parent message, to post this message as a threaded reply."
+                  },
+                  "unfurl_links": { "type": "boolean", "description": "Whether to unfurl links in the message." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message posted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["ok"],
+                  "properties": {
+                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
+                    "channel": { "type": "string", "description": "ID of the channel the message landed in." },
+                    "ts": { "type": "string", "description": "Timestamp identifier of the posted message." },
+                    "message": {
+                      "type": "object",
+                      "description": "The message as stored by Slack.",
+                      "properties": {
+                        "text": { "type": "string", "description": "Final message text." },
+                        "user": { "type": "string", "description": "ID of the posting user or bot." },
+                        "ts": { "type": "string", "description": "Timestamp identifier of the message." }
+                      }
+                    },
+                    "error": { "type": "string", "description": "Error code when ok is false." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversations.list": {
+      "get": {
+        "operationId": "conversations_list",
+        "summary": "Lists all channels and conversations in a Slack workspace, so a channel can be found by name.",
+        "security": [{ "slackAuth": ["channels:read"] }],
+        "parameters": [
+          {
+            "name": "types",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated conversation types: public_channel, private_channel, mpim, im.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of conversations to return per page.",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "exclude_archived",
+            "in": "query",
+            "required": false,
+            "description": "Whether to exclude archived channels.",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conversation list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["ok"],
+                  "properties": {
+                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
+                    "channels": {
+                      "type": "array",
+                      "description": "Matching conversations.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "description": "Channel ID." },
+                          "name": { "type": "string", "description": "Channel name without the leading hash." },
+                          "is_channel": { "type": "boolean", "description": "Whether this is a public channel." },
+                          "is_private": { "type": "boolean", "description": "Whether this conversation is private." }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conversations.create": {
+      "post": {
+        "operationId": "conversations_create",
+        "summary": "Creates a new Slack channel.",
+        "security": [{ "slackAuth": ["channels:manage"] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "description": "Name of the channel to create." },
+                  "is_private": { "type": "boolean", "description": "Create a private channel instead of a public one." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Channel created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["ok"],
+                  "properties": {
+                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
+                    "channel": {
+                      "type": "object",
+                      "description": "The created channel.",
+                      "properties": {
+                        "id": { "type": "string", "description": "Channel ID." },
+                        "name": { "type": "string", "description": "Channel name." }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "slackAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Slack bot or user OAuth token sent as a bearer token."
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "DocuSign eSignature API (trimmed local mirror)", "version": "2.1" },
+  "servers": [{ "url": "https://na4.docusign.net/restapi" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "oauth2", "flows": { "authorizationCode": { "authorizationUrl": "https://account.docusign.com/oauth/auth", "tokenUrl": "https://account.docusign.com/oauth/token", "scopes": { "signature": "create and send envelopes" } } } }
+    },
+    "schemas": {
+      "Envelope": {
+        "type": "object",
+        "properties": {
+          "envelopeId": { "type": "string" },
+          "status": { "type": "string" },
+          "statusDateTime": { "type": "string" },
+          "uri": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v2.1/accounts/{accountId}/envelopes": {
+      "post": {
+        "summary": "Create and send an envelope",
+        "parameters": [
+          { "name": "accountId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["emailSubject", "status"],
+                "properties": {
+                  "emailSubject": { "type": "string" },
+                  "status": { "type": "string", "enum": ["sent", "created"], "description": "\"sent\" sends immediately, \"created\" saves as a draft." },
+                  "documents": { "type": "array", "items": { "type": "object" } },
+                  "recipients": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } } }
+        }
+      }
+    },
+    "/v2.1/accounts/{accountId}/envelopes/{envelopeId}": {
+      "get": {
+        "summary": "Get envelope status",
+        "parameters": [
+          { "name": "accountId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "envelopeId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Envelope" } } } }
+        }
+      }
+    }
+  }
+}

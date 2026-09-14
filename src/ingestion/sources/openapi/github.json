@@ -1,0 +1,128 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "GitHub REST API (trimmed local mirror)", "version": "2022-11-28" },
+  "servers": [{ "url": "https://api.github.com" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Issue": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "number": { "type": "integer" },
+          "title": { "type": "string" },
+          "state": { "type": "string" },
+          "html_url": { "type": "string" },
+          "body": { "type": "string" }
+        }
+      },
+      "IssueComment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "html_url": { "type": "string" },
+          "body": { "type": "string" }
+        }
+      },
+      "PullRequest": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "number": { "type": "integer" },
+          "state": { "type": "string" },
+          "html_url": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/repos/{owner}/{repo}/issues": {
+      "post": {
+        "summary": "Create an issue",
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "repo", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": { "type": "string", "description": "The title of the issue." },
+                  "body": { "type": "string", "description": "The contents of the issue." },
+                  "labels": { "type": "array", "items": { "type": "string" } },
+                  "assignees": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Issue" } } } }
+        }
+      }
+    },
+    "/repos/{owner}/{repo}/issues/{issue_number}/comments": {
+      "post": {
+        "summary": "Create an issue comment",
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "repo", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "issue_number", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["body"],
+                "properties": { "body": { "type": "string", "description": "The contents of the comment." } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/IssueComment" } } } }
+        }
+      }
+    },
+    "/repos/{owner}/{repo}/pulls": {
+      "post": {
+        "summary": "Create a pull request",
+        "parameters": [
+          { "name": "owner", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "repo", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "head", "base"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "head": { "type": "string", "description": "The name of the branch where changes are implemented." },
+                  "base": { "type": "string", "description": "The name of the branch to merge into." },
+                  "body": { "type": "string" },
+                  "draft": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PullRequest" } } } }
+        }
+      }
+    }
+  }
+}

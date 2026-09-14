@@ -1,0 +1,26 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ElevenLabs API (partial)",
+    "version": "v1",
+    "description": "Cross-check document only. Lists the operations ElevenLabs publishes machine-readably so documentation-derived capabilities can be contradicted when they disagree. Never used as a capability source."
+  },
+  "servers": [{ "url": "https://api.elevenlabs.io" }],
+  "paths": {
+    "/v1/text-to-speech/{voice_id}": {
+      "post": {
+        "summary": "Converts text into speech with the given voice.",
+        "parameters": [
+          { "name": "voice_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Audio" } }
+      }
+    },
+    "/v1/voices": {
+      "get": {
+        "summary": "Lists available voices.",
+        "responses": { "200": { "description": "Voices" } }
+      }
+    }
+  }
+}

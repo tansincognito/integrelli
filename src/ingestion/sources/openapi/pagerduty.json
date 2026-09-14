@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "PagerDuty REST API v2 (trimmed local mirror)", "version": "2" },
+  "servers": [{ "url": "https://api.pagerduty.com" }],
+  "security": [{ "apiKeyAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": { "type": "apiKey", "name": "Authorization", "in": "header", "description": "Format: `Token token=<API_KEY>`" }
+    },
+    "schemas": {
+      "Incident": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "title": { "type": "string" },
+          "urgency": { "type": "string" },
+          "html_url": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/incidents": {
+      "post": {
+        "summary": "Create an incident",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["incident"],
+                "properties": {
+                  "incident": {
+                    "type": "object",
+                    "required": ["type", "title", "service"],
+                    "properties": {
+                      "type": { "type": "string", "enum": ["incident"] },
+                      "title": { "type": "string" },
+                      "service": { "type": "object", "description": "A PagerDuty service reference." },
+                      "urgency": { "type": "string", "enum": ["high", "low"] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Incident" } } } }
+        }
+      }
+    },
+    "/incidents/{id}": {
+      "get": {
+        "summary": "Get an incident",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Incident" } } } }
+        }
+      }
+    }
+  }
+}

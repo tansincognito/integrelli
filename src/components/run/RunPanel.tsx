@@ -89,7 +89,7 @@ export function RunPanel() {
           type="button"
           onClick={runWorkflow}
           disabled={!plan || isRunning}
-          className="flex w-full items-center justify-center gap-1.5 rounded bg-accent px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex w-full items-center justify-center gap-1.5 rounded bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Play size={13} />
           {isRunning ? 'Running…' : 'Run'}

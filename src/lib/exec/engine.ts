@@ -17,21 +17,10 @@ import { redactStepResult } from './redact';
 import { shouldRetry, computeBackoffMs, getRetryAfterSeconds, parseRateLimitHeaders } from './retry';
 import { MockAdapter, getFaultForStep, isFaultAttempt } from './mock-adapter';
 import { LiveAdapter } from './live-adapter';
+import { LiveModeGateError } from './live-mode-gate-error';
 import type { HttpAdapter } from './adapter';
 
-/**
- * Thrown by runWorkflow when live mode is requested but the gate fails
- * (missing envVars and/or INTEGRELLI_ALLOW_LIVE not "true"). The route
- * translates this into a 400 with the missing var names.
- */
-export class LiveModeGateError extends Error {
-  readonly missingEnvVars: string[];
-  constructor(message: string, missingEnvVars: string[]) {
-    super(message);
-    this.name = 'LiveModeGateError';
-    this.missingEnvVars = missingEnvVars;
-  }
-}
+export { LiveModeGateError };
 
 function envVarsForAuth(auth: AuthStyle): string[] {
   switch (auth.kind) {
@@ -72,8 +61,11 @@ function buildAdapter(plan: WorkflowPlan, options: RunOptions, stepsToRun: Workf
     });
     return new MockAdapter({
       faults: options.faults,
-      endpointById,
-      stepEndpointId,
+      getResponseSchema: (stepId) => {
+        const endpointId = stepEndpointId.get(stepId);
+        const endpoint = endpointId ? endpointById.get(endpointId) : undefined;
+        return endpoint ? { schema: endpoint.responseSchema, example: endpoint.exampleResponse } : undefined;
+      },
       stepIndex,
     });
   }

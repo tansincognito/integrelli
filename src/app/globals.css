@@ -3,14 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --color-background: #0a0b0e;
-  --color-foreground: #e5e7eb;
-  --color-muted: #7d8590;
-  --color-border: #23262d;
-  --color-accent: #6366f1;
-  --color-success: #22c55e;
-  --color-warning: #eab308;
-  --color-danger: #f87171;
+  --color-background: #08090a;
+  --color-panel: #0f1110;
+  --color-panel-raised: #141715;
+  --color-foreground: #f2f4f1;
+  --color-muted: #6f766e;
+  --color-muted-strong: #9aa298;
+  --color-border: #1b1f1c;
+  --color-border-strong: #2a2f2a;
+  --color-accent: #c9f24d;
+  --color-accent-foreground: #0a0c08;
+  --color-success: #5fd97a;
+  --color-warning: #e8c34a;
+  --color-danger: #f4736b;
+
+  /* Background grid of the console shell. */
+  --grid-line: rgba(255, 255, 255, 0.022);
+  --grid-size: 88px;
 }
 
 html,
@@ -23,6 +32,21 @@ body {
   color: var(--color-foreground);
 }
 
+/**
+ * The faint grid behind the console. Drawn on a fixed pseudo-element so it does
+ * not scroll with content and costs no DOM nodes.
+ */
+.grid-backdrop::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -33,6 +57,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-border-strong);
   border-radius: 6px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-accent-foreground);
 }

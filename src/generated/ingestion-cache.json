@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "entries": {
+    "stripe.openapi": {
+      "content_hash": "9f8f5912d317d2fb38630d1c89e778f37bf6bc6839f5ec261e270313b9873328",
+      "fetched_at": "2026-08-25T08:43:56.947Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "stripe.create_checkout_session",
+        "stripe.create_payment_link",
+        "stripe.create_customer",
+        "stripe.get_customer",
+        "stripe.create_refund",
+        "stripe.get_payment_intent",
+        "stripe.payment_intent_succeeded",
+        "stripe.checkout_session_completed"
+      ]
+    },
+    "gmail.openapi": {
+      "content_hash": "7a53024f4e11183d3a6a43a1dfae4dee1fdf9542f62b7436ffd7595c54f95c5f",
+      "fetched_at": "2026-08-25T08:43:56.977Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "gmail.send_message",
+        "gmail.get_message",
+        "gmail.list_messages",
+        "gmail.create_draft"
+      ]
+    },
+    "slack.openapi": {
+      "content_hash": "d8405cdc19479885d4277eea9870e5ffee8338785fdef0ee31156bc00fa75e66",
+      "fetched_at": "2026-08-25T08:43:56.981Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "slack.chat_post_message",
+        "slack.conversations_list",
+        "slack.conversations_create"
+      ]
+    },
+    "elevenlabs.docs": {
+      "content_hash": "535227745ecbdb7f48dd5a71cff56b9830dfd43ef80fc4e26a58698dc5a9081e",
+      "fetched_at": "2026-08-25T08:43:56.984Z",
+      "extractor_signature": "markdown-heuristic",
+      "capability_ids": [
+        "elevenlabs.text_to_speech",
+        "elevenlabs.list_voices"
+      ]
+    },
+    "hubspot.docs": {
+      "content_hash": "76a2e2b8e877fb6db140160a6b62d544591126937b17c98ee7d86153ccbe9193",
+      "fetched_at": "2026-08-25T08:43:56.987Z",
+      "extractor_signature": "markdown-heuristic",
+      "capability_ids": [
+        "hubspot.create_contact",
+        "hubspot.search_contacts"
+      ]
+    },
+    "github.openapi": {
+      "content_hash": "82f49a6e6584f5f5ec3c0c03958aeb9b39617b716c01cf646b4f76f95f06c0bf",
+      "fetched_at": "2026-09-14T20:17:38.917Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "github.create_repos_issue",
+        "github.create_issues_comment",
+        "github.create_repos_pull"
+      ]
+    },
+    "twilio.openapi": {
+      "content_hash": "71d2691109f7dc0b6492b6952623a4a549ce75004b052446bdf85d7656f1186d",
+      "fetched_at": "2026-09-14T20:17:24.212Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "twilio.messages_json",
+        "twilio.get_accounts_message"
+      ]
+    },
+    "discord.openapi": {
+      "content_hash": "52682337fa2ed8b3450093486db5914550cf02698db738876699a061b100e928",
+      "fetched_at": "2026-09-14T20:17:24.215Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "discord.list_channels_messages",
+        "discord.create_channels_message"
+      ]
+    },
+    "notion.openapi": {
+      "content_hash": "095b39e678823c506da78e34c39d3150e804ce3a9d435d712f6b021d01eb3226",
+      "fetched_at": "2026-09-14T20:17:38.932Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "notion.create_page",
+        "notion.get_page",
+        "notion.create_data_sources_query"
+      ]
+    },
+    "asana.docs": {
+      "content_hash": "427dfbe50d6e5a6c12d694d888b56bd3c320c4e069e05aeca15734b2f6e8a718",
+      "fetched_at": "2026-09-14T20:17:38.935Z",
+      "extractor_signature": "markdown-heuristic",
+      "capability_ids": [
+        "asana.create_task",
+        "asana.get_task",
+        "asana.update_task"
+      ]
+    },
+    "square.openapi": {
+      "content_hash": "a6dd614106d145ed830f6567594a623a1a5f8eb23fc52a7da2949e914b506626",
+      "fetched_at": "2026-09-14T20:17:24.224Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "square.create_payment",
+        "square.create_customer"
+      ]
+    },
+    "docusign.openapi": {
+      "content_hash": "50e8c8c7959646290141af177dced42cb378d7e11a722812abf93c66bb1baf5a",
+      "fetched_at": "2026-09-14T20:17:38.940Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "docusign.create_accounts_envelope",
+        "docusign.get_accounts_envelope"
+      ]
+    },
+    "mailchimp.openapi": {
+      "content_hash": "6f6281aa3a111341739067f0801e1f26ad15fc479644d26248e7bf02d285fefa",
+      "fetched_at": "2026-09-14T20:17:38.944Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "mailchimp.create_lists_member",
+        "mailchimp.send_action"
+      ]
+    },
+    "box.openapi": {
+      "content_hash": "6f218da36d9b40a810b3e06b3ef4a6174bbda15d4a77d7a9fcac849beebb9759",
+      "fetched_at": "2026-09-14T20:17:24.229Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "box.get_file",
+        "box.list_folders_items"
+      ]
+    },
+    "pagerduty.openapi": {
+      "content_hash": "b6f18e60028beb3bb5e19e8a5ccdedf9a1a6b19cad4944af32544fbf10755766",
+      "fetched_at": "2026-09-14T20:17:38.951Z",
+      "extractor_signature": "openapi",
+      "capability_ids": [
+        "pagerduty.create_incident",
+        "pagerduty.get_incident"
+      ]
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "Twilio Programmable Messaging API v2010 (trimmed local mirror)", "version": "1.0.0" },
+  "servers": [{ "url": "https://api.twilio.com" }],
+  "security": [{ "accountSidAuthToken": [] }],
+  "components": {
+    "securitySchemes": {
+      "accountSidAuthToken": { "type": "http", "scheme": "basic" }
+    },
+    "schemas": {
+      "Message": {
+        "type": "object",
+        "properties": {
+          "sid": { "type": "string" },
+          "status": { "type": "string" },
+          "to": { "type": "string" },
+          "from": { "type": "string" },
+          "body": { "type": "string" },
+          "date_sent": { "type": "string" },
+          "error_code": { "type": "integer", "nullable": true }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/2010-04-01/Accounts/{AccountSid}/Messages.json": {
+      "post": {
+        "summary": "Send an SMS or MMS message",
+        "parameters": [
+          { "name": "AccountSid", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["To", "Body"],
+                "properties": {
+                  "To": { "type": "string", "description": "The recipient's phone number in E.164 format." },
+                  "From": { "type": "string", "description": "A Twilio phone number or Messaging Service SID to send from." },
+                  "Body": { "type": "string", "description": "The text content of the message." },
+                  "MediaUrl": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Message" } } } }
+        }
+      }
+    },
+    "/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json": {
+      "get": {
+        "summary": "Fetch a message by SID",
+        "parameters": [
+          { "name": "AccountSid", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "Sid", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Message" } } } }
+        }
+      }
+    }
+  }
+}

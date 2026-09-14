@@ -44,10 +44,12 @@ export const OPENAI_ENDPOINTS: EndpointSpec[] = [
           type: 'array',
           items: {
             type: 'object',
+            required: ['index', 'message', 'finish_reason'],
             properties: {
               index: { type: 'integer' },
               message: {
                 type: 'object',
+                required: ['role', 'content'],
                 properties: {
                   role: { type: 'string' },
                   content: { type: 'string' },

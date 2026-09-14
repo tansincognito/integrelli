@@ -1,4 +1,4 @@
-import type { EndpointSpec, JsonValue } from '@/types/endpoint';
+import type { JsonSchema, JsonValue } from '@/types/endpoint';
 import type { ExecutionMode, FaultInjection, PreparedRequest } from '@/types/execution';
 import type { HttpAdapter, RawHttpResponse } from './adapter';
 import { generateMockResponseBody } from './mock-values';
@@ -35,9 +35,11 @@ function computeRateLimitHeaders(seed: string, stepIndex: number, attempt: numbe
 
 export interface MockAdapterConfig {
   faults: FaultInjection[];
-  endpointById: Map<string, EndpointSpec>;
-  /** stepId -> endpointId, so send() can look up the right response schema. */
-  stepEndpointId: Map<string, string>;
+  /**
+   * Response schema (+ optional example to merge over) for a given step id.
+   * Undefined means "no known endpoint for this step" and produces a 500.
+   */
+  getResponseSchema: (stepId: string) => { schema: JsonSchema; example: JsonValue } | undefined;
   /** stepId -> 0-based index within this run, used only for synthesized rate-limit headers. */
   stepIndex: Map<string, number>;
 }
@@ -79,9 +81,8 @@ export class MockAdapter implements HttpAdapter {
       return { status: fault.status, headers, body, latencyMs };
     }
 
-    const endpointId = this.config.stepEndpointId.get(ctx.stepId);
-    const endpoint = endpointId ? this.config.endpointById.get(endpointId) : undefined;
-    if (!endpoint) {
+    const target = this.config.getResponseSchema(ctx.stepId);
+    if (!target) {
       return {
         status: 500,
         headers: rateLimitHeaders,
@@ -90,7 +91,7 @@ export class MockAdapter implements HttpAdapter {
       };
     }
 
-    const body = generateMockResponseBody(endpoint.responseSchema, endpoint.exampleResponse, seedBase);
+    const body = generateMockResponseBody(target.schema, target.example, seedBase);
     return { status: 200, headers: rateLimitHeaders, body, latencyMs };
   }
 }

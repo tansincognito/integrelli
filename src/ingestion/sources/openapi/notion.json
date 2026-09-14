@@ -1,0 +1,91 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Notion API (trimmed local mirror)", "version": "2025-09-03" },
+  "servers": [{ "url": "https://api.notion.com" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    },
+    "schemas": {
+      "Page": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "url": { "type": "string" },
+          "created_time": { "type": "string" },
+          "properties": { "type": "object" }
+        }
+      },
+      "QueryResults": {
+        "type": "object",
+        "properties": {
+          "results": { "type": "array", "items": { "type": "object" } },
+          "has_more": { "type": "boolean" },
+          "next_cursor": { "type": "string", "nullable": true }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/v1/pages": {
+      "post": {
+        "summary": "Create a page",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["parent", "properties"],
+                "properties": {
+                  "parent": { "type": "object", "description": "The data source or page this new page belongs to." },
+                  "properties": { "type": "object", "description": "Property values of the new page." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Page" } } } }
+        }
+      }
+    },
+    "/v1/pages/{page_id}": {
+      "get": {
+        "summary": "Retrieve a page",
+        "parameters": [
+          { "name": "page_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Page" } } } }
+        }
+      }
+    },
+    "/v1/data_sources/{data_source_id}/query": {
+      "post": {
+        "summary": "Query a data source",
+        "parameters": [
+          { "name": "data_source_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": { "type": "object" },
+                  "sorts": { "type": "array", "items": { "type": "object" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResults" } } } }
+        }
+      }
+    }
+  }
+}

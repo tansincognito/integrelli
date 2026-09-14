@@ -148,7 +148,7 @@ export function MappingEditor({
         <button
           type="button"
           onClick={() => onSave({ ...mapping, source: buildSource() })}
-          className="rounded bg-accent px-2 py-1 text-[11px] font-medium text-white hover:bg-accent/90"
+          className="rounded bg-accent px-2 py-1 text-[11px] font-medium text-accent-foreground hover:bg-accent/90"
         >
           Save
         </button>

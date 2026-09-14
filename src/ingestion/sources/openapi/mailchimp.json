@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Mailchimp Marketing API (trimmed local mirror)", "version": "3.0" },
+  "servers": [{ "url": "https://{dc}.api.mailchimp.com/3.0", "variables": { "dc": { "default": "us1", "description": "Data center suffix from the API key, e.g. \"us1\"." } } }],
+  "security": [{ "basicAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "basicAuth": { "type": "http", "scheme": "basic", "description": "Username can be any string; password is the API key." }
+    },
+    "schemas": {
+      "Member": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "email_address": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "CampaignSendResult": {
+        "type": "object",
+        "properties": {
+          "complete": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/lists/{list_id}/members": {
+      "post": {
+        "summary": "Add a member to a list",
+        "parameters": [
+          { "name": "list_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email_address", "status"],
+                "properties": {
+                  "email_address": { "type": "string" },
+                  "status": { "type": "string", "enum": ["subscribed", "unsubscribed", "pending", "cleaned"] },
+                  "merge_fields": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member" } } } }
+        }
+      }
+    },
+    "/campaigns/{campaign_id}/actions/send": {
+      "post": {
+        "summary": "Send a campaign",
+        "parameters": [
+          { "name": "campaign_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "204": { "description": "No Content" }
+        }
+      }
+    }
+  }
+}

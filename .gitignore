@@ -26,3 +26,7 @@ next-env.d.ts
 
 # vitest / coverage
 coverage/
+.gstack/
+
+# local trace persistence (src/lib/storage/trace-store.ts)
+.data/

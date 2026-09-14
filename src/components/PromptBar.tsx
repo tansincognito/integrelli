@@ -64,7 +64,7 @@ export function PromptBar() {
           type="button"
           onClick={() => void generate(text)}
           disabled={isGenerating}
-          className="flex items-center gap-1.5 self-start rounded bg-accent px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-1.5 self-start rounded bg-accent px-3 py-2 text-xs font-medium text-accent-foreground transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Sparkles size={13} />
           {isGenerating ? 'Generating…' : 'Generate'}
