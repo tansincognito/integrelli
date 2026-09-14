@@ -194,7 +194,10 @@ describe('the committed capability store', () => {
 
   it('contains every seeded provider', () => {
     expect(store.providers.map((provider) => provider.id).sort()).toEqual(
-      ['elevenlabs', 'gmail', 'hubspot', 'slack', 'stripe'].sort()
+      [
+        'elevenlabs', 'gmail', 'hubspot', 'slack', 'stripe',
+        'github', 'twilio', 'discord', 'notion', 'asana', 'square', 'docusign', 'mailchimp', 'box', 'pagerduty',
+      ].sort()
     );
   });
 

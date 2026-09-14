@@ -32,6 +32,11 @@ export type CapabilityCategory =
   | 'media'
   | 'ai'
   | 'identity'
+  | 'developer_tools'
+  | 'productivity'
+  | 'document'
+  | 'marketing'
+  | 'incident_management'
   | 'other';
 
 /** Authentication *shape* only. Env var names, never values. See architecture.md section 10. */
@@ -128,7 +133,10 @@ export const CapabilitySchema = z.object({
   kind: z.enum(['action', 'event']),
   name: z.string().min(1),
   description: z.string().min(1),
-  category: z.enum(['payment', 'messaging', 'email', 'crm', 'storage', 'media', 'ai', 'identity', 'other']),
+  category: z.enum([
+    'payment', 'messaging', 'email', 'crm', 'storage', 'media', 'ai', 'identity',
+    'developer_tools', 'productivity', 'document', 'marketing', 'incident_management', 'other',
+  ]),
   inputs: z.array(SchemaFieldSchema.extend({ location: z.enum(['body', 'query', 'path', 'header']) })),
   outputs: z.array(SchemaFieldSchema),
   authentication: z.object({

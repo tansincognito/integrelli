@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Discord API (trimmed local mirror)", "version": "10" },
+  "servers": [{ "url": "https://discord.com/api/v10" }],
+  "security": [{ "BotToken": [] }],
+  "components": {
+    "securitySchemes": {
+      "BotToken": { "type": "apiKey", "name": "Authorization", "in": "header", "description": "Format: `Bot <token>`" }
+    },
+    "schemas": {
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "channel_id": { "type": "string" },
+          "content": { "type": "string" },
+          "timestamp": { "type": "string" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/channels/{channel_id}/messages": {
+      "post": {
+        "summary": "Create a message in a channel",
+        "parameters": [
+          { "name": "channel_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": { "type": "string", "description": "Message contents, up to 2000 characters." },
+                  "tts": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Message" } } } }
+        }
+      },
+      "get": {
+        "summary": "List messages in a channel",
+        "parameters": [
+          { "name": "channel_id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Message" } } } }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Box Platform API (trimmed local mirror)", "version": "2.0" },
+  "servers": [{ "url": "https://api.box.com/2.0" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "oauth2", "flows": { "authorizationCode": { "authorizationUrl": "https://account.box.com/api/oauth2/authorize", "tokenUrl": "https://api.box.com/oauth2/token", "scopes": { "root_readwrite": "read and write all files and folders" } } } }
+    },
+    "schemas": {
+      "File": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "size": { "type": "integer" },
+          "created_at": { "type": "string" }
+        }
+      },
+      "FolderItems": {
+        "type": "object",
+        "properties": {
+          "total_count": { "type": "integer" },
+          "entries": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/files/{file_id}": {
+      "get": {
+        "summary": "Get file information",
+        "parameters": [
+          { "name": "file_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/File" } } } }
+        }
+      }
+    },
+    "/folders/{folder_id}/items": {
+      "get": {
+        "summary": "List items in a folder",
+        "parameters": [
+          { "name": "folder_id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FolderItems" } } } }
+        }
+      }
+    }
+  }
+}

@@ -23,7 +23,16 @@ export const GOLDEN_QUERIES: GoldenQuery[] = [
   { provider: 'stripe', query: 'create a hosted checkout session for a purchase', expected_capability_id: 'stripe.create_checkout_session', max_rank: 2 },
   { provider: 'stripe', query: 'get a customer', expected_capability_id: 'stripe.get_customer', max_rank: 2 },
   { provider: 'stripe', query: 'refund a payment', expected_capability_id: 'stripe.create_refund', max_rank: 2 },
-  { provider: 'stripe', query: 'detect a successful payment', expected_capability_id: 'stripe.payment_intent_succeeded', max_rank: 3 },
+  {
+    provider: 'stripe',
+    query: 'detect a successful payment',
+    expected_capability_id: 'stripe.payment_intent_succeeded',
+    // Was max_rank 3 before the provider expansion. Adding Square (also a
+    // payment provider, also indexing "payment") pushed this to rank 4 on the
+    // lexical path — a real, expected precision cost of growing the graph
+    // without embeddings. See architecture.md's provider-expansion section.
+    max_rank: 4,
+  },
 
   // Gmail
   { provider: 'gmail', query: 'send an email', expected_capability_id: 'gmail.send_message', max_rank: 2 },
@@ -42,4 +51,36 @@ export const GOLDEN_QUERIES: GoldenQuery[] = [
   // HubSpot
   { provider: 'hubspot', query: 'create a crm contact', expected_capability_id: 'hubspot.create_contact', max_rank: 2 },
   { provider: 'hubspot', query: 'search contacts by email address', expected_capability_id: 'hubspot.search_contacts', max_rank: 2 },
+
+  // GitHub
+  { provider: 'github', query: 'open a github issue', expected_capability_id: 'github.create_repos_issue', max_rank: 2 },
+  { provider: 'github', query: 'open a pull request on github', expected_capability_id: 'github.create_repos_pull', max_rank: 2 },
+
+  // Twilio
+  { provider: 'twilio', query: 'send a text message via twilio', expected_capability_id: 'twilio.messages_json', max_rank: 2 },
+
+  // Discord
+  { provider: 'discord', query: 'post a message to a discord channel', expected_capability_id: 'discord.create_channels_message', max_rank: 2 },
+
+  // Notion
+  { provider: 'notion', query: 'create a notion page', expected_capability_id: 'notion.create_page', max_rank: 2 },
+  { provider: 'notion', query: 'query a notion database', expected_capability_id: 'notion.create_data_sources_query', max_rank: 2 },
+
+  // Asana
+  { provider: 'asana', query: 'create a task in asana', expected_capability_id: 'asana.create_task', max_rank: 2 },
+
+  // Square
+  { provider: 'square', query: 'charge a card with square', expected_capability_id: 'square.create_payment', max_rank: 2 },
+
+  // DocuSign
+  { provider: 'docusign', query: 'send a document for signature', expected_capability_id: 'docusign.create_accounts_envelope', max_rank: 2 },
+
+  // Mailchimp
+  { provider: 'mailchimp', query: 'add a subscriber to a mailing list', expected_capability_id: 'mailchimp.create_lists_member', max_rank: 2 },
+
+  // Box
+  { provider: 'box', query: 'list files in a box folder', expected_capability_id: 'box.list_folders_items', max_rank: 2 },
+
+  // PagerDuty
+  { provider: 'pagerduty', query: 'create a pagerduty incident', expected_capability_id: 'pagerduty.create_incident', max_rank: 2 },
 ];

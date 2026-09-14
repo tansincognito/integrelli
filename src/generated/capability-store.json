@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "built_at": "2026-08-25T08:44:03.871Z",
+  "built_at": "2026-09-14T20:17:38.952Z",
   "providers": [
     {
       "id": "stripe",
@@ -70,6 +70,146 @@
       },
       "versions": [
         "hubspot@v3"
+      ]
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "documentation_source": {
+        "id": "github.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/github.json",
+        "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "label": "GitHub REST API (trimmed local mirror of the official OpenAPI description)"
+      },
+      "versions": [
+        "github@2022-11-28"
+      ]
+    },
+    {
+      "id": "twilio",
+      "name": "Twilio",
+      "documentation_source": {
+        "id": "twilio.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/twilio.json",
+        "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
+        "label": "Twilio Programmable Messaging (trimmed local mirror). credential_env_var must hold base64(AccountSid:AuthToken) — Basic auth here is pre-encoded, not a raw token."
+      },
+      "versions": [
+        "twilio@1.0.0"
+      ]
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "documentation_source": {
+        "id": "discord.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/discord.json",
+        "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
+        "label": "Discord API (trimmed local mirror). credential_env_var must hold \"Bot <token>\" verbatim — the header auth scheme substitutes the env var value as-is."
+      },
+      "versions": [
+        "discord@10"
+      ]
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "documentation_source": {
+        "id": "notion.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/notion.json",
+        "upstream_url": "https://developers.notion.com/openapi.json",
+        "label": "Notion API (trimmed local mirror, fetched 2026-09 — uses the current data_sources query endpoint, not the deprecated databases/query one)."
+      },
+      "versions": [
+        "notion@2025-09-03"
+      ]
+    },
+    {
+      "id": "asana",
+      "name": "Asana",
+      "documentation_source": {
+        "id": "asana.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/asana.md",
+        "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
+        "label": "Asana API reference (documentation prose — upstream OpenAPI source is YAML and this pipeline only parses JSON, so this provider ingests via the markdown path instead)."
+      },
+      "versions": [
+        "asana@1.0"
+      ]
+    },
+    {
+      "id": "square",
+      "name": "Square",
+      "documentation_source": {
+        "id": "square.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/square.json",
+        "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
+        "label": "Square Connect API (trimmed local mirror)"
+      },
+      "versions": [
+        "square@2026-08-19"
+      ]
+    },
+    {
+      "id": "docusign",
+      "name": "DocuSign",
+      "documentation_source": {
+        "id": "docusign.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/docusign.json",
+        "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
+        "label": "DocuSign eSignature API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document — this pipeline's OpenAPI parser expects 3.x request/response shapes)."
+      },
+      "versions": [
+        "docusign@2.1"
+      ]
+    },
+    {
+      "id": "mailchimp",
+      "name": "Mailchimp",
+      "documentation_source": {
+        "id": "mailchimp.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/mailchimp.json",
+        "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
+        "label": "Mailchimp Marketing API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document). credential_env_var must hold base64(\"anystring:<api_key>\") — Basic auth here is pre-encoded."
+      },
+      "versions": [
+        "mailchimp@3.0"
+      ]
+    },
+    {
+      "id": "box",
+      "name": "Box",
+      "documentation_source": {
+        "id": "box.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/box.json",
+        "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
+        "label": "Box Platform API (trimmed local mirror)"
+      },
+      "versions": [
+        "box@2.0"
+      ]
+    },
+    {
+      "id": "pagerduty",
+      "name": "PagerDuty",
+      "documentation_source": {
+        "id": "pagerduty.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/pagerduty.json",
+        "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
+        "label": "PagerDuty REST API v2 (trimmed local mirror). credential_env_var must hold \"Token token=<key>\" verbatim — the header auth scheme substitutes the env var value as-is."
+      },
+      "versions": [
+        "pagerduty@2"
       ]
     }
   ],
@@ -148,6 +288,156 @@
       },
       "content_hash": "76a2e2b8e877fb6db140160a6b62d544591126937b17c98ee7d86153ccbe9193",
       "last_verified": "2026-08-25T08:43:56.987Z"
+    },
+    {
+      "id": "github@2022-11-28",
+      "provider_id": "github",
+      "version": "2022-11-28",
+      "status": "stable",
+      "source": {
+        "id": "github.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/github.json",
+        "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "label": "GitHub REST API (trimmed local mirror of the official OpenAPI description)"
+      },
+      "content_hash": "82f49a6e6584f5f5ec3c0c03958aeb9b39617b716c01cf646b4f76f95f06c0bf",
+      "last_verified": "2026-09-14T20:17:38.917Z"
+    },
+    {
+      "id": "twilio@1.0.0",
+      "provider_id": "twilio",
+      "version": "1.0.0",
+      "status": "stable",
+      "source": {
+        "id": "twilio.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/twilio.json",
+        "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
+        "label": "Twilio Programmable Messaging (trimmed local mirror). credential_env_var must hold base64(AccountSid:AuthToken) — Basic auth here is pre-encoded, not a raw token."
+      },
+      "content_hash": "71d2691109f7dc0b6492b6952623a4a549ce75004b052446bdf85d7656f1186d",
+      "last_verified": "2026-09-14T20:17:24.212Z"
+    },
+    {
+      "id": "discord@10",
+      "provider_id": "discord",
+      "version": "10",
+      "status": "stable",
+      "source": {
+        "id": "discord.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/discord.json",
+        "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
+        "label": "Discord API (trimmed local mirror). credential_env_var must hold \"Bot <token>\" verbatim — the header auth scheme substitutes the env var value as-is."
+      },
+      "content_hash": "52682337fa2ed8b3450093486db5914550cf02698db738876699a061b100e928",
+      "last_verified": "2026-09-14T20:17:24.215Z"
+    },
+    {
+      "id": "notion@2025-09-03",
+      "provider_id": "notion",
+      "version": "2025-09-03",
+      "status": "stable",
+      "source": {
+        "id": "notion.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/notion.json",
+        "upstream_url": "https://developers.notion.com/openapi.json",
+        "label": "Notion API (trimmed local mirror, fetched 2026-09 — uses the current data_sources query endpoint, not the deprecated databases/query one)."
+      },
+      "content_hash": "095b39e678823c506da78e34c39d3150e804ce3a9d435d712f6b021d01eb3226",
+      "last_verified": "2026-09-14T20:17:38.932Z"
+    },
+    {
+      "id": "asana@1.0",
+      "provider_id": "asana",
+      "version": "1.0",
+      "status": "stable",
+      "source": {
+        "id": "asana.docs",
+        "kind": "markdown",
+        "location": "src/ingestion/sources/docs/asana.md",
+        "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
+        "label": "Asana API reference (documentation prose — upstream OpenAPI source is YAML and this pipeline only parses JSON, so this provider ingests via the markdown path instead)."
+      },
+      "content_hash": "427dfbe50d6e5a6c12d694d888b56bd3c320c4e069e05aeca15734b2f6e8a718",
+      "last_verified": "2026-09-14T20:17:38.935Z"
+    },
+    {
+      "id": "square@2026-08-19",
+      "provider_id": "square",
+      "version": "2026-08-19",
+      "status": "stable",
+      "source": {
+        "id": "square.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/square.json",
+        "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
+        "label": "Square Connect API (trimmed local mirror)"
+      },
+      "content_hash": "a6dd614106d145ed830f6567594a623a1a5f8eb23fc52a7da2949e914b506626",
+      "last_verified": "2026-09-14T20:17:24.224Z"
+    },
+    {
+      "id": "docusign@2.1",
+      "provider_id": "docusign",
+      "version": "2.1",
+      "status": "stable",
+      "source": {
+        "id": "docusign.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/docusign.json",
+        "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
+        "label": "DocuSign eSignature API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document — this pipeline's OpenAPI parser expects 3.x request/response shapes)."
+      },
+      "content_hash": "50e8c8c7959646290141af177dced42cb378d7e11a722812abf93c66bb1baf5a",
+      "last_verified": "2026-09-14T20:17:38.940Z"
+    },
+    {
+      "id": "mailchimp@3.0",
+      "provider_id": "mailchimp",
+      "version": "3.0",
+      "status": "stable",
+      "source": {
+        "id": "mailchimp.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/mailchimp.json",
+        "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
+        "label": "Mailchimp Marketing API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document). credential_env_var must hold base64(\"anystring:<api_key>\") — Basic auth here is pre-encoded."
+      },
+      "content_hash": "6f6281aa3a111341739067f0801e1f26ad15fc479644d26248e7bf02d285fefa",
+      "last_verified": "2026-09-14T20:17:38.944Z"
+    },
+    {
+      "id": "box@2.0",
+      "provider_id": "box",
+      "version": "2.0",
+      "status": "stable",
+      "source": {
+        "id": "box.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/box.json",
+        "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
+        "label": "Box Platform API (trimmed local mirror)"
+      },
+      "content_hash": "6f218da36d9b40a810b3e06b3ef4a6174bbda15d4a77d7a9fcac849beebb9759",
+      "last_verified": "2026-09-14T20:17:24.229Z"
+    },
+    {
+      "id": "pagerduty@2",
+      "provider_id": "pagerduty",
+      "version": "2",
+      "status": "stable",
+      "source": {
+        "id": "pagerduty.openapi",
+        "kind": "openapi",
+        "location": "src/ingestion/sources/openapi/pagerduty.json",
+        "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
+        "label": "PagerDuty REST API v2 (trimmed local mirror). credential_env_var must hold \"Token token=<key>\" verbatim — the header auth scheme substitutes the env var value as-is."
+      },
+      "content_hash": "b6f18e60028beb3bb5e19e8a5ccdedf9a1a6b19cad4944af32544fbf10755766",
+      "last_verified": "2026-09-14T20:17:38.951Z"
     }
   ],
   "capabilities": [
@@ -2470,6 +2760,2243 @@
       },
       "confidence": 0.55,
       "last_verified": "2026-08-25T08:43:56.987Z"
+    },
+    {
+      "id": "github.create_repos_issue",
+      "provider_id": "github",
+      "api_version_id": "github@2022-11-28",
+      "kind": "action",
+      "name": "create_repos_issue",
+      "description": "Create an issue",
+      "category": "developer_tools",
+      "inputs": [
+        {
+          "path": "owner",
+          "name": "owner",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "repo",
+          "name": "repo",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "description": "The title of the issue.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "description": "The contents of the issue.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "labels",
+          "name": "labels",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "assignees",
+          "name": "assignees",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "number",
+          "name": "number",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "state",
+          "name": "state",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "html_url",
+          "name": "html_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "GITHUB_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 5000,
+        "window_seconds": 3600,
+        "note": "Documented default: 5,000 authenticated REST requests per hour."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create an issue",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "github.openapi",
+        "pointer": "#/paths/~1repos~1{owner}~1{repo}~1issues/post",
+        "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.919Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.917Z"
+    },
+    {
+      "id": "github.create_issues_comment",
+      "provider_id": "github",
+      "api_version_id": "github@2022-11-28",
+      "kind": "action",
+      "name": "create_issues_comment",
+      "description": "Create an issue comment",
+      "category": "developer_tools",
+      "inputs": [
+        {
+          "path": "owner",
+          "name": "owner",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "repo",
+          "name": "repo",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "issue_number",
+          "name": "issue_number",
+          "type": "integer",
+          "required": true,
+          "semantic_type": "json",
+          "location": "path"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": true,
+          "description": "The contents of the comment.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "html_url",
+          "name": "html_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "GITHUB_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 5000,
+        "window_seconds": 3600,
+        "note": "Documented default: 5,000 authenticated REST requests per hour."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create an issue comment",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "github.openapi",
+        "pointer": "#/paths/~1repos~1{owner}~1{repo}~1issues~1{issue_number}~1comments/post",
+        "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.923Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.917Z"
+    },
+    {
+      "id": "github.create_repos_pull",
+      "provider_id": "github",
+      "api_version_id": "github@2022-11-28",
+      "kind": "action",
+      "name": "create_repos_pull",
+      "description": "Create a pull request",
+      "category": "developer_tools",
+      "inputs": [
+        {
+          "path": "owner",
+          "name": "owner",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "repo",
+          "name": "repo",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "head",
+          "name": "head",
+          "type": "string",
+          "required": true,
+          "description": "The name of the branch where changes are implemented.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "base",
+          "name": "base",
+          "type": "string",
+          "required": true,
+          "description": "The name of the branch to merge into.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "draft",
+          "name": "draft",
+          "type": "boolean",
+          "required": false,
+          "semantic_type": "boolean_flag",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "number",
+          "name": "number",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "state",
+          "name": "state",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "html_url",
+          "name": "html_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "GITHUB_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 5000,
+        "window_seconds": 3600,
+        "note": "Documented default: 5,000 authenticated REST requests per hour."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create a pull request",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "github.openapi",
+        "pointer": "#/paths/~1repos~1{owner}~1{repo}~1pulls/post",
+        "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.925Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.917Z"
+    },
+    {
+      "id": "twilio.messages_json",
+      "provider_id": "twilio",
+      "api_version_id": "twilio@1.0.0",
+      "kind": "action",
+      "name": "messages_json",
+      "description": "Send an SMS or MMS message",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "AccountSid",
+          "name": "AccountSid",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "To",
+          "name": "To",
+          "type": "string",
+          "required": true,
+          "description": "The recipient's phone number in E.164 format.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "From",
+          "name": "From",
+          "type": "string",
+          "required": false,
+          "description": "A Twilio phone number or Messaging Service SID to send from.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "Body",
+          "name": "Body",
+          "type": "string",
+          "required": true,
+          "description": "The text content of the message.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "MediaUrl",
+          "name": "MediaUrl",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "sid",
+          "name": "sid",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "to",
+          "name": "to",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "from",
+          "name": "from",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "date_sent",
+          "name": "date_sent",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "error_code",
+          "name": "error_code",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "basic",
+        "env_var_name": "TWILIO_BASIC_AUTH"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented default account-wide API limit: 100 requests per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Send an SMS or MMS message",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "twilio.openapi",
+        "pointer": "#/paths/~12010-04-01~1Accounts~1{AccountSid}~1Messages.json/post",
+        "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.212Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.212Z"
+    },
+    {
+      "id": "twilio.get_accounts_message",
+      "provider_id": "twilio",
+      "api_version_id": "twilio@1.0.0",
+      "kind": "action",
+      "name": "get_accounts_message",
+      "description": "Fetch a message by SID",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "AccountSid",
+          "name": "AccountSid",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "Sid",
+          "name": "Sid",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "sid",
+          "name": "sid",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "to",
+          "name": "to",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "from",
+          "name": "from",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "body",
+          "name": "body",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "date_sent",
+          "name": "date_sent",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "error_code",
+          "name": "error_code",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "basic",
+        "env_var_name": "TWILIO_BASIC_AUTH"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 100,
+        "window_seconds": 1,
+        "note": "Documented default account-wide API limit: 100 requests per second."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Fetch a message by SID",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "twilio.openapi",
+        "pointer": "#/paths/~12010-04-01~1Accounts~1{AccountSid}~1Messages~1{Sid}.json/get",
+        "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.214Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.212Z"
+    },
+    {
+      "id": "discord.list_channels_messages",
+      "provider_id": "discord",
+      "api_version_id": "discord@10",
+      "kind": "action",
+      "name": "list_channels_messages",
+      "description": "List messages in a channel",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "channel_id",
+          "name": "channel_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "limit",
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json",
+          "location": "query"
+        }
+      ],
+      "outputs": [],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "Authorization",
+        "env_var_name": "DISCORD_BOT_TOKEN",
+        "scheme_description": "Format: `Bot <token>`"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 50,
+        "window_seconds": 1,
+        "note": "Documented global default: 50 requests per second per bot."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "List messages in a channel",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "discord.openapi",
+        "pointer": "#/paths/~1channels~1{channel_id}~1messages/get",
+        "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.215Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.215Z"
+    },
+    {
+      "id": "discord.create_channels_message",
+      "provider_id": "discord",
+      "api_version_id": "discord@10",
+      "kind": "action",
+      "name": "create_channels_message",
+      "description": "Create a message in a channel",
+      "category": "email",
+      "inputs": [
+        {
+          "path": "channel_id",
+          "name": "channel_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "content",
+          "name": "content",
+          "type": "string",
+          "required": false,
+          "description": "Message contents, up to 2000 characters.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "tts",
+          "name": "tts",
+          "type": "boolean",
+          "required": false,
+          "semantic_type": "boolean_flag",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "channel_id",
+          "name": "channel_id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "content",
+          "name": "content",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "timestamp",
+          "name": "timestamp",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "Authorization",
+        "env_var_name": "DISCORD_BOT_TOKEN",
+        "scheme_description": "Format: `Bot <token>`"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 50,
+        "window_seconds": 1,
+        "note": "Documented global default: 50 requests per second per bot."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Create a message in a channel",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "discord.openapi",
+        "pointer": "#/paths/~1channels~1{channel_id}~1messages/post",
+        "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.216Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.215Z"
+    },
+    {
+      "id": "notion.create_page",
+      "provider_id": "notion",
+      "api_version_id": "notion@2025-09-03",
+      "kind": "action",
+      "name": "create_page",
+      "description": "Create a page",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "parent",
+          "name": "parent",
+          "type": "object",
+          "required": true,
+          "description": "The data source or page this new page belongs to.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "properties",
+          "name": "properties",
+          "type": "object",
+          "required": true,
+          "description": "Property values of the new page.",
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "url",
+          "name": "url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        },
+        {
+          "path": "created_time",
+          "name": "created_time",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "properties",
+          "name": "properties",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "NOTION_API_KEY"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 3,
+        "window_seconds": 1,
+        "note": "Documented average: ~3 requests per second, with short bursts tolerated."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create a page",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "notion.openapi",
+        "pointer": "#/paths/~1v1~1pages/post",
+        "upstream_url": "https://developers.notion.com/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.932Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.932Z"
+    },
+    {
+      "id": "notion.get_page",
+      "provider_id": "notion",
+      "api_version_id": "notion@2025-09-03",
+      "kind": "action",
+      "name": "get_page",
+      "description": "Retrieve a page",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "page_id",
+          "name": "page_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "url",
+          "name": "url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        },
+        {
+          "path": "created_time",
+          "name": "created_time",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "properties",
+          "name": "properties",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "NOTION_API_KEY"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 3,
+        "window_seconds": 1,
+        "note": "Documented average: ~3 requests per second, with short bursts tolerated."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Retrieve a page",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "notion.openapi",
+        "pointer": "#/paths/~1v1~1pages~1{page_id}/get",
+        "upstream_url": "https://developers.notion.com/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.933Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.932Z"
+    },
+    {
+      "id": "notion.create_data_sources_query",
+      "provider_id": "notion",
+      "api_version_id": "notion@2025-09-03",
+      "kind": "action",
+      "name": "create_data_sources_query",
+      "description": "Query a data source",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "data_source_id",
+          "name": "data_source_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "filter",
+          "name": "filter",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "sorts",
+          "name": "sorts",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "results",
+          "name": "results",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "has_more",
+          "name": "has_more",
+          "type": "boolean",
+          "required": false,
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "next_cursor",
+          "name": "next_cursor",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "NOTION_API_KEY"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 3,
+        "window_seconds": 1,
+        "note": "Documented average: ~3 requests per second, with short bursts tolerated."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Query a data source",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "notion.openapi",
+        "pointer": "#/paths/~1v1~1data_sources~1{data_source_id}~1query/post",
+        "upstream_url": "https://developers.notion.com/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.933Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.932Z"
+    },
+    {
+      "id": "asana.create_task",
+      "provider_id": "asana",
+      "api_version_id": "asana@1.0",
+      "kind": "action",
+      "name": "create_task",
+      "description": "Creates a new task and returns it, wrapped in a `data` envelope as every Asana response is.",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "description": "Envelope object holding the task fields below.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "data.name",
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name of the task.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "data.notes",
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "description": "Free-form text description of the task.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "data.projects",
+          "name": "projects",
+          "type": "array",
+          "required": false,
+          "description": "Project GIDs to add this task to.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "data.assignee",
+          "name": "assignee",
+          "type": "string",
+          "required": false,
+          "description": "GID of the user to assign the task to.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "data.due_on",
+          "name": "due_on",
+          "type": "string",
+          "required": false,
+          "description": "Due date in YYYY-MM-DD form.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.gid",
+          "name": "gid",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the created task.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name of the task.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.permalink_url",
+          "name": "permalink_url",
+          "type": "string",
+          "required": false,
+          "description": "Asana web URL for the task.",
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "parameter_name": "Authorization",
+        "env_var_name": "ASANA_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1500,
+        "window_seconds": 60,
+        "note": "Documented default tier: 1,500 requests per minute."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create Task",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "asana.docs",
+        "pointer": "Asana API v1.0 > Create Task",
+        "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-09-14T20:17:38.937Z"
+      },
+      "confidence": 0.55,
+      "last_verified": "2026-09-14T20:17:38.935Z"
+    },
+    {
+      "id": "asana.get_task",
+      "provider_id": "asana",
+      "api_version_id": "asana@1.0",
+      "kind": "action",
+      "name": "get_task",
+      "description": "Retrieves a single task by its global identifier.",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "task_gid",
+          "name": "task_gid",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.gid",
+          "name": "gid",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the task.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name of the task.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.completed",
+          "name": "completed",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the task is marked complete.",
+          "semantic_type": "boolean_flag"
+        },
+        {
+          "path": "data.notes",
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "description": "Free-form text description of the task.",
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "parameter_name": "Authorization",
+        "env_var_name": "ASANA_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1500,
+        "window_seconds": 60,
+        "note": "Documented default tier: 1,500 requests per minute."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Get Task",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "asana.docs",
+        "pointer": "Asana API v1.0 > Get Task",
+        "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-09-14T20:17:38.938Z"
+      },
+      "confidence": 0.55,
+      "last_verified": "2026-09-14T20:17:38.935Z"
+    },
+    {
+      "id": "asana.update_task",
+      "provider_id": "asana",
+      "api_version_id": "asana@1.0",
+      "kind": "action",
+      "name": "update_task",
+      "description": "Updates fields on an existing task, for example to mark it complete.",
+      "category": "productivity",
+      "inputs": [
+        {
+          "path": "task_gid",
+          "name": "task_gid",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "path"
+        },
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": true,
+          "description": "Envelope object holding the fields to change.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "data.name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "New name for the task.",
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "data.completed",
+          "name": "completed",
+          "type": "boolean",
+          "required": false,
+          "description": "Marks the task complete or incomplete.",
+          "semantic_type": "boolean_flag",
+          "location": "body"
+        },
+        {
+          "path": "data.notes",
+          "name": "notes",
+          "type": "string",
+          "required": false,
+          "description": "New free-form description.",
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "data",
+          "name": "data",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "data.gid",
+          "name": "gid",
+          "type": "string",
+          "required": false,
+          "description": "Identifier of the task.",
+          "semantic_type": "text"
+        },
+        {
+          "path": "data.completed",
+          "name": "completed",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the task is marked complete.",
+          "semantic_type": "boolean_flag"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "parameter_name": "Authorization",
+        "env_var_name": "ASANA_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1500,
+        "window_seconds": 60,
+        "note": "Documented default tier: 1,500 requests per minute."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "update",
+        "description": "Update Task",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "asana.docs",
+        "pointer": "Asana API v1.0 > Update Task",
+        "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
+        "extractor": "markdown-heuristic",
+        "extracted_at": "2026-09-14T20:17:38.939Z"
+      },
+      "confidence": 0.55,
+      "last_verified": "2026-09-14T20:17:38.935Z"
+    },
+    {
+      "id": "square.create_payment",
+      "provider_id": "square",
+      "api_version_id": "square@2026-08-19",
+      "kind": "action",
+      "name": "create_payment",
+      "description": "Create a payment",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "source_id",
+          "name": "source_id",
+          "type": "string",
+          "required": true,
+          "description": "A card nonce or other payment source token.",
+          "semantic_type": "identifier",
+          "location": "body"
+        },
+        {
+          "path": "idempotency_key",
+          "name": "idempotency_key",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "body"
+        },
+        {
+          "path": "amount_money",
+          "name": "amount_money",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "amount_money.amount",
+          "name": "amount",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "currency_amount",
+          "location": "body"
+        },
+        {
+          "path": "amount_money.currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "semantic_type": "currency_code",
+          "location": "body"
+        },
+        {
+          "path": "customer_id",
+          "name": "customer_id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "amount_money",
+          "name": "amount_money",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "amount_money.amount",
+          "name": "amount",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "amount_money.currency",
+          "name": "currency",
+          "type": "string",
+          "required": false,
+          "semantic_type": "currency_code"
+        },
+        {
+          "path": "receipt_url",
+          "name": "receipt_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "SQUARE_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": true,
+        "mechanism": "`idempotency_key` request body field",
+        "key_location": "body"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create a payment",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "square.openapi",
+        "pointer": "#/paths/~1v2~1payments/post",
+        "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.224Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.224Z"
+    },
+    {
+      "id": "square.create_customer",
+      "provider_id": "square",
+      "api_version_id": "square@2026-08-19",
+      "kind": "action",
+      "name": "create_customer",
+      "description": "Create a customer",
+      "category": "payment",
+      "inputs": [
+        {
+          "path": "given_name",
+          "name": "given_name",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "family_name",
+          "name": "family_name",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "email_address",
+          "name": "email_address",
+          "type": "string",
+          "required": false,
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "idempotency_key",
+          "name": "idempotency_key",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "given_name",
+          "name": "given_name",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "family_name",
+          "name": "family_name",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "email_address",
+          "name": "email_address",
+          "type": "string",
+          "required": false,
+          "semantic_type": "email"
+        }
+      ],
+      "authentication": {
+        "kind": "bearer",
+        "env_var_name": "SQUARE_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": true,
+        "mechanism": "`idempotency_key` request body field",
+        "key_location": "body"
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create a customer",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "square.openapi",
+        "pointer": "#/paths/~1v2~1customers/post",
+        "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.225Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.224Z"
+    },
+    {
+      "id": "docusign.create_accounts_envelope",
+      "provider_id": "docusign",
+      "api_version_id": "docusign@2.1",
+      "kind": "action",
+      "name": "create_accounts_envelope",
+      "description": "Create and send an envelope",
+      "category": "document",
+      "inputs": [
+        {
+          "path": "accountId",
+          "name": "accountId",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "emailSubject",
+          "name": "emailSubject",
+          "type": "string",
+          "required": true,
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "description": "\"sent\" sends immediately, \"created\" saves as a draft.",
+          "enum": [
+            "sent",
+            "created"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "documents",
+          "name": "documents",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "recipients",
+          "name": "recipients",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "envelopeId",
+          "name": "envelopeId",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "statusDateTime",
+          "name": "statusDateTime",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "uri",
+          "name": "uri",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "DOCUSIGN_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1000,
+        "window_seconds": 3600,
+        "note": "Documented default integration-key limit: 1,000 requests per hour (varies by plan)."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Create and send an envelope",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "docusign.openapi",
+        "pointer": "#/paths/~1v2.1~1accounts~1{accountId}~1envelopes/post",
+        "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.940Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.940Z"
+    },
+    {
+      "id": "docusign.get_accounts_envelope",
+      "provider_id": "docusign",
+      "api_version_id": "docusign@2.1",
+      "kind": "action",
+      "name": "get_accounts_envelope",
+      "description": "Get envelope status",
+      "category": "document",
+      "inputs": [
+        {
+          "path": "accountId",
+          "name": "accountId",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "envelopeId",
+          "name": "envelopeId",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "envelopeId",
+          "name": "envelopeId",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "statusDateTime",
+          "name": "statusDateTime",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        },
+        {
+          "path": "uri",
+          "name": "uri",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "DOCUSIGN_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1000,
+        "window_seconds": 3600,
+        "note": "Documented default integration-key limit: 1,000 requests per hour (varies by plan)."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Get envelope status",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "docusign.openapi",
+        "pointer": "#/paths/~1v2.1~1accounts~1{accountId}~1envelopes~1{envelopeId}/get",
+        "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.941Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.940Z"
+    },
+    {
+      "id": "mailchimp.create_lists_member",
+      "provider_id": "mailchimp",
+      "api_version_id": "mailchimp@3.0",
+      "kind": "action",
+      "name": "create_lists_member",
+      "description": "Add a member to a list",
+      "category": "marketing",
+      "inputs": [
+        {
+          "path": "list_id",
+          "name": "list_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "email_address",
+          "name": "email_address",
+          "type": "string",
+          "required": true,
+          "semantic_type": "email",
+          "location": "body"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "subscribed",
+            "unsubscribed",
+            "pending",
+            "cleaned"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "merge_fields",
+          "name": "merge_fields",
+          "type": "object",
+          "required": false,
+          "semantic_type": "json",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "email_address",
+          "name": "email_address",
+          "type": "string",
+          "required": false,
+          "semantic_type": "email"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        }
+      ],
+      "authentication": {
+        "kind": "basic",
+        "env_var_name": "MAILCHIMP_BASIC_AUTH",
+        "scheme_description": "Username can be any string; password is the API key."
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Add a member to a list",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "mailchimp.openapi",
+        "pointer": "#/paths/~1lists~1{list_id}~1members/post",
+        "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.945Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.944Z"
+    },
+    {
+      "id": "mailchimp.send_action",
+      "provider_id": "mailchimp",
+      "api_version_id": "mailchimp@3.0",
+      "kind": "action",
+      "name": "send_action",
+      "description": "Send a campaign",
+      "category": "marketing",
+      "inputs": [
+        {
+          "path": "campaign_id",
+          "name": "campaign_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [],
+      "authentication": {
+        "kind": "basic",
+        "env_var_name": "MAILCHIMP_BASIC_AUTH",
+        "scheme_description": "Username can be any string; password is the API key."
+      },
+      "permissions": [],
+      "rate_limits": null,
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "send",
+        "description": "Send a campaign",
+        "reversible": false
+      },
+      "source": {
+        "document_source_id": "mailchimp.openapi",
+        "pointer": "#/paths/~1campaigns~1{campaign_id}~1actions~1send/post",
+        "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.945Z"
+      },
+      "confidence": 0.9,
+      "last_verified": "2026-09-14T20:17:38.944Z"
+    },
+    {
+      "id": "box.get_file",
+      "provider_id": "box",
+      "api_version_id": "box@2.0",
+      "kind": "action",
+      "name": "get_file",
+      "description": "Get file information",
+      "category": "storage",
+      "inputs": [
+        {
+          "path": "file_id",
+          "name": "file_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "name",
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "size",
+          "name": "size",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json"
+        },
+        {
+          "path": "created_at",
+          "name": "created_at",
+          "type": "string",
+          "required": false,
+          "semantic_type": "timestamp"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "BOX_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1000,
+        "window_seconds": 60,
+        "note": "Documented default: 1,000 API calls per minute per app."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Get file information",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "box.openapi",
+        "pointer": "#/paths/~1files~1{file_id}/get",
+        "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.229Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.229Z"
+    },
+    {
+      "id": "box.list_folders_items",
+      "provider_id": "box",
+      "api_version_id": "box@2.0",
+      "kind": "action",
+      "name": "list_folders_items",
+      "description": "List items in a folder",
+      "category": "storage",
+      "inputs": [
+        {
+          "path": "folder_id",
+          "name": "folder_id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        },
+        {
+          "path": "limit",
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "json",
+          "location": "query"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "total_count",
+          "name": "total_count",
+          "type": "integer",
+          "required": false,
+          "semantic_type": "currency_amount"
+        },
+        {
+          "path": "entries",
+          "name": "entries",
+          "type": "array",
+          "required": false,
+          "semantic_type": "json"
+        }
+      ],
+      "authentication": {
+        "kind": "oauth2",
+        "env_var_name": "BOX_ACCESS_TOKEN"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 1000,
+        "window_seconds": 60,
+        "note": "Documented default: 1,000 API calls per minute per app."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "List items in a folder",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "box.openapi",
+        "pointer": "#/paths/~1folders~1{folder_id}~1items/get",
+        "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:24.230Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:24.229Z"
+    },
+    {
+      "id": "pagerduty.create_incident",
+      "provider_id": "pagerduty",
+      "api_version_id": "pagerduty@2",
+      "kind": "action",
+      "name": "create_incident",
+      "description": "Create an incident",
+      "category": "incident_management",
+      "inputs": [
+        {
+          "path": "incident",
+          "name": "incident",
+          "type": "object",
+          "required": true,
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "incident.type",
+          "name": "type",
+          "type": "string",
+          "required": true,
+          "enum": [
+            "incident"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "incident.title",
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "semantic_type": "text",
+          "location": "body"
+        },
+        {
+          "path": "incident.service",
+          "name": "service",
+          "type": "object",
+          "required": true,
+          "description": "A PagerDuty service reference.",
+          "semantic_type": "json",
+          "location": "body"
+        },
+        {
+          "path": "incident.urgency",
+          "name": "urgency",
+          "type": "string",
+          "required": false,
+          "enum": [
+            "high",
+            "low"
+          ],
+          "semantic_type": "text",
+          "location": "body"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "urgency",
+          "name": "urgency",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "html_url",
+          "name": "html_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "Authorization",
+        "env_var_name": "PAGERDUTY_API_KEY",
+        "scheme_description": "Format: `Token token=<API_KEY>`"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 900,
+        "window_seconds": 60,
+        "note": "Documented default REST API v2 limit: 900 requests per minute."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "create",
+        "description": "Create an incident",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "pagerduty.openapi",
+        "pointer": "#/paths/~1incidents/post",
+        "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.951Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.951Z"
+    },
+    {
+      "id": "pagerduty.get_incident",
+      "provider_id": "pagerduty",
+      "api_version_id": "pagerduty@2",
+      "kind": "action",
+      "name": "get_incident",
+      "description": "Get an incident",
+      "category": "incident_management",
+      "inputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "semantic_type": "identifier",
+          "location": "path"
+        }
+      ],
+      "outputs": [
+        {
+          "path": "id",
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "semantic_type": "identifier"
+        },
+        {
+          "path": "status",
+          "name": "status",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "title",
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "urgency",
+          "name": "urgency",
+          "type": "string",
+          "required": false,
+          "semantic_type": "text"
+        },
+        {
+          "path": "html_url",
+          "name": "html_url",
+          "type": "string",
+          "required": false,
+          "semantic_type": "url"
+        }
+      ],
+      "authentication": {
+        "kind": "header",
+        "parameter_name": "Authorization",
+        "env_var_name": "PAGERDUTY_API_KEY",
+        "scheme_description": "Format: `Token token=<API_KEY>`"
+      },
+      "permissions": [],
+      "rate_limits": {
+        "requests": 900,
+        "window_seconds": 60,
+        "note": "Documented default REST API v2 limit: 900 requests per minute."
+      },
+      "idempotency": {
+        "supported": false
+      },
+      "side_effects": {
+        "kind": "read",
+        "description": "Get an incident",
+        "reversible": true
+      },
+      "source": {
+        "document_source_id": "pagerduty.openapi",
+        "pointer": "#/paths/~1incidents~1{id}/get",
+        "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
+        "extractor": "openapi",
+        "extracted_at": "2026-09-14T20:17:38.952Z"
+      },
+      "confidence": 0.95,
+      "last_verified": "2026-09-14T20:17:38.951Z"
     }
   ],
   "implementations": [
@@ -3742,6 +6269,1077 @@
         "required": []
       },
       "request_content_type": "application/json"
+    },
+    {
+      "id": "github.create_repos_issue#rest",
+      "capability_id": "github.create_repos_issue",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.github.com/repos/{owner}/{repo}/issues",
+      "path_parameters": [
+        "owner",
+        "repo"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "The title of the issue."
+          },
+          "body": {
+            "type": "string",
+            "description": "The contents of the issue."
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "github.create_issues_comment#rest",
+      "capability_id": "github.create_issues_comment",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}/comments",
+      "path_parameters": [
+        "owner",
+        "repo",
+        "issue_number"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "body"
+        ],
+        "properties": {
+          "body": {
+            "type": "string",
+            "description": "The contents of the comment."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "html_url": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "github.create_repos_pull#rest",
+      "capability_id": "github.create_repos_pull",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.github.com/repos/{owner}/{repo}/pulls",
+      "path_parameters": [
+        "owner",
+        "repo"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "title",
+          "head",
+          "base"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "head": {
+            "type": "string",
+            "description": "The name of the branch where changes are implemented."
+          },
+          "base": {
+            "type": "string",
+            "description": "The name of the branch to merge into."
+          },
+          "body": {
+            "type": "string"
+          },
+          "draft": {
+            "type": "boolean"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "twilio.messages_json#rest",
+      "capability_id": "twilio.messages_json",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Messages.json",
+      "path_parameters": [
+        "AccountSid"
+      ],
+      "headers": {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "To",
+          "Body"
+        ],
+        "properties": {
+          "To": {
+            "type": "string",
+            "description": "The recipient's phone number in E.164 format."
+          },
+          "From": {
+            "type": "string",
+            "description": "A Twilio phone number or Messaging Service SID to send from."
+          },
+          "Body": {
+            "type": "string",
+            "description": "The text content of the message."
+          },
+          "MediaUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "sid": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "date_sent": {
+            "type": "string"
+          },
+          "error_code": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      },
+      "request_content_type": "application/x-www-form-urlencoded"
+    },
+    {
+      "id": "twilio.get_accounts_message#rest",
+      "capability_id": "twilio.get_accounts_message",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.twilio.com/2010-04-01/Accounts/{AccountSid}/Messages/{Sid}.json",
+      "path_parameters": [
+        "AccountSid",
+        "Sid"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "sid": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "date_sent": {
+            "type": "string"
+          },
+          "error_code": {
+            "type": "integer",
+            "nullable": true
+          }
+        }
+      }
+    },
+    {
+      "id": "discord.list_channels_messages#rest",
+      "capability_id": "discord.list_channels_messages",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://discord.com/api/v10/channels/{channel_id}/messages",
+      "path_parameters": [
+        "channel_id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "channel_id": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "discord.create_channels_message#rest",
+      "capability_id": "discord.create_channels_message",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://discord.com/api/v10/channels/{channel_id}/messages",
+      "path_parameters": [
+        "channel_id"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Message contents, up to 2000 characters."
+          },
+          "tts": {
+            "type": "boolean"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "channel_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "notion.create_page#rest",
+      "capability_id": "notion.create_page",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.notion.com/v1/pages",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "parent",
+          "properties"
+        ],
+        "properties": {
+          "parent": {
+            "type": "object",
+            "description": "The data source or page this new page belongs to."
+          },
+          "properties": {
+            "type": "object",
+            "description": "Property values of the new page."
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "created_time": {
+            "type": "string"
+          },
+          "properties": {
+            "type": "object"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "notion.get_page#rest",
+      "capability_id": "notion.get_page",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.notion.com/v1/pages/{page_id}",
+      "path_parameters": [
+        "page_id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "created_time": {
+            "type": "string"
+          },
+          "properties": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "id": "notion.create_data_sources_query#rest",
+      "capability_id": "notion.create_data_sources_query",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.notion.com/v1/data_sources/{data_source_id}/query",
+      "path_parameters": [
+        "data_source_id"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "type": "object"
+          },
+          "sorts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "asana.create_task#rest",
+      "capability_id": "asana.create_task",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "/api/1.0/tasks",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Envelope object holding the task fields below.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the task."
+              },
+              "notes": {
+                "type": "string",
+                "description": "Free-form text description of the task."
+              },
+              "projects": {
+                "type": "array",
+                "description": "Project GIDs to add this task to."
+              },
+              "assignee": {
+                "type": "string",
+                "description": "GID of the user to assign the task to."
+              },
+              "due_on": {
+                "type": "string",
+                "description": "Due date in YYYY-MM-DD form."
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string",
+                "description": "Identifier of the created task."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the task."
+              },
+              "permalink_url": {
+                "type": "string",
+                "description": "Asana web URL for the task."
+              }
+            },
+            "required": []
+          }
+        },
+        "required": []
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "asana.get_task#rest",
+      "capability_id": "asana.get_task",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "/api/1.0/tasks/{task_gid}",
+      "path_parameters": [
+        "task_gid"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string",
+                "description": "Identifier of the task."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the task."
+              },
+              "completed": {
+                "type": "boolean",
+                "description": "Whether the task is marked complete."
+              },
+              "notes": {
+                "type": "string",
+                "description": "Free-form text description of the task."
+              }
+            },
+            "required": []
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "id": "asana.update_task#rest",
+      "capability_id": "asana.update_task",
+      "protocol": "rest",
+      "method": "PUT",
+      "endpoint": "/api/1.0/tasks/{task_gid}",
+      "path_parameters": [
+        "task_gid"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "Envelope object holding the fields to change.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "New name for the task."
+              },
+              "completed": {
+                "type": "boolean",
+                "description": "Marks the task complete or incomplete."
+              },
+              "notes": {
+                "type": "string",
+                "description": "New free-form description."
+              }
+            },
+            "required": []
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string",
+                "description": "Identifier of the task."
+              },
+              "completed": {
+                "type": "boolean",
+                "description": "Whether the task is marked complete."
+              }
+            },
+            "required": []
+          }
+        },
+        "required": []
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "square.create_payment#rest",
+      "capability_id": "square.create_payment",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://connect.squareup.com/v2/payments",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "idempotency_key",
+          "amount_money"
+        ],
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "description": "A card nonce or other payment source token."
+          },
+          "idempotency_key": {
+            "type": "string"
+          },
+          "amount_money": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              }
+            }
+          },
+          "customer_id": {
+            "type": "string"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "amount_money": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              }
+            }
+          },
+          "receipt_url": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "square.create_customer#rest",
+      "capability_id": "square.create_customer",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://connect.squareup.com/v2/customers",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "properties": {
+          "given_name": {
+            "type": "string"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "email_address": {
+            "type": "string"
+          },
+          "idempotency_key": {
+            "type": "string"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          },
+          "family_name": {
+            "type": "string"
+          },
+          "email_address": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "docusign.create_accounts_envelope#rest",
+      "capability_id": "docusign.create_accounts_envelope",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://na4.docusign.net/restapi/v2.1/accounts/{accountId}/envelopes",
+      "path_parameters": [
+        "accountId"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "emailSubject",
+          "status"
+        ],
+        "properties": {
+          "emailSubject": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "sent",
+              "created"
+            ],
+            "description": "\"sent\" sends immediately, \"created\" saves as a draft."
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "recipients": {
+            "type": "object"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "envelopeId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusDateTime": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "docusign.get_accounts_envelope#rest",
+      "capability_id": "docusign.get_accounts_envelope",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://na4.docusign.net/restapi/v2.1/accounts/{accountId}/envelopes/{envelopeId}",
+      "path_parameters": [
+        "accountId",
+        "envelopeId"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "envelopeId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusDateTime": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "mailchimp.create_lists_member#rest",
+      "capability_id": "mailchimp.create_lists_member",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://{dc}.api.mailchimp.com/3.0/lists/{list_id}/members",
+      "path_parameters": [
+        "list_id"
+      ],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "email_address",
+          "status"
+        ],
+        "properties": {
+          "email_address": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "subscribed",
+              "unsubscribed",
+              "pending",
+              "cleaned"
+            ]
+          },
+          "merge_fields": {
+            "type": "object"
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "email_address": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "mailchimp.send_action#rest",
+      "capability_id": "mailchimp.send_action",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://{dc}.api.mailchimp.com/3.0/campaigns/{campaign_id}/actions/send",
+      "path_parameters": [
+        "campaign_id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": null
+    },
+    {
+      "id": "box.get_file#rest",
+      "capability_id": "box.get_file",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.box.com/2.0/files/{file_id}",
+      "path_parameters": [
+        "file_id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "box.list_folders_items#rest",
+      "capability_id": "box.list_folders_items",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.box.com/2.0/folders/{folder_id}/items",
+      "path_parameters": [
+        "folder_id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "pagerduty.create_incident#rest",
+      "capability_id": "pagerduty.create_incident",
+      "protocol": "rest",
+      "method": "POST",
+      "endpoint": "https://api.pagerduty.com/incidents",
+      "path_parameters": [],
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "request_schema": {
+        "type": "object",
+        "required": [
+          "incident"
+        ],
+        "properties": {
+          "incident": {
+            "type": "object",
+            "required": [
+              "type",
+              "title",
+              "service"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "incident"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "service": {
+                "type": "object",
+                "description": "A PagerDuty service reference."
+              },
+              "urgency": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "low"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
+          }
+        }
+      },
+      "request_content_type": "application/json"
+    },
+    {
+      "id": "pagerduty.get_incident#rest",
+      "capability_id": "pagerduty.get_incident",
+      "protocol": "rest",
+      "method": "GET",
+      "endpoint": "https://api.pagerduty.com/incidents/{id}",
+      "path_parameters": [
+        "id"
+      ],
+      "headers": {},
+      "request_schema": null,
+      "response_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string"
+          },
+          "html_url": {
+            "type": "string"
+          }
+        }
+      }
     }
   ],
   "ingestion_issues": []
