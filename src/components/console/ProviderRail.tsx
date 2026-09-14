@@ -47,7 +47,7 @@ export function ProviderRail() {
       aria-label="Connected providers"
       className="fixed left-0 top-14 z-10 hidden h-[calc(100vh-3.5rem)] w-40 flex-col border-r border-border bg-background/60 backdrop-blur-sm xl:flex"
     >
-      <div className="px-4 pb-2 pt-4 font-mono text-[10px] uppercase tracking-wide text-muted-strong">
+      <div className="px-4 pb-2 pt-4 font-mono text-[13px] uppercase tracking-wide text-muted-strong">
         Providers · {providers.length}
       </div>
       <div className="provider-rail-viewport relative flex-1 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_16px,black_calc(100%-16px),transparent)]">

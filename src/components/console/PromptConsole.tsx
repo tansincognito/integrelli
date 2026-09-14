@@ -23,6 +23,8 @@ const EXAMPLES = [
 
 const PLACEHOLDER = 'When a Stripe payment succeeds, send an email through Gmail.';
 
+const SUBHEADING_WORDS = ['What', 'do', 'you', 'want', 'to', 'connect?'];
+
 export function PromptConsole({
   onResult,
 }: {
@@ -66,9 +68,24 @@ export function PromptConsole({
 
   return (
     <section className="mx-auto w-full max-w-4xl">
-      <h1 className="text-balance text-center text-5xl font-bold tracking-tightest sm:text-6xl">
-        What do you want to connect?
-      </h1>
+      <div className="text-center leading-none">
+        <div
+          className="font-mono text-3xl font-extrabold uppercase tracking-[0.35em] text-accent sm:text-4xl"
+          style={{ textShadow: '0 0 14px var(--color-accent), 0 0 3px var(--color-accent)' }}
+        >
+          Integrelli
+        </div>
+        <h1 className="-mt-1 text-balance text-[1.6rem] font-bold tracking-tightest sm:text-[2rem]">
+          <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+            {SUBHEADING_WORDS.map((word, i) => (
+              <span key={word} className="inline-flex items-center gap-x-2">
+                {i > 0 && <ArrowRight className="h-4 w-4 shrink-0 text-muted sm:h-5 sm:w-5" strokeWidth={2.5} />}
+                {word}
+              </span>
+            ))}
+          </span>
+        </h1>
+      </div>
       <p className="mx-auto mt-5 max-w-xl text-center text-[15px] leading-relaxed text-muted">
         Describe the outcome in plain language. Every API in the chain is resolved against ingested documentation,
         typed, and validated before it ships.
