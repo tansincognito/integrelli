@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { loadRecentWorkflows, saveRecentWorkflow, type RecentWorkflow } from '@/lib/storage/recent-workflows';
 import { ApiLibrary } from './ApiLibrary';
 import { PlanResult } from './PlanResult';
+import { ProviderRail } from './ProviderRail';
 import { PromptConsole } from './PromptConsole';
 import { RecentWorkflows } from './RecentWorkflows';
 import { TopNav, type ConsoleView } from './TopNav';
@@ -45,8 +46,9 @@ export function ConsoleShell() {
           if (next === 'workflows') setResult(null);
         }}
       />
+      <ProviderRail />
 
-      <main className="relative z-10 px-6 pb-32 pt-24">
+      <main className="relative z-10 px-6 pb-32 pt-24 xl:pl-44">
         {view === 'library' ? (
           <ApiLibrary />
         ) : result ? (
