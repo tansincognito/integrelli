@@ -1,5 +1,5 @@
 import { generateObject } from 'ai';
-import { modelFor, modelsAvailable } from '@/models';
+import { languageModelFor, modelFor, modelsAvailable } from '@/models';
 import type { ProviderSeed } from '../sources';
 import { LlmCapabilityDraftSchema, type LlmCapabilityDraft } from '../types';
 import type { DocChunk } from './markdown';
@@ -19,7 +19,8 @@ export async function extractWithLlm(
 ): Promise<{ draft: LlmCapabilityDraft; model: string } | null> {
   if (!modelsAvailable()) return null;
 
-  const model = modelFor('extraction');
+  const modelId = modelFor('extraction');
+  const model = languageModelFor('extraction');
 
   try {
     const { object } = await generateObject({
@@ -28,7 +29,7 @@ export async function extractWithLlm(
       system: buildExtractionPrompt(seed),
       prompt: `Documentation section: "${chunk.heading}"\n\n${chunk.text}`,
     });
-    return { draft: object, model };
+    return { draft: object, model: modelId };
   } catch (err) {
     console.warn(
       `[integrelli] LLM extraction failed for ${seed.id} "${chunk.heading}": ${err instanceof Error ? err.message : String(err)}`

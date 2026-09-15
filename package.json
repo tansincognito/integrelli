@@ -13,27 +13,28 @@
     "ingest": "tsx scripts/ingest.ts"
   },
   "dependencies": {
-    "next": "^15.3.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "zod": "^3.24.1",
+    "@ai-sdk/google": "^3.0.122",
     "ai": "^6.0.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "zustand": "^5.0.2",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.469.0",
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
-    "lucide-react": "^0.469.0"
+    "zod": "^3.24.1",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "typescript": "^5.7.2",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
-    "tailwindcss": "^3.4.17",
-    "postcss": "^8.4.49",
     "autoprefixer": "^10.4.20",
-    "vitest": "^2.1.8",
-    "tsx": "^4.19.2"
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
   }
 }

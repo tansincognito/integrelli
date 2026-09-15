@@ -1,6 +1,6 @@
 import { embed, embedMany } from 'ai';
 import type { Capability } from '@/knowledge/capability';
-import { modelFor, modelsAvailable } from '@/models';
+import { embeddingModelFor, modelFor, modelsAvailable } from '@/models';
 import { buildCapabilityDocument, capabilityDocumentHash } from './document';
 import rawIndex from '@/generated/capability-embeddings.json';
 
@@ -84,7 +84,7 @@ export function _resetEmbeddingCacheForTests(): void {
 
 /** Embeds one query. Throws on failure; callers degrade to lexical scoring. */
 export async function embedQuery(text: string): Promise<number[]> {
-  const { embedding } = await embed({ model: modelFor('embedding'), value: text });
+  const { embedding } = await embed({ model: embeddingModelFor(), value: text });
   return embedding;
 }
 
@@ -104,7 +104,7 @@ export async function buildEmbeddingIndex(
   indexPath: string = EMBEDDING_INDEX_PATH
 ): Promise<BuildEmbeddingResult> {
   if (!modelsAvailable()) {
-    throw new Error('buildEmbeddingIndex requires AI_GATEWAY_API_KEY.');
+    throw new Error('buildEmbeddingIndex requires AI_GATEWAY_API_KEY or GOOGLE_GENERATIVE_AI_API_KEY.');
   }
 
   const { readFileSync, writeFileSync, mkdirSync, existsSync } = await import('node:fs');
@@ -112,6 +112,7 @@ export async function buildEmbeddingIndex(
   const absolute = path.resolve(process.cwd(), indexPath);
 
   const model = modelFor('embedding');
+  const callableModel = embeddingModelFor();
   let existing: EmbeddingIndexFile | null = null;
   if (existsSync(absolute)) {
     try {
@@ -141,7 +142,7 @@ export async function buildEmbeddingIndex(
 
   let dimensions = existing?.dimensions ?? 1536;
   if (toEmbed.length > 0) {
-    const { embeddings } = await embedMany({ model, values: toEmbed.map((item) => item.document) });
+    const { embeddings } = await embedMany({ model: callableModel, values: toEmbed.map((item) => item.document) });
     dimensions = embeddings[0]?.length ?? dimensions;
     toEmbed.forEach((item, i) => {
       entries.push({ capability_id: item.capability.id, document_hash: item.hash, embedding: embeddings[i] });
