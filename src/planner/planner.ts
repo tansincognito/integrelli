@@ -1,5 +1,5 @@
 import { generateObject } from 'ai';
-import { modelFor, modelsAvailable } from '@/models';
+import { languageModelFor, modelFor, modelsAvailable } from '@/models';
 import type { RetrievedCapability } from '@/retrieval';
 import type { Intent } from './intent';
 import { buildPlannerPrompt } from './prompt';
@@ -31,16 +31,17 @@ export async function generateWorkflowPlan(
 ): Promise<GeneratedPlan> {
   if (!modelsAvailable()) {
     throw new PlannerUnavailableError(
-      'Plan generation requires AI_GATEWAY_API_KEY. Retrieval and validation work without it; proposing a plan does not.'
+      'Plan generation requires AI_GATEWAY_API_KEY or GOOGLE_GENERATIVE_AI_API_KEY. Retrieval and validation work without it; proposing a plan does not.'
     );
   }
 
-  const model = modelFor('planner');
+  const modelId = modelFor('planner');
+  const model = languageModelFor('planner');
   const prompt = buildPlannerPrompt(intent, candidates);
 
   try {
     const { object } = await generateObject({ model, schema: WorkflowPlanSchema, prompt });
-    return { plan: object, model, llm_calls: 1 };
+    return { plan: object, model: modelId, llm_calls: 1 };
   } catch (firstError) {
     const detail = firstError instanceof Error ? firstError.message : String(firstError);
     try {
@@ -49,7 +50,7 @@ export async function generateWorkflowPlan(
         schema: WorkflowPlanSchema,
         prompt: `${prompt}\n\n---\nA previous attempt failed schema validation with:\n${detail}\nReturn a corrected plan that matches the contract exactly.`,
       });
-      return { plan: object, model, llm_calls: 2 };
+      return { plan: object, model: modelId, llm_calls: 2 };
     } catch (secondError) {
       throw new PlanGenerationError(
         `Planner failed to produce a schema-valid plan after one repair attempt: ${
