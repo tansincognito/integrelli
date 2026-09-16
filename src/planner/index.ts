@@ -27,6 +27,8 @@ export interface PlanRequestResult {
   plan: WorkflowPlan | null;
   validation: PlanValidation | null;
   llm_calls: number;
+  /** 'heuristic' when compiled straight from the capability graph — no model call succeeded or was available. */
+  plan_source: 'llm' | 'heuristic' | null;
   /** Set when the plan could not be produced at all, as opposed to produced and rejected. */
   error?: { code: 'planner_unavailable' | 'plan_generation_failed' | 'no_candidates'; message: string };
 }
@@ -81,6 +83,7 @@ export async function planWorkflow(request: string): Promise<PlanRequestResult> 
       plan: null,
       validation: null,
       llm_calls: 0,
+      plan_source: null,
       error: { code: 'no_candidates', message: 'No capability in the graph matched this request.' },
     };
   }
@@ -98,6 +101,7 @@ export async function planWorkflow(request: string): Promise<PlanRequestResult> 
       plan: generated.plan,
       validation,
       llm_calls: generated.llm_calls,
+      plan_source: generated.source,
     };
   } catch (err) {
     const code = err instanceof PlannerUnavailableError ? 'planner_unavailable' : 'plan_generation_failed';
@@ -110,6 +114,7 @@ export async function planWorkflow(request: string): Promise<PlanRequestResult> 
       plan: null,
       validation: null,
       llm_calls: 0,
+      plan_source: null,
       error: { code, message: err.message },
     };
   }

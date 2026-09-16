@@ -50,6 +50,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       plan: result.plan,
       validation: result.validation,
       llm_calls: result.llm_calls,
+      plan_source: result.plan_source,
       error: result.error,
     };
 

@@ -36,6 +36,7 @@ export interface PlanResponseBody {
     warnings: Array<{ code: string; message: string; step_id?: string }>;
   } | null;
   llm_calls: number;
+  plan_source: 'llm' | 'heuristic' | null;
   error?: { code: string; message: string };
 }
 
