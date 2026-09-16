@@ -1,5 +1,6 @@
 import { findFeedLinks } from '@/knowledge/graph';
 import type { SideEffectKind } from '@/knowledge/capability';
+import type { SemanticType } from '@/knowledge/schema';
 import type { RetrievedCapability } from '@/retrieval';
 import type { Intent, IntentClause } from './intent';
 import type { PlanMapping, PlanStep, WorkflowPlan } from './schema';
@@ -54,21 +55,25 @@ export function generateHeuristicPlan(intent: Intent, candidates: RetrievedCapab
     if (requiredInputs.length === 0) continue;
 
     // Nearest earlier step first, so a tie between two producers prefers the one closest to this step.
-    const producerIds = bounded
-      .slice(0, i)
-      .map((candidate) => candidate.capability_id)
-      .reverse();
+    const producers = bounded.slice(0, i);
+    const producerIds = producers.map((candidate) => candidate.capability_id).reverse();
     const links = findFeedLinks(producerIds, destination.capability_id);
 
     for (const input of requiredInputs) {
       const link = links.find((candidate) => candidate.to_path === input.path);
-      if (!link) continue;
-      const producerStepId = stepIdByCapabilityId.get(link.from_capability_id);
-      if (!producerStepId) continue;
-      mappings.push({
-        source: `${producerStepId}.${link.from_path}`,
-        destination: `${steps[i].id}.${input.path}`,
-      });
+      if (link) {
+        const producerStepId = stepIdByCapabilityId.get(link.from_capability_id);
+        if (producerStepId) {
+          mappings.push({ source: `${producerStepId}.${link.from_path}`, destination: `${steps[i].id}.${input.path}` });
+          continue;
+        }
+      }
+
+      // No single field feeds this one — a `text`/`json` sink (a message body, an
+      // email's `raw` field) is excluded from `can_feed` on purpose, see graph.ts.
+      // A curated content template can still compose one from earlier steps' data.
+      const template = buildContentTemplate(destination.capability_id, input.path, producers, stepIdByCapabilityId);
+      if (template) mappings.push({ source: template.source, destination: `${steps[i].id}.${input.path}`, transform: template.transform });
     }
   }
 
@@ -164,6 +169,79 @@ function detectSideEffectKind(clause: IntentClause): SideEffectKind | undefined 
   const lower = clause.text.toLowerCase();
   for (const { words, kind } of VERB_SIDE_EFFECTS) {
     if (words.some((word) => new RegExp(`\\b${word}\\b`).test(lower))) return kind;
+  }
+  return undefined;
+}
+
+/* -------------------------------------------------------- content templates -- */
+
+interface ContentTemplate {
+  /** A `template:` mapping source, ready to hand straight to the validator. */
+  source: string;
+  transform?: PlanMapping['transform'];
+}
+
+/**
+ * Composes a `template:` mapping for a free-text destination field that
+ * `can_feed` deliberately won't wire (see graph.ts's `LINKABLE_SEMANTIC_TYPES`
+ * comment). Deliberately small and explicit rather than a generic "stringify
+ * every earlier field" rule: a template is only emitted when the specific
+ * destination field is recognized AND the plan has the specific data that
+ * field needs (e.g. an actual recipient address). No match, no guess — the
+ * input stays unmapped and the validator reports it, same as any other gap.
+ */
+function buildContentTemplate(
+  destinationCapabilityId: string,
+  destinationPath: string,
+  producers: RetrievedCapability[],
+  stepIdByCapabilityId: Map<string, string>
+): ContentTemplate | undefined {
+  const key = `${destinationCapabilityId}.${destinationPath}`;
+  const builder = CONTENT_TEMPLATES[key];
+  return builder ? builder(producers, stepIdByCapabilityId) : undefined;
+}
+
+const NOTABLE_SUMMARY_TYPES: SemanticType[] = ['identifier', 'currency_amount', 'currency_code', 'timestamp'];
+const MAX_SUMMARY_FIELDS = 6;
+
+const CONTENT_TEMPLATES: Record<string, (producers: RetrievedCapability[], stepIds: Map<string, string>) => ContentTemplate | undefined> = {
+  'gmail.send_message.raw': (producers, stepIds) => {
+    const recipient = findOutputBySemanticType(producers, stepIds, 'email');
+    if (!recipient) return undefined; // No known recipient anywhere upstream — don't guess an address.
+
+    const event = producers[0];
+    const eventStepId = stepIds.get(event.capability_id);
+    if (!eventStepId) return undefined;
+
+    const summaryLines = event.capability.outputs
+      .filter((output) => NOTABLE_SUMMARY_TYPES.includes(output.semantic_type) && !output.path.includes('[]'))
+      .slice(0, MAX_SUMMARY_FIELDS)
+      .map((output) => `${output.name}: {${eventStepId}.${output.path}}`);
+
+    const body = [
+      `To: {${recipient.stepId}.${recipient.path}}`,
+      `Subject: ${event.capability.provider_id} notification: ${event.capability.name}`,
+      'Content-Type: text/plain; charset="UTF-8"',
+      '',
+      `Event: ${event.capability_id}`,
+      ...summaryLines,
+    ].join('\n');
+
+    return { source: `template:${body}`, transform: 'rfc822_base64url' };
+  },
+};
+
+function findOutputBySemanticType(
+  producers: RetrievedCapability[],
+  stepIds: Map<string, string>,
+  semanticType: SemanticType
+): { stepId: string; path: string } | undefined {
+  // Nearest producer first, same tie-break as the can_feed pass.
+  for (const producer of [...producers].reverse()) {
+    const stepId = stepIds.get(producer.capability_id);
+    if (!stepId) continue;
+    const field = producer.capability.outputs.find((output) => output.semantic_type === semanticType);
+    if (field) return { stepId, path: field.path };
   }
   return undefined;
 }

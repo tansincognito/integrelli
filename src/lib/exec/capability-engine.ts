@@ -195,6 +195,35 @@ function applyTransform(transform: TransformName | undefined, value: JsonValue):
   }
 }
 
+const TEMPLATE_PLACEHOLDER = /\{(step_\d+)\.([^{}]+)\}/g;
+
+/**
+ * Fills a `template:` mapping's `{step_N.path}` placeholders from earlier
+ * steps' responses. Placeholders are pre-validated by `validatePlan` (every
+ * one names a real earlier-step output), so a missing value here means the
+ * step it depended on didn't actually produce that field at run time — same
+ * "resolved but empty" case a plain field mapping already handles.
+ */
+function interpolateTemplate(
+  template: string,
+  stepResponses: ReadonlyMap<string, JsonValue>
+): { value: string; missingPlaceholder?: undefined } | { value?: undefined; missingPlaceholder: string } {
+  let missingPlaceholder: string | undefined;
+
+  const value = template.replace(TEMPLATE_PLACEHOLDER, (match, refStepId: string, path: string) => {
+    if (missingPlaceholder) return match;
+    const response = stepResponses.get(refStepId);
+    const fieldValue = response !== undefined ? getByPath(response, path) : undefined;
+    if (fieldValue === undefined) {
+      missingPlaceholder = match;
+      return match;
+    }
+    return toFlatValue(fieldValue);
+  });
+
+  return missingPlaceholder ? { missingPlaceholder } : { value };
+}
+
 interface ResolvedField {
   path: string;
   location: InputLocation;
@@ -312,6 +341,21 @@ export async function runCapabilityWorkflow(
       let rawValue: JsonValue | undefined;
       if (mapping.source_kind === 'literal') {
         rawValue = mapping.source.startsWith('literal:') ? mapping.source.slice('literal:'.length) : mapping.source;
+      } else if (mapping.source_kind === 'template') {
+        const template = mapping.source.startsWith('template:') ? mapping.source.slice('template:'.length) : mapping.source;
+        const interpolated = interpolateTemplate(template, stepResponses);
+        if (interpolated.missingPlaceholder) {
+          const issue: PlanIssue = {
+            severity: inputField.required ? 'error' : 'warning',
+            stepId: step.id,
+            code: 'unresolved_required_field',
+            message: `Step "${step.id}": template placeholder "${interpolated.missingPlaceholder}" produced no value.`,
+          };
+          if (inputField.required) blockingIssues.push(issue);
+          else warnings.push(issue);
+          continue;
+        }
+        rawValue = interpolated.value as string;
       } else {
         const sourceResponse = mapping.source_step_id ? stepResponses.get(mapping.source_step_id) : undefined;
         rawValue = sourceResponse !== undefined && mapping.source_path !== undefined

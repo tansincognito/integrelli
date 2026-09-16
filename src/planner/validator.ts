@@ -30,7 +30,8 @@ export type PlanIssueCode =
   | 'incompatible_types'
   | 'unmapped_required_input'
   | 'transform_recommended'
-  | 'low_confidence_capability';
+  | 'low_confidence_capability'
+  | 'invalid_template_placeholder';
 
 export interface PlanIssue {
   severity: 'error' | 'warning';
@@ -45,12 +46,15 @@ export interface ResolvedMapping {
   source: string;
   destination: string;
   transform?: string;
-  source_kind: 'literal' | 'field';
+  source_kind: 'literal' | 'field' | 'template';
   source_step_id?: string;
   source_path?: string;
   destination_step_id: string;
   destination_path: string;
 }
+
+/** Matches `{step_1.data.object.receipt_email}` inside a `template:` mapping source. */
+const TEMPLATE_PLACEHOLDER = /\{(step_\d+)\.([^{}]+)\}/g;
 
 export interface PlanValidation {
   valid: boolean;
@@ -206,6 +210,29 @@ export function validatePlan(candidate: unknown, options: ValidatePlanOptions = 
       return;
     }
 
+    if (source.kind === 'template') {
+      const templateErrors = validateTemplatePlaceholders(
+        source.path,
+        index,
+        destination.stepId,
+        stepOrder,
+        stepCapabilities
+      );
+      if (templateErrors.length > 0) {
+        errors.push(...templateErrors);
+        return;
+      }
+      resolved.push({
+        source: mapping.source,
+        destination: mapping.destination,
+        transform: mapping.transform,
+        source_kind: 'template',
+        destination_step_id: destination.stepId,
+        destination_path: destination.path,
+      });
+      return;
+    }
+
     if (source.kind !== 'field' || !source.stepId) {
       errors.push({
         severity: 'error',
@@ -324,8 +351,78 @@ function describe(field: SchemaField): string {
   return `${field.type}/${field.semantic_type}`;
 }
 
+/**
+ * Validates every `{step_N.path}` placeholder inside a `template:` mapping
+ * source. A template's destination is always free text, so — unlike a plain
+ * field mapping — there is no type-compatibility check to run per
+ * placeholder; only that each one names a real, earlier-step output. Any
+ * failure rejects the whole mapping (same "no partial trust" rule as a plain
+ * field mapping), which leaves the destination's required input unmapped and
+ * lets the existing `unmapped_required_input` check report it.
+ */
+function validateTemplatePlaceholders(
+  template: string,
+  mappingIndex: number,
+  destinationStepId: string,
+  stepOrder: Map<string, number>,
+  stepCapabilities: Map<string, Capability>
+): PlanIssue[] {
+  const errors: PlanIssue[] = [];
+  const destinationIndex = stepOrder.get(destinationStepId) ?? -1;
+
+  for (const match of template.matchAll(TEMPLATE_PLACEHOLDER)) {
+    const [placeholder, sourceStepId, path] = match;
+
+    if (!stepOrder.has(sourceStepId)) {
+      errors.push({
+        severity: 'error',
+        code: 'invalid_template_placeholder',
+        message: `Mapping ${mappingIndex}: template placeholder "${placeholder}" references unknown step "${sourceStepId}".`,
+        mapping_index: mappingIndex,
+      });
+      continue;
+    }
+
+    if (sourceStepId === destinationStepId) {
+      errors.push({
+        severity: 'error',
+        code: 'self_reference',
+        message: `Mapping ${mappingIndex}: template placeholder "${placeholder}" references its own step "${destinationStepId}".`,
+        step_id: destinationStepId,
+        mapping_index: mappingIndex,
+      });
+      continue;
+    }
+
+    const sourceIndex = stepOrder.get(sourceStepId) ?? -1;
+    if (sourceIndex > destinationIndex) {
+      errors.push({
+        severity: 'error',
+        code: 'forward_reference',
+        message: `Mapping ${mappingIndex}: template placeholder "${placeholder}" comes from step "${sourceStepId}", which runs after "${destinationStepId}".`,
+        step_id: destinationStepId,
+        mapping_index: mappingIndex,
+      });
+      continue;
+    }
+
+    const sourceCapability = stepCapabilities.get(sourceStepId);
+    if (!sourceCapability || !findField(sourceCapability.outputs, path)) {
+      errors.push({
+        severity: 'error',
+        code: 'unknown_source_field',
+        message: `Mapping ${mappingIndex}: template placeholder "${placeholder}" — "${path}" is not an output of ${sourceCapability?.id ?? sourceStepId}.`,
+        step_id: sourceStepId,
+        mapping_index: mappingIndex,
+      });
+    }
+  }
+
+  return errors;
+}
+
 interface ResolvedReference {
-  kind: 'literal' | 'field' | 'invalid';
+  kind: 'literal' | 'field' | 'template' | 'invalid';
   stepId?: string;
   path: string;
 }
@@ -344,6 +441,10 @@ export function resolveReference(
 ): ResolvedReference {
   if (reference.startsWith('literal:')) {
     return { kind: 'literal', path: reference.slice('literal:'.length) };
+  }
+
+  if (reference.startsWith('template:')) {
+    return { kind: 'template', path: reference.slice('template:'.length) };
   }
 
   const stepMatch = /^(step_\d+)\.(.+)$/.exec(reference);
