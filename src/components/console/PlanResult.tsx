@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn';
 import type { ExecutionTrace } from '@/types';
 import { TraceView } from '@/components/run/TraceView';
 import type { PlanResponseBody } from './types';
+import { WorkflowChart } from './WorkflowChart';
 
 type RunMode = 'test' | 'live';
 
@@ -68,7 +69,7 @@ export function PlanResult({
   };
 
   return (
-    <section className="mx-auto w-full max-w-4xl">
+    <section className="mx-auto w-full max-w-6xl">
       <button
         type="button"
         onClick={onBack}
@@ -109,31 +110,9 @@ export function PlanResult({
             {validation && <ValidationBadge valid={validation.valid} />}
           </div>
 
-          <ol className="divide-y divide-border">
-            {body.plan.steps.map((step, index) => (
-              <li key={step.id} className="flex gap-4 px-5 py-4">
-                <span className="mt-0.5 font-mono text-xs text-muted">{String(index + 1).padStart(2, '0')}</span>
-                <div className="min-w-0">
-                  <p className="font-mono text-sm text-foreground">{step.capability}</p>
-                  <p className="mt-1 text-sm text-muted">{step.purpose}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-
-          {body.plan.mappings.length > 0 && (
-            <div className="border-t border-border px-5 py-4">
-              <p className="font-mono text-xs uppercase tracking-wider text-muted">Mappings</p>
-              <ul className="mt-3 space-y-1.5">
-                {body.plan.mappings.map((mapping, index) => (
-                  <li key={index} className="overflow-x-auto font-mono text-xs text-muted-strong">
-                    <span className="text-foreground">{mapping.source}</span>
-                    <span className="px-2 text-muted">to</span>
-                    <span className="text-foreground">{mapping.destination}</span>
-                    {mapping.transform && <span className="ml-2 text-accent">via {mapping.transform}</span>}
-                  </li>
-                ))}
-              </ul>
+          {body.presented_steps && (
+            <div className="overflow-x-auto px-5 py-5">
+              <WorkflowChart steps={body.presented_steps} />
             </div>
           )}
         </div>
@@ -229,16 +208,25 @@ export function PlanResult({
         </div>
       )}
 
-      {validation && (validation.errors.length > 0 || validation.warnings.length > 0) && (
-        <ul className="mt-4 space-y-2">
-          {validation.errors.map((issue, index) => (
-            <IssueRow key={`e${index}`} severity="error" code={issue.code} message={issue.message} />
-          ))}
-          {validation.warnings.map((issue, index) => (
-            <IssueRow key={`w${index}`} severity="warning" code={issue.code} message={issue.message} />
-          ))}
-        </ul>
-      )}
+      {(() => {
+        // Missing required fields are already shown per-field on the workflow
+        // chart above (each step card flags them individually) — repeating
+        // them here as raw text would just say the same thing twice.
+        const otherErrors = validation?.errors.filter((issue) => issue.code !== 'unmapped_required_input') ?? [];
+        const warnings = validation?.warnings ?? [];
+        if (otherErrors.length === 0 && warnings.length === 0) return null;
+
+        return (
+          <ul className="mt-4 space-y-2">
+            {otherErrors.map((issue, index) => (
+              <IssueRow key={`e${index}`} severity="error" code={issue.code} message={issue.message} />
+            ))}
+            {warnings.map((issue, index) => (
+              <IssueRow key={`w${index}`} severity="warning" code={issue.code} message={issue.message} />
+            ))}
+          </ul>
+        );
+      })()}
 
       <div className="mt-10">
         <p className="font-mono text-xs uppercase tracking-wider text-muted">Retrieved capabilities</p>

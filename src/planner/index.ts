@@ -7,8 +7,10 @@ import { validatePlan, type PlanValidation } from './validator';
 export { extractIntent } from './intent';
 export { validatePlan } from './validator';
 export { PlannerUnavailableError, PlanGenerationError } from './planner';
+export { presentPlan } from './present';
 export type { WorkflowPlan } from './schema';
 export type { PlanValidation, PlanIssue } from './validator';
+export type { PresentedStep, PresentedField, PresentedMapping, MappingSourceKind } from './present';
 
 /**
  * End-to-end planning (architecture.md sections 7 and 8):
