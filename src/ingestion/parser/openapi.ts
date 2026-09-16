@@ -1,3 +1,4 @@
+import { parse as parseYaml } from 'yaml';
 import type { CapabilityAuthentication, SideEffectKind, SideEffects } from '@/knowledge/capability';
 import type { HttpMethod } from '@/knowledge/implementation';
 import { normalizeJsonType, type JsonSchemaNode } from '@/knowledge/schema';
@@ -86,11 +87,26 @@ export interface OpenApiParseResult {
   documentVersion?: string;
 }
 
+/**
+ * OpenAPI documents ship as either JSON or YAML upstream — Asana's real spec,
+ * for one, is YAML-only. JSON is tried first (cheap, and every JSON document
+ * is technically also a well-formed value the YAML parser would accept, so
+ * trying JSON first is purely a fast path, not a correctness distinction);
+ * YAML is the fallback for anything that isn't valid JSON.
+ */
+function parseOpenApiDocumentText(content: string): OpenApiDocument {
+  try {
+    return JSON.parse(content) as OpenApiDocument;
+  } catch {
+    return parseYaml(content) as OpenApiDocument;
+  }
+}
+
 export function parseOpenApi(content: string, seed: ProviderSeed): OpenApiParseResult {
   const issues: IngestionIssue[] = [];
   let document: OpenApiDocument;
   try {
-    document = JSON.parse(content) as OpenApiDocument;
+    document = parseOpenApiDocumentText(content);
   } catch (err) {
     return {
       drafts: [],
@@ -99,7 +115,7 @@ export function parseOpenApi(content: string, seed: ProviderSeed): OpenApiParseR
           severity: 'error',
           provider_id: seed.id,
           code: 'openapi_parse_failed',
-          message: `Could not parse ${seed.source.location} as JSON: ${err instanceof Error ? err.message : String(err)}`,
+          message: `Could not parse ${seed.source.location} as JSON or YAML: ${err instanceof Error ? err.message : String(err)}`,
         },
       ],
       operationIndex: new Set(),
@@ -371,7 +387,13 @@ function pickSuccessResponseSchema(operation: Operation): JsonSchemaNode | undef
   return undefined;
 }
 
-const MAX_REF_DEPTH = 6;
+// 6 was too shallow for real-world specs: Asana's allOf inheritance chains
+// (TaskCreateRequest -> TaskRequestBase -> TaskBase -> TaskCompact, each a
+// dereference() call) plus one more property hop into a referenced object
+// (e.g. data.assignee -> UserCompact -> name) exceed it comfortably. Still a
+// hard cap, so a genuinely circular spec can't hang ingestion — just a wider
+// one, and the depth counter makes the cost linear either way.
+const MAX_REF_DEPTH = 12;
 
 /** Inlines `#/components/...` refs. Depth-capped, so a recursive spec cannot hang ingestion. */
 function dereference(
@@ -396,6 +418,9 @@ function dereference(
     );
   }
   if (schema.items) out.items = dereference(document, schema.items, depth + 1) ?? {};
+  if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+    out.additionalProperties = dereference(document, schema.additionalProperties as JsonSchemaNode, depth + 1) ?? {};
+  }
 
   const allOf = schema.allOf as JsonSchemaNode[] | undefined;
   if (Array.isArray(allOf)) {

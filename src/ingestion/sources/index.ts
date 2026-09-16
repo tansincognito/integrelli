@@ -137,11 +137,11 @@ export const PROVIDER_SEEDS: ProviderSeed[] = [
     base_url: 'https://api.hubapi.com',
     priority: 5,
     source: {
-      id: 'hubspot.docs',
-      kind: 'markdown',
-      location: 'src/ingestion/sources/docs/hubspot.md',
-      upstream_url: 'https://developers.hubspot.com/docs/api/crm/contacts',
-      label: 'HubSpot CRM contacts reference (documentation prose, no OpenAPI seeded)',
+      id: 'hubspot.openapi',
+      kind: 'openapi',
+      location: 'src/ingestion/sources/openapi/hubspot.json',
+      upstream_url: 'https://github.com/HubSpot/HubSpot-public-api-spec-collection/tree/main/PublicApiSpecs/CRM',
+      label: 'HubSpot CRM OpenAPI (curated 10-op mirror, merged from real Contacts/Companies/Deals specs — see scripts/vendor-hubspot-spec.ts)',
     },
   },
   {
@@ -227,11 +227,11 @@ export const PROVIDER_SEEDS: ProviderSeed[] = [
     idempotency: { supported: false },
     priority: 10,
     source: {
-      id: 'asana.docs',
-      kind: 'markdown',
-      location: 'src/ingestion/sources/docs/asana.md',
-      upstream_url: 'https://developers.asana.com/reference/rest-api-reference',
-      label: 'Asana API reference (documentation prose — upstream OpenAPI source is YAML and this pipeline only parses JSON, so this provider ingests via the markdown path instead).',
+      id: 'asana.openapi',
+      kind: 'openapi',
+      location: 'src/ingestion/sources/openapi/asana.json',
+      upstream_url: 'https://github.com/Asana/openapi/blob/master/defs/asana_oas.yaml',
+      label: 'Asana OpenAPI (curated 3-op extract of the real, published spec — see scripts/vendor-asana-spec.ts)',
     },
   },
   {

@@ -1,0 +1,5389 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "HubSpot CRM (curated)",
+    "version": "v3",
+    "description": "Curated subset (10 operations: create/get/update for contacts, companies, deals, plus contact search), merged from HubSpot’s real published OpenAPI documents at github.com/HubSpot/HubSpot-public-api-spec-collection. Not hand-typed — every operation, parameter, and schema below is copied verbatim from the upstream spec files, with $refs renamed per source object type to avoid collisions when merging three documents into one."
+  },
+  "servers": [
+    {
+      "url": "https://api.hubapi.com"
+    }
+  ],
+  "paths": {
+    "/crm/v3/objects/contacts": {
+      "post": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Create a contact",
+        "description": "Create a single contact. Include a `properties` object to define [property values](https://developers.hubspot.com/docs/guides/api/crm/properties) for the contact, along with an `associations` array to define [associations](https://developers.hubspot.com/docs/guides/api/crm/associations/associations-v4) with other CRM records.",
+        "operationId": "post-/crm/v3/objects/contacts_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactsSimplePublicObjectInputForCreate"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "headers": {
+              "Location": {
+                "description": "URL of the newly created resource",
+                "style": "simple",
+                "explode": false,
+                "schema": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.contacts.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "create_contact"
+      }
+    },
+    "/crm/v3/objects/contacts/{contactId}": {
+      "get": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Retrieve a contact",
+        "description": "Retrieve a contact by its ID (`contactId`) or by a unique property (`idProperty`). You can specify what is returned using the `properties` query parameter.",
+        "operationId": "get-/crm/v3/objects/contacts/{contactId}_getById",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "description": "Whether to return only results that have been archived.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "example": null,
+              "default": false
+            }
+          },
+          {
+            "name": "associations",
+            "in": "query",
+            "description": "A comma separated list of object types to retrieve associated IDs for. If any of the specified associations do not exist, they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "properties",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned in the response. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "propertiesWithHistory",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned along with their history of previous values. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsSimplePublicObjectWithAssociations"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.contacts.read"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "get_contact"
+      },
+      "patch": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Update a contact",
+        "description": "Update an existing contact, identified by ID or email/unique property value. To identify a contact by ID, include the ID in the request URL path. To identify a contact by their email or other unique property, include the email/property value in the request URL path, and add the `idProperty` query parameter (`/crm/v3/objects/contacts/jon@website.com?idProperty=email`). Provided property values will be overwritten. Read-only and non-existent properties will result in an error. Properties values can be cleared by passing an empty string.",
+        "operationId": "patch-/crm/v3/objects/contacts/{contactId}_update",
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactsSimplePublicObjectInput"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.contacts.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "update_contact"
+      }
+    },
+    "/crm/v3/objects/contacts/search": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for contacts",
+        "description": "Search for contacts by filtering on properties, searching through associations, and sorting results. Learn more about [CRM search](https://developers.hubspot.com/docs/guides/api/crm/search#make-a-search-request).",
+        "operationId": "post-/crm/v3/objects/contacts/search_doSearch",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactsPublicObjectSearchRequest"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsCollectionResponseWithTotalSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.contacts.read"
+            ]
+          }
+        ],
+        "x-hubspot-rate-limit-exemptions": [
+          "ten-secondly"
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "search_contacts"
+      }
+    },
+    "/crm/v3/objects/companies": {
+      "post": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Create a company",
+        "description": "Create a single company. Include a `properties` object to define [property values](https://developers.hubspot.com/docs/guides/api/crm/properties) for the company, along with an `associations` array to define [associations](https://developers.hubspot.com/docs/guides/api/crm/associations/associations-v4) with other CRM records.",
+        "operationId": "post-/crm/v3/objects/companies_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompaniesSimplePublicObjectInputForCreate"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "headers": {
+              "Location": {
+                "description": "URL of the newly created resource",
+                "style": "simple",
+                "explode": false,
+                "schema": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompaniesSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.companies.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "create_company"
+      }
+    },
+    "/crm/v3/objects/companies/{companyId}": {
+      "get": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Retrieve a company",
+        "description": "Retrieve a company by its ID (`companyId`) or by a unique property (`idProperty`). You can specify what is returned using the `properties` query parameter.",
+        "operationId": "get-/crm/v3/objects/companies/{companyId}_getById",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "description": "Whether to return only results that have been archived.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "example": null,
+              "default": false
+            }
+          },
+          {
+            "name": "associations",
+            "in": "query",
+            "description": "A comma separated list of object types to retrieve associated IDs for. If any of the specified associations do not exist, they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "properties",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned in the response. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "propertiesWithHistory",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned along with their history of previous values. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompaniesSimplePublicObjectWithAssociations"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.companies.read"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "get_company"
+      },
+      "patch": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Update a company",
+        "description": "Update a company by ID (`companyId`) or unique property value (`idProperty`). Provided property values will be overwritten. Read-only and non-existent properties will result in an error. Properties values can be cleared by passing an empty string.",
+        "operationId": "patch-/crm/v3/objects/companies/{companyId}_update",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompaniesSimplePublicObjectInput"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompaniesSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.companies.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "update_company"
+      }
+    },
+    "/crm/v3/objects/0-3": {
+      "post": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Create",
+        "description": "Create a deal with the given properties and return a copy of the object, including the ID. Documentation and examples for creating standard deals is provided.",
+        "operationId": "post-/crm/v3/objects/0-3_create",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DealsSimplePublicObjectInputForCreate"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "headers": {
+              "Location": {
+                "description": "URL of the newly created resource",
+                "style": "simple",
+                "explode": false,
+                "schema": {
+                  "type": "string",
+                  "example": null
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealsSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.deals.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "create_deal"
+      }
+    },
+    "/crm/v3/objects/0-3/{dealId}": {
+      "get": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Read",
+        "description": "Read an Object identified by `{dealId}`. `{dealId}` refers to the internal object ID by default, or optionally any unique property value as specified by the `idProperty` query param.  Control what is returned via the `properties` query param.",
+        "operationId": "get-/crm/v3/objects/0-3/{dealId}_getById",
+        "parameters": [
+          {
+            "name": "dealId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "description": "Whether to return only results that have been archived.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "boolean",
+              "example": null,
+              "default": false
+            }
+          },
+          {
+            "name": "associations",
+            "in": "query",
+            "description": "A comma separated list of object types to retrieve associated IDs for. If any of the specified associations do not exist, they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "properties",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned in the response. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          },
+          {
+            "name": "propertiesWithHistory",
+            "in": "query",
+            "description": "A comma separated list of the properties to be returned along with their history of previous values. If any of the specified properties are not present on the requested object(s), they will be ignored.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealsSimplePublicObjectWithAssociations"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.deals.read"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "get_deal"
+      },
+      "patch": {
+        "tags": [
+          "Basic"
+        ],
+        "summary": "Update",
+        "description": "Perform a partial update of an Object identified by `{dealId}`or optionally a unique property value as specified by the `idProperty` query param. `{dealId}` refers to the internal object ID by default, and the `idProperty` query param refers to a property whose values are unique for the object. Provided property values will be overwritten. Read-only and non-existent properties will result in an error. Properties values can be cleared by passing an empty string.",
+        "operationId": "patch-/crm/v3/objects/0-3/{dealId}_update",
+        "parameters": [
+          {
+            "name": "dealId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": ".+",
+              "type": "string",
+              "example": null
+            }
+          },
+          {
+            "name": "idProperty",
+            "in": "query",
+            "description": "The name of a property whose values are unique for this object type",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": null
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DealsSimplePublicObjectInput"
+              },
+              "example": null
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DealsSimplePublicObject"
+                },
+                "example": null
+              }
+            }
+          },
+          "default": {
+            "description": "",
+            "$ref": "#/components/responses/Error"
+          }
+        },
+        "security": [
+          {
+            "oauth2": [
+              "crm.objects.deals.write"
+            ]
+          }
+        ],
+        "x-hubspot-user-level-auth": {
+          "internalOnly": false
+        },
+        "x-integrelli-capability": "update_deal"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ContactsAssociatedId": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the associated object.",
+            "example": null
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of associations.",
+            "example": "deal_to_contact"
+          }
+        },
+        "description": "Contains the id and type of an association",
+        "example": null
+      },
+      "ContactsAssociationSpec": {
+        "required": [
+          "associationCategory",
+          "associationTypeId"
+        ],
+        "type": "object",
+        "properties": {
+          "associationCategory": {
+            "type": "string",
+            "description": "The category of the association, indicating its origin or purpose. Valid values include \"HUBSPOT_DEFINED\", \"USER_DEFINED\", \"INTEGRATOR_DEFINED\", and \"WORK\".",
+            "example": null,
+            "enum": [
+              "HUBSPOT_DEFINED",
+              "INTEGRATOR_DEFINED",
+              "USER_DEFINED",
+              "WORK"
+            ]
+          },
+          "associationTypeId": {
+            "type": "integer",
+            "description": "An integer representing the unique identifier for the type of association.",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Defines the type, direction, and details of the relationship between two CRM objects.",
+        "example": null
+      },
+      "ContactsBatchInputSimplePublicObjectBatchInput": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be processed in the batch operation. Each object in the array contains the data necessary for the specific operation being performed.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectBatchInput"
+            }
+          }
+        },
+        "description": "Represents a batch input component used to handle multiple simple public objects in a single API request. This component is typically used when performing batch operations to create, update, or delete multiple records simultaneously.",
+        "example": null
+      },
+      "ContactsBatchInputSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be created. Each object in the array contains the necessary data for creating a new entry in the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectBatchInputForCreate"
+            }
+          }
+        },
+        "description": "Represents a batch input for creating multiple simple public objects in a single request. This component is used to streamline the process of adding new objects to a HubSpot account by allowing multiple entries to be created at once.",
+        "example": null
+      },
+      "ContactsBatchInputSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be upserted. Each object in the array contains the necessary data for creating or updating a record in HubSpot.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectBatchInputUpsert"
+            }
+          }
+        },
+        "description": "Represents a batch input operation for upserting simple public objects in HubSpot. This component is used to process multiple upsert operations in a single request, improving efficiency and performance.",
+        "example": null
+      },
+      "ContactsBatchInputSimplePublicObjectId": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public object IDs to be processed in the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectId"
+            }
+          }
+        },
+        "description": "Represents a batch input payload containing a list of simple public object IDs. This component is used when performing batch operations on multiple objects within HubSpot.",
+        "example": null
+      },
+      "ContactsBatchReadInputSimplePublicObjectId": {
+        "required": [
+          "inputs",
+          "properties",
+          "propertiesWithHistory"
+        ],
+        "type": "object",
+        "properties": {
+          "idProperty": {
+            "type": "string",
+            "description": "When using a custom unique value property to retrieve records, the name of the property. Do not include this parameter if retrieving by record ID.",
+            "example": null
+          },
+          "inputs": {
+            "type": "array",
+            "description": "An array of SimplePublicObjectId objects, each containing the ID of an object to be read.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectId"
+            }
+          },
+          "properties": {
+            "type": "array",
+            "description": "An array of the property names to be returned in the response. If a specified property is not present on the requested object(s), it will be ignored.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "array",
+            "description": "An array of the property names to be returned along with their history of previous values. If a specified property is not present on the requested object(s), it will be ignored.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Specifies the input for reading a batch of CRM objects, including arrays of object IDs, requested property names (with optional history), and an optional unique identifying property.",
+        "example": null
+      },
+      "ContactsBatchResponseSimplePublicObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs, providing additional information or actions related to the batch operation.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch request was initially made, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicObject items representing the results of the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing began, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. The expected value is \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "A public object batch response object",
+        "example": null
+      },
+      "ContactsBatchResponseSimplePublicObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request - \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\"",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch operation on CRM objects, including the processing status, batch results, timestamps, and a list of any errors encountered during the operation.",
+        "example": null
+      },
+      "ContactsBatchResponseSimplePublicUpsertObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs, providing additional information or actions related to the batch operation.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicUpsertObject items representing the results of the batch upsert operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. Can be: \"PENDING\", \"PROCESSING\", \"CANCELED\", or \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch upsert operation, including the operation’s status, timestamps, and a list of successfully created or updated objects.",
+        "example": null
+      },
+      "ContactsBatchResponseSimplePublicUpsertObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. Can be: \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the response from a batch upsert operation, including the status, timestamps, successfully processed objects, and any errors that occurred during processing.",
+        "example": null
+      },
+      "ContactsCollectionResponseAssociatedId": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/ContactsPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "A list of associated IDs retrieved from the API request.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsAssociatedId"
+            }
+          }
+        },
+        "description": "Represents a collection of associated IDs returned by an API request, including pagination details for navigating through the results.",
+        "example": null
+      },
+      "ContactsCollectionResponseSimplePublicObjectWithAssociationsForwardPaging": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/ContactsForwardPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of simple public objects that are included in the current page of the response. Each object may include its associated data.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObjectWithAssociations"
+            }
+          }
+        },
+        "description": "Represents a paginated collection response that includes simple public objects with their associations. This component is used to handle the results and pagination details when retrieving a list of objects from the API.",
+        "example": null
+      },
+      "ContactsCollectionResponseWithTotalSimplePublicObject": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/ContactsPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array containing the simple public objects returned in the current page of the response. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsSimplePublicObject"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "The number of available results",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Represents a list of simple objects returned from an API request, along with the total count of objects available.",
+        "example": null
+      },
+      "ContactsError": {
+        "required": [
+          "category",
+          "correlationId",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The error category",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "A unique identifier for the request. Include this value with any error reports or support tickets",
+            "format": "uuid",
+            "example": "aeb5f871-7f07-4993-9211-075dc63e7cbf"
+          },
+          "errors": {
+            "type": "array",
+            "description": "further information about the error",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsErrorDetail"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs containing documentation about the error or recommended remediation steps",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": "An error occurred"
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.",
+        "example": {
+          "message": "Invalid input (details will vary based on the error)",
+          "correlationId": "aeb5f871-7f07-4993-9211-075dc63e7cbf",
+          "category": "VALIDATION_ERROR",
+          "links": {
+            "knowledge-base": "https://www.hubspot.com/products/service/knowledge-base"
+          }
+        }
+      },
+      "ContactsErrorDetail": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The status code associated with the error detail",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{missingScopes=[scope1, scope2]}"
+          },
+          "in": {
+            "type": "string",
+            "description": "The name of the field or parameter in which the error was found.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": null
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.",
+        "example": null
+      },
+      "ContactsFilter": {
+        "required": [
+          "operator",
+          "propertyName"
+        ],
+        "type": "object",
+        "properties": {
+          "highValue": {
+            "type": "string",
+            "description": "The upper boundary value when using ranged-based filters.",
+            "example": null
+          },
+          "operator": {
+            "type": "string",
+            "description": "The comparison operator used in the filter, such as \"EQ\" or \"GT\".",
+            "example": null,
+            "enum": [
+              "BETWEEN",
+              "CONTAINS_TOKEN",
+              "EQ",
+              "GT",
+              "GTE",
+              "HAS_PROPERTY",
+              "IN",
+              "LT",
+              "LTE",
+              "NEQ",
+              "NOT_CONTAINS_TOKEN",
+              "NOT_HAS_PROPERTY",
+              "NOT_IN"
+            ]
+          },
+          "propertyName": {
+            "type": "string",
+            "description": "The name of the property to apply the filter to.",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to match against the property.",
+            "example": null
+          },
+          "values": {
+            "type": "array",
+            "description": "The values to match against the property.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Defines a single condition for searching CRM objects, specifying the property to filter on, the operator to use (such as equals, greater than, or contains), and the value(s) to compare against. ",
+        "example": null
+      },
+      "ContactsFilterGroup": {
+        "required": [
+          "filters"
+        ],
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "description": "A list of individual filter criteria that are applied together as a group. Each filter specifies a condition that records must meet to be included in the results.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsFilter"
+            }
+          }
+        },
+        "description": "Represents a group of filters used to query data within HubSpot. This component is used to define criteria for filtering records in various API endpoints.",
+        "example": null
+      },
+      "ContactsForwardPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/ContactsNextPage"
+          }
+        },
+        "description": "Paging information for forward-only pagination. Contains the next page reference when more results are available; omitted or empty on the last page.",
+        "example": null
+      },
+      "ContactsNextPage": {
+        "required": [
+          "after"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the next page results.",
+            "example": null
+          }
+        },
+        "description": "Specifies the paging information needed to retrieve the next set of results in a paginated API response",
+        "example": {
+          "after": "NTI1Cg%3D%3D",
+          "link": "?after=NTI1Cg%3D%3D"
+        }
+      },
+      "ContactsPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/ContactsNextPage"
+          },
+          "prev": {
+            "$ref": "#/components/schemas/ContactsPreviousPage"
+          }
+        },
+        "description": "Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.",
+        "example": null
+      },
+      "ContactsPreviousPage": {
+        "required": [
+          "before"
+        ],
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving previous pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the previous pages' results.",
+            "example": null
+          }
+        },
+        "description": "specifies the paging information needed to retrieve the previous set of results in a paginated API response",
+        "example": null
+      },
+      "ContactsPublicAssociationsForObject": {
+        "required": [
+          "to",
+          "types"
+        ],
+        "type": "object",
+        "properties": {
+          "to": {
+            "$ref": "#/components/schemas/ContactsPublicObjectId"
+          },
+          "types": {
+            "type": "array",
+            "description": "The types of associations that exist between the object and other entities, indicating the nature of their relationship.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsAssociationSpec"
+            }
+          }
+        },
+        "description": "Represents the associations for a specific object in HubSpot, detailing the types of associations and the related objects involved.",
+        "example": null
+      },
+      "ContactsPublicGdprDeleteInput": {
+        "required": [
+          "objectId"
+        ],
+        "type": "object",
+        "properties": {
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object. An alternative to identifying a contact by ID.",
+            "example": null
+          },
+          "objectId": {
+            "type": "string",
+            "description": "The ID of the contact to permanently delete.",
+            "example": null
+          }
+        },
+        "description": "An input that contains the information required to process a public GDPR data deletion request.",
+        "example": null
+      },
+      "ContactsPublicMergeInput": {
+        "required": [
+          "objectIdToMerge",
+          "primaryObjectId"
+        ],
+        "type": "object",
+        "properties": {
+          "objectIdToMerge": {
+            "type": "string",
+            "description": "The object ID of the record that the merge will not set as the current value after the merge.",
+            "example": null
+          },
+          "primaryObjectId": {
+            "type": "string",
+            "description": "The object ID of the record that the merge will generally set as the current value after the merge.",
+            "example": null
+          }
+        },
+        "description": "Input data for merging two records.",
+        "example": null
+      },
+      "ContactsPublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "ContactsPublicObjectSearchRequest": {
+        "required": [
+          "after",
+          "filterGroups",
+          "limit",
+          "properties",
+          "sorts"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "filterGroups": {
+            "type": "array",
+            "description": "Up to 6 groups of filters defining additional query criteria.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsFilterGroup"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum results to return, up to 200 objects.",
+            "format": "int32",
+            "example": null
+          },
+          "properties": {
+            "type": "array",
+            "description": "A list of property names to include in the response.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "query": {
+            "type": "string",
+            "description": "The search query string, up to 3000 characters.",
+            "example": null
+          },
+          "sorts": {
+            "type": "array",
+            "description": "Specifies sorting order based on object properties.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Describes a search request",
+        "example": null
+      },
+      "ContactsPublicObjectWarning": {
+        "required": [
+          "category",
+          "context",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The classification of the warning, indicating the type or nature of the issue.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Additional information or metadata about the warning, providing context for understanding the issue.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "The text of the warning message, providing information about the issue or alert.",
+            "example": null
+          }
+        },
+        "description": "Represents a warning message related to a public object in HubSpot, providing details about the nature and context of the warning.",
+        "example": null
+      },
+      "ContactsSimplePublicObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used to trace the write request for the object. Set a unique ID for each write operation; it is returned with any errors so you can identify which request encountered which error.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key-value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "company": {
+                "type": "string"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/ContactsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history, each with a timestamp and source information.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "A simple public object.",
+        "example": {
+          "archived": false,
+          "createdAt": "2019-10-30T03:30:17.883Z",
+          "id": "512",
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          },
+          "updatedAt": "2019-12-07T16:50:06.678Z"
+        }
+      },
+      "ContactsSimplePublicObjectBatchInput": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the contact to update. This can be the object ID, or the unique property value of the `idProperty` property.",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a unique property, when identifying records by property. ",
+            "example": "my_unique_property_name"
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "A unique identifier for tracing the request.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key-value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "Contains an array of CRM object records to be processed in a batch operation, each defined by their ID and properties.",
+        "example": null
+      },
+      "ContactsSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array of associations that define the relationships between the objects being created and other existing objects. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsPublicAssociationsForObject"
+            }
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "An input object that contains a collection of objects to be created together in a batch.",
+        "example": null
+      },
+      "ContactsSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier for tracing the creation request.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "Represents an object used in batch upsert operations, containing an object’s unique identifier, its properties, and optionally the unique property name and a write trace ID.",
+        "example": null
+      },
+      "ContactsSimplePublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": "430001"
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "ContactsSimplePublicObjectInput": {
+        "required": [
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "company": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": "Represents the input required to update a CRM object, containing an object with property names and their corresponding values.",
+        "example": {
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          }
+        }
+      },
+      "ContactsSimplePublicObjectInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array that specifies the relationships between the new public object and existing objects. This is required to establish how the new object is connected within the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsPublicAssociationsForObject"
+            }
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key-value pairs for setting properties for the new object.",
+            "example": null,
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "company": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": "Is the input object used to create a new CRM object, containing the properties to be set and optional associations to link the new record with other CRM objects.",
+        "example": null
+      },
+      "ContactsSimplePublicObjectWithAssociations": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "associations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ContactsCollectionResponseAssociatedId"
+            },
+            "description": "A map of associated object types to their associated IDs.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "firstname": {
+                "type": "string"
+              },
+              "lastname": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "company": {
+                "type": "string"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/ContactsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL link to access this object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object along with its properties, timestamps, and a set of associated object IDs grouped by association type.",
+        "example": null
+      },
+      "ContactsSimplePublicUpsertObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "new",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "new": {
+            "type": "boolean",
+            "description": "Whether the property is new.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier for tracing the creation request.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/ContactsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object that has either been created or updated (upserted)",
+        "example": null
+      },
+      "ContactsStandardError": {
+        "required": [
+          "category",
+          "context",
+          "errors",
+          "links",
+          "message",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The main category of the error.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Additional context-specific information related to the error.",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "description": "The detailed error objects.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/ContactsErrorDetail"
+            }
+          },
+          "id": {
+            "type": "string",
+            "description": "A unique ID for the error instance.",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "URLs linking to documentation or resources associated with the error.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable string describing the error and possible remediation steps.",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "A text status code for the error, typically \"error\".",
+            "example": null
+          },
+          "subCategory": {
+            "type": "object",
+            "properties": {},
+            "description": "A more specific error category within each main category.",
+            "example": null
+          }
+        },
+        "description": "Represents a standard error response in the HubSpot API, providing detailed information about an error that occurred during an API request.",
+        "example": null
+      },
+      "ContactsValueWithTimestamp": {
+        "required": [
+          "sourceType",
+          "timestamp",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "description": "A string identifier for the specific source of the value.",
+            "example": null
+          },
+          "sourceLabel": {
+            "type": "string",
+            "description": "A human-readable label.",
+            "example": null
+          },
+          "sourceType": {
+            "type": "string",
+            "description": "A string indicating the type of source from which the value originated.",
+            "example": null
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The timestamp when the property was updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "updatedByUserId": {
+            "type": "integer",
+            "description": "The ID of the user who last updated the property.",
+            "format": "int32",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The property value.",
+            "example": null
+          }
+        },
+        "description": "Property model that includes timestamp.",
+        "example": null
+      },
+      "CompaniesAssociatedId": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the associated object.",
+            "example": null
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of associations.",
+            "example": "deal_to_contact"
+          }
+        },
+        "description": "Contains the id and type of an association",
+        "example": null
+      },
+      "CompaniesAssociationSpec": {
+        "required": [
+          "associationCategory",
+          "associationTypeId"
+        ],
+        "type": "object",
+        "properties": {
+          "associationCategory": {
+            "type": "string",
+            "description": "For [labeled associations](https://developers.hubspot.com/docs/guides/api/crm/associations/associations-v4#associate-records-with-a-label), the category of the association.",
+            "example": null,
+            "enum": [
+              "HUBSPOT_DEFINED",
+              "INTEGRATOR_DEFINED",
+              "USER_DEFINED",
+              "WORK"
+            ]
+          },
+          "associationTypeId": {
+            "type": "integer",
+            "description": "The [association type ID](https://developers.hubspot.com/docs/guides/api/crm/associations/associations-v4#association-type-id-values) (e.g., `4` for contact-to-company associations).",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Defines the type, direction, and details of the relationship between two CRM objects.",
+        "example": null
+      },
+      "CompaniesBatchInputSimplePublicObjectBatchInput": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be processed in the batch operation. Each object in the array contains the data necessary for the specific operation being performed.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectBatchInput"
+            }
+          }
+        },
+        "description": "Represents a batch input component used to handle multiple simple public objects in a single API request. This component is typically used when performing batch operations to create, update, or delete multiple records simultaneously.",
+        "example": null
+      },
+      "CompaniesBatchInputSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be created. Each object in the array contains the necessary data for creating a new entry in the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectBatchInputForCreate"
+            }
+          }
+        },
+        "description": "Represents a batch input for creating multiple simple public objects in a single request. This component is used to streamline the process of adding new objects to a HubSpot account by allowing multiple entries to be created at once.",
+        "example": null
+      },
+      "CompaniesBatchInputSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be upserted. Each object in the array contains the necessary data for creating or updating a record in HubSpot.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectBatchInputUpsert"
+            }
+          }
+        },
+        "description": "Represents a batch input operation for upserting simple public objects in HubSpot. This component is used to process multiple upsert operations in a single request, improving efficiency and performance.",
+        "example": null
+      },
+      "CompaniesBatchInputSimplePublicObjectId": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public object IDs to be processed in the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectId"
+            }
+          }
+        },
+        "description": "Represents a batch input payload containing a list of simple public object IDs. This component is used when performing batch operations on multiple objects within HubSpot.",
+        "example": null
+      },
+      "CompaniesBatchReadInputSimplePublicObjectId": {
+        "required": [
+          "inputs",
+          "properties",
+          "propertiesWithHistory"
+        ],
+        "type": "object",
+        "properties": {
+          "idProperty": {
+            "type": "string",
+            "description": "When using a custom unique value property to retrieve records, the name of the property. Do not include this parameter if retrieving by record ID.",
+            "example": null
+          },
+          "inputs": {
+            "type": "array",
+            "description": "An array of SimplePublicObjectId objects, each containing the ID of an object to be read.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectId"
+            }
+          },
+          "properties": {
+            "type": "array",
+            "description": "An array of the property names to be returned in the response. If a specified property is not present on the requested object(s), it will be ignored.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "array",
+            "description": "An array of the property names to be returned along with their history of previous values. If a specified property is not present on the requested object(s), it will be ignored.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Specifies the input for reading a batch of CRM objects, including arrays of object IDs, requested property names (with optional history), and an optional unique identifying property.",
+        "example": null
+      },
+      "CompaniesBatchResponseSimplePublicObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs, providing additional information or actions related to the batch operation.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch request was initially made, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicObject items representing the results of the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing began, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. The expected value is \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "A public object batch response object",
+        "example": null
+      },
+      "CompaniesBatchResponseSimplePublicObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request - \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\"",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch operation on CRM objects, including the processing status, batch results, timestamps, and a list of any errors encountered during the operation.",
+        "example": null
+      },
+      "CompaniesBatchResponseSimplePublicUpsertObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs, providing additional information or actions related to the batch operation.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicUpsertObject items representing the results of the batch upsert operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. The expected value is \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch upsert operation, including the operation’s status, timestamps, and a list of successfully created or updated objects.",
+        "example": null
+      },
+      "CompaniesBatchResponseSimplePublicUpsertObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. Can be: \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the response from a batch upsert operation, including the status, timestamps, successfully processed objects, and any errors that occurred during processing.",
+        "example": null
+      },
+      "CompaniesCollectionResponseAssociatedId": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/CompaniesPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "A list of associated IDs retrieved from the API request.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesAssociatedId"
+            }
+          }
+        },
+        "description": "Represents a collection of associated IDs returned by an API request, including pagination details for navigating through the results.",
+        "example": null
+      },
+      "CompaniesCollectionResponseSimplePublicObjectWithAssociationsForwardPaging": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/CompaniesForwardPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of simple public objects that are included in the current page of the response. Each object may include its associated data.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObjectWithAssociations"
+            }
+          }
+        },
+        "description": "Represents a paginated collection response that includes simple public objects with their associations. This component is used to handle the results and pagination details when retrieving a list of objects from the API.",
+        "example": null
+      },
+      "CompaniesCollectionResponseWithTotalSimplePublicObject": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/CompaniesPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array containing the simple public objects returned in the current page of the response. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesSimplePublicObject"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "The number of available results",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Represents a list of simple objects returned from an API request, along with the total count of objects available.",
+        "example": null
+      },
+      "CompaniesError": {
+        "required": [
+          "category",
+          "correlationId",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The error category",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "A unique identifier for the request. Include this value with any error reports or support tickets",
+            "format": "uuid",
+            "example": "aeb5f871-7f07-4993-9211-075dc63e7cbf"
+          },
+          "errors": {
+            "type": "array",
+            "description": "further information about the error",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesErrorDetail"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs containing documentation about the error or recommended remediation steps",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": "An error occurred"
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.",
+        "example": {
+          "message": "Invalid input (details will vary based on the error)",
+          "correlationId": "aeb5f871-7f07-4993-9211-075dc63e7cbf",
+          "category": "VALIDATION_ERROR",
+          "links": {
+            "knowledge-base": "https://www.hubspot.com/products/service/knowledge-base"
+          }
+        }
+      },
+      "CompaniesErrorDetail": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The status code associated with the error detail",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{missingScopes=[scope1, scope2]}"
+          },
+          "in": {
+            "type": "string",
+            "description": "The name of the field or parameter in which the error was found.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": null
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.",
+        "example": null
+      },
+      "CompaniesFilter": {
+        "required": [
+          "operator",
+          "propertyName"
+        ],
+        "type": "object",
+        "properties": {
+          "highValue": {
+            "type": "string",
+            "description": "The upper boundary value when using ranged-based filters.",
+            "example": null
+          },
+          "operator": {
+            "type": "string",
+            "description": "The comparison operator used in the filter, such as \"EQ\" or \"GT\".",
+            "example": null,
+            "enum": [
+              "BETWEEN",
+              "CONTAINS_TOKEN",
+              "EQ",
+              "GT",
+              "GTE",
+              "HAS_PROPERTY",
+              "IN",
+              "LT",
+              "LTE",
+              "NEQ",
+              "NOT_CONTAINS_TOKEN",
+              "NOT_HAS_PROPERTY",
+              "NOT_IN"
+            ]
+          },
+          "propertyName": {
+            "type": "string",
+            "description": "The name of the property to apply the filter to.",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to match against the property.",
+            "example": null
+          },
+          "values": {
+            "type": "array",
+            "description": "The values to match against the property.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Defines a single condition for searching CRM objects, specifying the property to filter on, the operator to use (such as equals, greater than, or contains), and the value(s) to compare against. ",
+        "example": null
+      },
+      "CompaniesFilterGroup": {
+        "required": [
+          "filters"
+        ],
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "description": "A list of individual filter criteria that are applied together as a group. Each filter specifies a condition that records must meet to be included in the results.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesFilter"
+            }
+          }
+        },
+        "description": "Represents a group of filters used to query data within HubSpot. This component is used to define criteria for filtering records in various API endpoints.",
+        "example": null
+      },
+      "CompaniesForwardPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/CompaniesNextPage"
+          }
+        },
+        "description": "Paging information for forward-only pagination. Contains the next page reference when more results are available; omitted or empty on the last page.",
+        "example": null
+      },
+      "CompaniesNextPage": {
+        "required": [
+          "after"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the next page results.",
+            "example": null
+          }
+        },
+        "description": "Specifies the paging information needed to retrieve the next set of results in a paginated API response",
+        "example": {
+          "after": "NTI1Cg%3D%3D",
+          "link": "?after=NTI1Cg%3D%3D"
+        }
+      },
+      "CompaniesPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/CompaniesNextPage"
+          },
+          "prev": {
+            "$ref": "#/components/schemas/CompaniesPreviousPage"
+          }
+        },
+        "description": "Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.",
+        "example": null
+      },
+      "CompaniesPreviousPage": {
+        "required": [
+          "before"
+        ],
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving previous pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the previous pages' results.",
+            "example": null
+          }
+        },
+        "description": "specifies the paging information needed to retrieve the previous set of results in a paginated API response",
+        "example": null
+      },
+      "CompaniesPublicAssociationsForObject": {
+        "required": [
+          "to",
+          "types"
+        ],
+        "type": "object",
+        "properties": {
+          "to": {
+            "$ref": "#/components/schemas/CompaniesPublicObjectId"
+          },
+          "types": {
+            "type": "array",
+            "description": "The types of associations that exist between the object and other entities, indicating the nature of their relationship.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesAssociationSpec"
+            }
+          }
+        },
+        "description": "Represents the associations for a specific object in HubSpot, detailing the types of associations and the related objects involved.",
+        "example": null
+      },
+      "CompaniesPublicMergeInput": {
+        "required": [
+          "objectIdToMerge",
+          "primaryObjectId"
+        ],
+        "type": "object",
+        "properties": {
+          "objectIdToMerge": {
+            "type": "string",
+            "description": "The ID of the company to merge into the primary.",
+            "example": null
+          },
+          "primaryObjectId": {
+            "type": "string",
+            "description": "The ID of the primary company, which the other will merge into.",
+            "example": null
+          }
+        },
+        "description": "Input data for merging two records.",
+        "example": null
+      },
+      "CompaniesPublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the target record to associate.",
+            "example": null
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "CompaniesPublicObjectSearchRequest": {
+        "required": [
+          "after",
+          "filterGroups",
+          "limit",
+          "properties",
+          "sorts"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "filterGroups": {
+            "type": "array",
+            "description": "Up to 6 groups of filters defining additional query criteria.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesFilterGroup"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum results to return, up to 200 objects.",
+            "format": "int32",
+            "example": null
+          },
+          "properties": {
+            "type": "array",
+            "description": "A list of property names to include in the response.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "query": {
+            "type": "string",
+            "description": "The search query string, up to 3000 characters.",
+            "example": null
+          },
+          "sorts": {
+            "type": "array",
+            "description": "Specifies sorting order based on object properties.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Describes a search request",
+        "example": null
+      },
+      "CompaniesPublicObjectWarning": {
+        "required": [
+          "category",
+          "context",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The classification of the warning, indicating the type or nature of the issue.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Additional information or metadata about the warning, providing context for understanding the issue.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "The text of the warning message, providing information about the issue or alert.",
+            "example": null
+          }
+        },
+        "description": "Represents a warning message related to a public object in HubSpot, providing details about the nature and context of the warning.",
+        "example": null
+      },
+      "CompaniesSimplePublicObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used to trace the write request for the object. Set a unique ID for each write operation; it is returned with any errors so you can identify which request encountered which error.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key-value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "industry": {
+                "type": "string"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/CompaniesValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history, each with a timestamp and source information.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesPublicObjectWarning"
+            }
+          }
+        },
+        "description": "A simple public object.",
+        "example": {
+          "archived": false,
+          "createdAt": "2019-10-30T03:30:17.883Z",
+          "id": "512",
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          },
+          "updatedAt": "2019-12-07T16:50:06.678Z"
+        }
+      },
+      "CompaniesSimplePublicObjectBatchInput": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID to be updated. This can be the object ID, or the unique property value of the `idProperty` property.",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object",
+            "example": "my_unique_property_name"
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "In each input object, set this field to a unique ID value to enable more granular debugging for error responses. Learn more about [multi-status errors](https://developers.hubspot.com/docs/reference/api/other-resources/error-handling#multi-status-errors).",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "The company property values to set.",
+            "example": null
+          }
+        },
+        "description": "Contains an array of CRM object records to be processed in a batch operation, each defined by their ID and properties.",
+        "example": null
+      },
+      "CompaniesSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array of associations that define the relationships between the objects being created and other existing objects. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesPublicAssociationsForObject"
+            }
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "An input object that contains a collection of objects to be created together in a batch.",
+        "example": null
+      },
+      "CompaniesSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the company to update.",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "In each input object, set this field to a unique ID value to enable more granular debugging for error responses. Learn more about [multi-status errors](https://developers.hubspot.com/docs/reference/api/other-resources/error-handling#multi-status-errors).",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "The company property values to set.",
+            "example": null
+          }
+        },
+        "description": "Represents an object used in batch upsert operations, containing an object’s unique identifier, its properties, and optionally the unique property name and a write trace ID.",
+        "example": null
+      },
+      "CompaniesSimplePublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": "430001"
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "CompaniesSimplePublicObjectInput": {
+        "required": [
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "description": "The company property values to set.",
+            "example": null,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "industry": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": "Represents the input required to update a CRM object, containing an object with property names and their corresponding values.",
+        "example": {
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          }
+        }
+      },
+      "CompaniesSimplePublicObjectInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array that specifies the relationships between the new public object and existing objects. This is required to establish how the new object is connected within the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesPublicAssociationsForObject"
+            }
+          },
+          "properties": {
+            "type": "object",
+            "description": "The company property values to set.",
+            "example": null,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "industry": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": "Is the input object used to create a new CRM object, containing the properties to be set and optional associations to link the new record with other CRM objects.",
+        "example": null
+      },
+      "CompaniesSimplePublicObjectWithAssociations": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "associations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CompaniesCollectionResponseAssociatedId"
+            },
+            "description": "A map of associated object types to their associated IDs.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "industry": {
+                "type": "string"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/CompaniesValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL link to access this object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object along with its properties, timestamps, and a set of associated object IDs grouped by association type.",
+        "example": null
+      },
+      "CompaniesSimplePublicUpsertObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "new",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "new": {
+            "type": "boolean",
+            "description": "Whether the property is new.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the write request for the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/CompaniesValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object that has either been created or updated (upserted)",
+        "example": null
+      },
+      "CompaniesStandardError": {
+        "required": [
+          "category",
+          "context",
+          "errors",
+          "links",
+          "message",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The main category of the error.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Additional context-specific information related to the error.",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "description": "The detailed error objects.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/CompaniesErrorDetail"
+            }
+          },
+          "id": {
+            "type": "string",
+            "description": "A unique ID for the error instance.",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "URLs linking to documentation or resources associated with the error.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable string describing the error and possible remediation steps.",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "A text status code for the error, typically \"error\".",
+            "example": null
+          },
+          "subCategory": {
+            "type": "object",
+            "properties": {},
+            "description": "A more specific error category within each main category.",
+            "example": null
+          }
+        },
+        "description": "Represents a standard error response in the HubSpot API, providing detailed information about an error that occurred during an API request.",
+        "example": null
+      },
+      "CompaniesValueWithTimestamp": {
+        "required": [
+          "sourceType",
+          "timestamp",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "description": "A string identifier for the specific source of the value.",
+            "example": null
+          },
+          "sourceLabel": {
+            "type": "string",
+            "description": "A human-readable label.",
+            "example": null
+          },
+          "sourceType": {
+            "type": "string",
+            "description": "A string indicating the type of source from which the value originated.",
+            "example": null
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The timestamp when the property was updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "updatedByUserId": {
+            "type": "integer",
+            "description": "The ID of the user who last updated the property.",
+            "format": "int32",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The property value.",
+            "example": null
+          }
+        },
+        "description": "Property model that includes timestamp.",
+        "example": null
+      },
+      "DealsAssociatedId": {
+        "required": [
+          "id",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID for the association type.",
+            "example": null
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of association.",
+            "example": "deal_to_contact"
+          }
+        },
+        "description": "Contains the id and type of an association",
+        "example": null
+      },
+      "DealsAssociationSpec": {
+        "required": [
+          "associationCategory",
+          "associationTypeId"
+        ],
+        "type": "object",
+        "properties": {
+          "associationCategory": {
+            "type": "string",
+            "description": "The category of the association, such as \"HUBSPOT_DEFINED\".",
+            "example": null,
+            "enum": [
+              "HUBSPOT_DEFINED",
+              "INTEGRATOR_DEFINED",
+              "USER_DEFINED",
+              "WORK"
+            ]
+          },
+          "associationTypeId": {
+            "type": "integer",
+            "description": "The ID representing the specific type of association.",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Defines the type, direction, and details of the relationship between two CRM objects.",
+        "example": null
+      },
+      "DealsBatchInputSimplePublicObjectBatchInput": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be processed in the batch operation. Each object in the array contains the data necessary for the specific operation being performed.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectBatchInput"
+            }
+          }
+        },
+        "description": "Represents a batch input component used to handle multiple simple public objects in a single API request. This component is typically used when performing batch operations to create, update, or delete multiple records simultaneously.",
+        "example": null
+      },
+      "DealsBatchInputSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be created. Each object in the array contains the necessary data for creating a new entry in the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectBatchInputForCreate"
+            }
+          }
+        },
+        "description": "Represents a batch input for creating multiple simple public objects in a single request. This component is used to streamline the process of adding new objects to a HubSpot account by allowing multiple entries to be created at once.",
+        "example": null
+      },
+      "DealsBatchInputSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public objects to be upserted. Each object in the array contains the necessary data for creating or updating a record in HubSpot.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectBatchInputUpsert"
+            }
+          }
+        },
+        "description": "Represents a batch input operation for upserting simple public objects in HubSpot. This component is used to process multiple upsert operations in a single request, improving efficiency and performance.",
+        "example": null
+      },
+      "DealsBatchInputSimplePublicObjectId": {
+        "required": [
+          "inputs"
+        ],
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of simple public object IDs to be processed in the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectId"
+            }
+          }
+        },
+        "description": "Represents a batch input payload containing a list of simple public object IDs. This component is used when performing batch operations on multiple objects within HubSpot.",
+        "example": null
+      },
+      "DealsBatchReadInputSimplePublicObjectId": {
+        "required": [
+          "inputs",
+          "properties",
+          "propertiesWithHistory"
+        ],
+        "type": "object",
+        "properties": {
+          "idProperty": {
+            "type": "string",
+            "description": "When using a custom unique value property to retrieve records, the name of the property. Do not include this parameter if retrieving by record ID.",
+            "example": null
+          },
+          "inputs": {
+            "type": "array",
+            "description": "An array of SimplePublicObjectId objects, each containing the ID of an object to be read.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectId"
+            }
+          },
+          "properties": {
+            "type": "array",
+            "description": "Key-value pairs for setting properties for the new object.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "array",
+            "description": "Key-value pairs for setting properties for the new object and their histories.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Specifies the input for reading a batch of CRM objects, including arrays of object IDs, requested property names (with optional history), and an optional unique identifying property.",
+        "example": null
+      },
+      "DealsBatchResponseSimplePublicObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch request was initially made, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicObject items representing the results of the batch operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch processing began, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. The expected value is \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "A public object batch response object",
+        "example": null
+      },
+      "DealsBatchResponseSimplePublicObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request - \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\"",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch operation on CRM objects, including the processing status, batch results, timestamps, and a list of any errors encountered during the operation.",
+        "example": null
+      },
+      "DealsBatchResponseSimplePublicUpsertObject": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of SimplePublicUpsertObject items representing the results of the batch upsert operation.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. The expected value is \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the result of a batch upsert operation, including the operation’s status, timestamps, and a list of successfully created or updated objects.",
+        "example": null
+      },
+      "DealsBatchResponseSimplePublicUpsertObjectWithErrors": {
+        "required": [
+          "completedAt",
+          "results",
+          "startedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "completedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was completed, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsStandardError"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "An object containing relevant links related to the batch request.",
+            "example": null
+          },
+          "numErrors": {
+            "type": "integer",
+            "description": "The number of errors encountered during the batch process.",
+            "format": "int32",
+            "example": null
+          },
+          "requestedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process was initiated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "results": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicUpsertObject"
+            }
+          },
+          "startedAt": {
+            "type": "string",
+            "description": "The timestamp when the batch process began execution, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the batch processing request. Can be: \"PENDING\", \"PROCESSING\", \"CANCELLED\", or \"COMPLETE\".",
+            "example": null,
+            "enum": [
+              "CANCELED",
+              "COMPLETE",
+              "PENDING",
+              "PROCESSING"
+            ]
+          }
+        },
+        "description": "Represents the response from a batch upsert operation, including the status, timestamps, successfully processed objects, and any errors that occurred during processing.",
+        "example": null
+      },
+      "DealsCollectionResponseAssociatedId": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/DealsPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "A list of associated IDs retrieved from the API request.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsAssociatedId"
+            }
+          }
+        },
+        "description": "Represents a collection of associated IDs returned by an API request, including pagination details for navigating through the results.",
+        "example": null
+      },
+      "DealsCollectionResponseSimplePublicObjectWithAssociationsForwardPaging": {
+        "required": [
+          "results"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/DealsForwardPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array of simple public objects that are included in the current page of the response. Each object may include its associated data.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObjectWithAssociations"
+            }
+          }
+        },
+        "description": "Represents a paginated collection response that includes simple public objects with their associations. This component is used to handle the results and pagination details when retrieving a list of objects from the API.",
+        "example": null
+      },
+      "DealsCollectionResponseWithTotalSimplePublicObject": {
+        "required": [
+          "results",
+          "total"
+        ],
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/DealsPaging"
+          },
+          "results": {
+            "type": "array",
+            "description": "An array containing the simple public objects returned in the current page of the response. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsSimplePublicObject"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "The number of available results",
+            "format": "int32",
+            "example": null
+          }
+        },
+        "description": "Represents a list of simple objects returned from an API request, along with the total count of objects available.",
+        "example": null
+      },
+      "DealsError": {
+        "required": [
+          "category",
+          "correlationId",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The error category",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{invalidPropertyName=[propertyValue], missingScopes=[scope1, scope2]}"
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "A unique identifier for the request. Include this value with any error reports or support tickets",
+            "format": "uuid",
+            "example": "aeb5f871-7f07-4993-9211-075dc63e7cbf"
+          },
+          "errors": {
+            "type": "array",
+            "description": "further information about the error",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsErrorDetail"
+            }
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "A map of link names to associated URIs containing documentation about the error or recommended remediation steps",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": "An error occurred"
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents an error response returned by the API when an operation fails. This component is used in various endpoints to provide detailed information about the error encountered.",
+        "example": {
+          "message": "Invalid input (details will vary based on the error)",
+          "correlationId": "aeb5f871-7f07-4993-9211-075dc63e7cbf",
+          "category": "VALIDATION_ERROR",
+          "links": {
+            "knowledge-base": "https://www.hubspot.com/products/service/knowledge-base"
+          }
+        }
+      },
+      "DealsErrorDetail": {
+        "required": [
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The status code associated with the error detail",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Context about the error condition",
+            "example": "{missingScopes=[scope1, scope2]}"
+          },
+          "in": {
+            "type": "string",
+            "description": "The name of the field or parameter in which the error was found.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human readable message describing the error along with remediation steps where appropriate",
+            "example": null
+          },
+          "subCategory": {
+            "type": "string",
+            "description": "A specific category that contains more specific detail about the error",
+            "example": null
+          }
+        },
+        "description": "Represents detailed information about an error that occurred in the API. This component is used to provide additional context and specifics about errors, typically as part of an error response.",
+        "example": null
+      },
+      "DealsFilter": {
+        "required": [
+          "operator",
+          "propertyName"
+        ],
+        "type": "object",
+        "properties": {
+          "highValue": {
+            "type": "string",
+            "description": "The upper boundary value when using ranged-based filters.",
+            "example": null
+          },
+          "operator": {
+            "type": "string",
+            "description": "The comparison operator used in the filter, such as \"EQ\" or \"GT\".",
+            "example": null,
+            "enum": [
+              "BETWEEN",
+              "CONTAINS_TOKEN",
+              "EQ",
+              "GT",
+              "GTE",
+              "HAS_PROPERTY",
+              "IN",
+              "LT",
+              "LTE",
+              "NEQ",
+              "NOT_CONTAINS_TOKEN",
+              "NOT_HAS_PROPERTY",
+              "NOT_IN"
+            ]
+          },
+          "propertyName": {
+            "type": "string",
+            "description": "The name of the property to apply the filter to.",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to match against the property.",
+            "example": null
+          },
+          "values": {
+            "type": "array",
+            "description": "The values to match against the property.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Defines a single condition for searching CRM objects, specifying the property to filter on, the operator to use (such as equals, greater than, or contains), and the value(s) to compare against. ",
+        "example": null
+      },
+      "DealsFilterGroup": {
+        "required": [
+          "filters"
+        ],
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "description": "A list of individual filter criteria that are applied together as a group. Each filter specifies a condition that records must meet to be included in the results.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsFilter"
+            }
+          }
+        },
+        "description": "Represents a group of filters used to query data within HubSpot. This component is used to define criteria for filtering records in various API endpoints.",
+        "example": null
+      },
+      "DealsForwardPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/DealsNextPage"
+          }
+        },
+        "description": "Paging information for forward-only pagination. Contains the next page reference when more results are available; omitted or empty on the last page.",
+        "example": null
+      },
+      "DealsNextPage": {
+        "required": [
+          "after"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the next page results.",
+            "example": null
+          }
+        },
+        "description": "Specifies the paging information needed to retrieve the next set of results in a paginated API response",
+        "example": {
+          "after": "NTI1Cg%3D%3D",
+          "link": "?after=NTI1Cg%3D%3D"
+        }
+      },
+      "DealsPaging": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/DealsNextPage"
+          },
+          "prev": {
+            "$ref": "#/components/schemas/DealsPreviousPage"
+          }
+        },
+        "description": "Represents the pagination information for navigating through a list of results in the API. It provides details on how to access the previous or next set of results.",
+        "example": null
+      },
+      "DealsPreviousPage": {
+        "required": [
+          "before"
+        ],
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving previous pages.",
+            "example": null
+          },
+          "link": {
+            "type": "string",
+            "description": "A URL that can be used to retrieve the previous pages' results.",
+            "example": null
+          }
+        },
+        "description": "specifies the paging information needed to retrieve the previous set of results in a paginated API response",
+        "example": null
+      },
+      "DealsPublicAssociationsForObject": {
+        "required": [
+          "to",
+          "types"
+        ],
+        "type": "object",
+        "properties": {
+          "to": {
+            "$ref": "#/components/schemas/DealsPublicObjectId"
+          },
+          "types": {
+            "type": "array",
+            "description": "The types of associations that exist between the object and other entities, indicating the nature of their relationship.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsAssociationSpec"
+            }
+          }
+        },
+        "description": "Represents the associations for a specific object in HubSpot, detailing the types of associations and the related objects involved.",
+        "example": null
+      },
+      "DealsPublicMergeInput": {
+        "required": [
+          "objectIdToMerge",
+          "primaryObjectId"
+        ],
+        "type": "object",
+        "properties": {
+          "objectIdToMerge": {
+            "type": "string",
+            "description": "The ID of the object that will be merged into the primary object.",
+            "example": null
+          },
+          "primaryObjectId": {
+            "type": "string",
+            "description": "The ID of the object that will remain after the merge.",
+            "example": null
+          }
+        },
+        "description": "Input data for merging two records.",
+        "example": null
+      },
+      "DealsPublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "DealsPublicObjectSearchRequest": {
+        "required": [
+          "after",
+          "filterGroups",
+          "limit",
+          "properties",
+          "sorts"
+        ],
+        "type": "object",
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "A paging cursor token for retrieving subsequent pages.",
+            "example": null
+          },
+          "filterGroups": {
+            "type": "array",
+            "description": "Up to 6 groups of filters defining additional query criteria.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsFilterGroup"
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The maximum results to return, up to 200 objects.",
+            "format": "int32",
+            "example": null
+          },
+          "properties": {
+            "type": "array",
+            "description": "A list of property names to include in the response.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          },
+          "query": {
+            "type": "string",
+            "description": "The search query string, up to 3000 characters.",
+            "example": null
+          },
+          "sorts": {
+            "type": "array",
+            "description": "Specifies sorting order based on object properties.",
+            "example": null,
+            "items": {
+              "type": "string",
+              "example": null
+            }
+          }
+        },
+        "description": "Describes a search request",
+        "example": null
+      },
+      "DealsPublicObjectWarning": {
+        "required": [
+          "category",
+          "context",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The classification of the warning, indicating the type or nature of the issue.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Additional information or metadata about the warning, providing context for understanding the issue.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "The text of the warning message, providing information about the issue or alert.",
+            "example": null
+          }
+        },
+        "description": "Represents a warning message related to a public object in HubSpot, providing details about the nature and context of the warning.",
+        "example": null
+      },
+      "DealsSimplePublicObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key-value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "dealname": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "dealstage": {
+                "type": "string"
+              },
+              "pipeline": {
+                "type": "string"
+              },
+              "closedate": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/DealsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "A simple public object.",
+        "example": {
+          "archived": false,
+          "createdAt": "2019-10-30T03:30:17.883Z",
+          "id": "512",
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          },
+          "updatedAt": "2019-12-07T16:50:06.678Z"
+        }
+      },
+      "DealsSimplePublicObjectBatchInput": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id to be updated. This can be the object id, or the unique property value of the idProperty property",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object",
+            "example": "my_unique_property_name"
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "A unique identifier for tracing the request.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key-value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "Contains an array of CRM object records to be processed in a batch operation, each defined by their ID and properties.",
+        "example": null
+      },
+      "DealsSimplePublicObjectBatchInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array of associations that define the relationships between the objects being created and other existing objects. This property is required.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsPublicAssociationsForObject"
+            }
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "An input object that contains a collection of objects to be created together in a batch.",
+        "example": null
+      },
+      "DealsSimplePublicObjectBatchInputUpsert": {
+        "required": [
+          "id",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "idProperty": {
+            "type": "string",
+            "description": "The name of a property whose values are unique for this object",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier for tracing the creation request.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          }
+        },
+        "description": "Represents an object used in batch upsert operations, containing an object’s unique identifier, its properties, and optionally the unique property name and a write trace ID.",
+        "example": null
+      },
+      "DealsSimplePublicObjectId": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": "430001"
+          }
+        },
+        "description": "Contains the Id of a Public Object",
+        "example": null
+      },
+      "DealsSimplePublicObjectInput": {
+        "required": [
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "dealname": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "dealstage": {
+                "type": "string"
+              },
+              "pipeline": {
+                "type": "string"
+              },
+              "closedate": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "description": "Represents the input required to update a CRM object, containing an object with property names and their corresponding values.",
+        "example": {
+          "properties": {
+            "property_checkbox": "false",
+            "property_date": "1572480000000",
+            "property_dropdown": "choice_b",
+            "property_multiple_checkboxes": "chocolate;strawberry",
+            "property_number": "17",
+            "property_radio": "option_1",
+            "property_string": "value"
+          }
+        }
+      },
+      "DealsSimplePublicObjectInputForCreate": {
+        "required": [
+          "associations",
+          "properties"
+        ],
+        "type": "object",
+        "properties": {
+          "associations": {
+            "type": "array",
+            "description": "An array that specifies the relationships between the new public object and existing objects. This is required to establish how the new object is connected within the system.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsPublicAssociationsForObject"
+            }
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key-value pairs for setting properties for the new object.",
+            "example": null,
+            "properties": {
+              "dealname": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "dealstage": {
+                "type": "string"
+              },
+              "pipeline": {
+                "type": "string"
+              },
+              "closedate": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "description": "Is the input object used to create a new CRM object, containing the properties to be set and optional associations to link the new record with other CRM objects.",
+        "example": null
+      },
+      "DealsSimplePublicObjectWithAssociations": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "associations": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DealsCollectionResponseAssociatedId"
+            },
+            "description": "A list defining relationships with other objects.",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null,
+            "properties": {
+              "dealname": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "string"
+              },
+              "dealstage": {
+                "type": "string"
+              },
+              "pipeline": {
+                "type": "string"
+              },
+              "closedate": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/DealsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL link to access this object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object along with its properties, timestamps, and a set of associated object IDs grouped by association type.",
+        "example": null
+      },
+      "DealsSimplePublicUpsertObject": {
+        "required": [
+          "archived",
+          "createdAt",
+          "id",
+          "new",
+          "properties",
+          "updatedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean",
+            "description": "Whether the object is archived.",
+            "example": null
+          },
+          "archivedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was archived, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "The timestamp when the object was created, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "id": {
+            "type": "string",
+            "description": "The unique ID of the object.",
+            "example": null
+          },
+          "new": {
+            "type": "boolean",
+            "description": "Whether the object is created.",
+            "example": null
+          },
+          "objectWriteTraceId": {
+            "type": "string",
+            "description": "An identifier used for tracing the creation or update request of the object.",
+            "example": null
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "Key value pairs representing the properties of the object.",
+            "example": null
+          },
+          "propertiesWithHistory": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "$ref": "#/components/schemas/DealsValueWithTimestamp"
+              }
+            },
+            "description": "Key-value pairs representing the properties of the object along with their history.",
+            "example": null
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "The timestamp when the object was last updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL associated with the object.",
+            "example": null
+          },
+          "warnings": {
+            "type": "array",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsPublicObjectWarning"
+            }
+          }
+        },
+        "description": "Represents a CRM object that has either been created or updated (upserted)",
+        "example": null
+      },
+      "DealsStandardError": {
+        "required": [
+          "category",
+          "context",
+          "errors",
+          "links",
+          "message",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "The main category of the error.",
+            "example": null
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "example": null,
+              "items": {
+                "type": "string",
+                "example": null
+              }
+            },
+            "description": "Additional context-specific information related to the error.",
+            "example": null
+          },
+          "errors": {
+            "type": "array",
+            "description": "The detailed error objects.",
+            "example": null,
+            "items": {
+              "$ref": "#/components/schemas/DealsErrorDetail"
+            }
+          },
+          "id": {
+            "type": "string",
+            "description": "A unique ID for the error instance.",
+            "example": null
+          },
+          "links": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "example": null
+            },
+            "description": "URLs linking to documentation or resources associated with the error.",
+            "example": null
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable string describing the error and possible remediation steps.",
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "description": "The HTTP status code associated with the error.",
+            "example": null
+          },
+          "subCategory": {
+            "type": "object",
+            "properties": {},
+            "description": "A more specific error category within each main category.",
+            "example": null
+          }
+        },
+        "description": "Represents a standard error response in the HubSpot API, providing detailed information about an error that occurred during an API request.",
+        "example": null
+      },
+      "DealsValueWithTimestamp": {
+        "required": [
+          "sourceType",
+          "timestamp",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "description": "The unique ID of the property.",
+            "example": null
+          },
+          "sourceLabel": {
+            "type": "string",
+            "description": "A human-readable label.",
+            "example": null
+          },
+          "sourceType": {
+            "type": "string",
+            "description": "The property type.",
+            "example": null
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The timestamp when the property was updated, in ISO 8601 format.",
+            "format": "date-time",
+            "example": null
+          },
+          "updatedByUserId": {
+            "type": "integer",
+            "description": "The ID of the user who last updated the property.",
+            "format": "int32",
+            "example": null
+          },
+          "value": {
+            "type": "string",
+            "description": "The property value.",
+            "example": null
+          }
+        },
+        "description": "Property model that includes timestamp.",
+        "example": null
+      }
+    },
+    "securitySchemes": {
+      "developer_hapikey": {
+        "type": "apiKey",
+        "name": "hapikey",
+        "in": "query"
+      },
+      "oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://app.hubspot.com/oauth/authorize",
+            "tokenUrl": "https://api.hubapi.com/oauth/v1/token",
+            "scopes": {
+              "crm.objects.commercepayments.read": "",
+              "crm.objects.contacts.read": "",
+              "crm.objects.contacts.write": "",
+              "oauth": "",
+              "oauth-access": ""
+            }
+          }
+        }
+      },
+      "private_apps": {
+        "type": "apiKey",
+        "name": "private-app",
+        "in": "header"
+      },
+      "private_apps_legacy": {
+        "type": "apiKey",
+        "name": "private-app-legacy",
+        "in": "header"
+      }
+    }
+  }
+}
