@@ -83,7 +83,11 @@ export function PlanResult({
       <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs text-muted">
         <span>retrieval: {body.retrieval.method}</span>
         <span>candidates: {body.retrieval.candidates.length}</span>
-        <span>LLM calls: {body.llm_calls}</span>
+        {body.plan_source === 'heuristic' ? (
+          <span className="text-accent">plan: compiled from graph (no LLM)</span>
+        ) : (
+          <span>LLM calls: {body.llm_calls}</span>
+        )}
         {body.intent.provider_hints.length > 0 && <span>providers: {body.intent.provider_hints.join(', ')}</span>}
       </div>
 
