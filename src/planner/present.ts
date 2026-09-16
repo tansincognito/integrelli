@@ -1,4 +1,4 @@
-import type { Capability, CapabilityAuthentication } from '@/knowledge/capability';
+import type { Capability, CapabilityAuthentication, Idempotency, RateLimit } from '@/knowledge/capability';
 import { loadStore } from '@/knowledge/store';
 import type { WorkflowPlan } from './schema';
 import { isInputCovered, type PlanValidation, type ResolvedMapping } from './validator';
@@ -36,6 +36,10 @@ export interface PresentedField {
   location: string;
   status: 'mapped' | 'missing';
   mapping?: PresentedMapping;
+  /** The upstream API's own documentation for this field — what a "missing" field actually needs. */
+  description?: string;
+  format?: string;
+  enum?: Array<string | number | boolean | null>;
 }
 
 export interface PresentedStep {
@@ -47,6 +51,8 @@ export interface PresentedStep {
   side_effect: string;
   confidence: number;
   authentication: CapabilityAuthentication;
+  rate_limits: RateLimit | null;
+  idempotency: Idempotency;
   /** Required fields, plus any optional field that did get a mapping — never the full optional field list. */
   fields: PresentedField[];
   ready: boolean;
@@ -98,6 +104,8 @@ function presentStep(
       side_effect: 'unknown',
       confidence: 0,
       authentication: { kind: 'none' },
+      rate_limits: null,
+      idempotency: { supported: false },
       fields: [],
       ready: false,
       missing_required_count: 1,
@@ -137,6 +145,9 @@ function presentStep(
         location: input.location,
         status: presentedMapping ? 'mapped' : 'missing',
         mapping: presentedMapping,
+        description: input.description,
+        format: input.format,
+        enum: input.enum,
       };
     });
 
@@ -151,6 +162,8 @@ function presentStep(
     side_effect: capability.side_effects.kind,
     confidence: capability.confidence,
     authentication: capability.authentication,
+    rate_limits: capability.rate_limits,
+    idempotency: capability.idempotency,
     fields,
     ready: missingRequiredCount === 0,
     missing_required_count: missingRequiredCount,

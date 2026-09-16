@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { planWorkflow, presentPlan } from '@/planner';
+import { computeWorkflowRisks, generateCurlScript, planWorkflow, presentPlan } from '@/planner';
 
 export const runtime = 'nodejs';
 
@@ -32,6 +32,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   try {
     const result = await planWorkflow(parsed.data.request);
+    const presentedSteps = result.plan && result.validation ? presentPlan(result.plan, result.validation) : null;
 
     const payload = {
       intent: result.intent,
@@ -49,7 +50,9 @@ export async function POST(request: Request): Promise<NextResponse> {
       },
       plan: result.plan,
       validation: result.validation,
-      presented_steps: result.plan && result.validation ? presentPlan(result.plan, result.validation) : null,
+      presented_steps: presentedSteps,
+      risks: presentedSteps ? computeWorkflowRisks(presentedSteps) : [],
+      curl_script: result.plan && result.validation ? generateCurlScript(result.plan, result.validation) : null,
       llm_calls: result.llm_calls,
       plan_source: result.plan_source,
       error: result.error,
