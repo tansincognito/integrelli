@@ -111,7 +111,7 @@ function selectCapabilities(intent: Intent, candidates: RetrievedCapability[]): 
   const used = new Set<string>();
   const selected: RetrievedCapability[] = [];
 
-  for (const clause of intent.clauses) {
+  for (const clause of intent.clauses.flatMap(explodeMultiProviderClause)) {
     const preferredKind = clause.role === 'trigger' ? 'event' : 'action';
     const hints = clause.provider_hints.length > 0 ? clause.provider_hints : intent.provider_hints;
     const pick = pickCandidate(candidates, used, hints, preferredKind, detectSideEffectKind(clause));
@@ -135,6 +135,38 @@ function selectCapabilities(intent: Intent, candidates: RetrievedCapability[]): 
   }
 
   return selected;
+}
+
+/**
+ * `extractIntent`'s clause splitter only breaks on a comma or "then" (see
+ * intent.ts) — "create a Stripe checkout session and email the link via
+ * Gmail" has neither, so it stays one clause naming two providers. Picking
+ * "one capability per clause" then picks only one of the two actions and
+ * silently drops the other. When a clause names more than one provider, split
+ * it further on a bare " and " and assign each provider its own piece, so
+ * each still gets its own step. Falls back to the clause unchanged if the
+ * split can't account for every hinted provider — better to under-split than
+ * to invent a step boundary that loses text.
+ */
+function explodeMultiProviderClause(clause: IntentClause): IntentClause[] {
+  if (clause.provider_hints.length < 2) return [clause];
+
+  const parts = clause.text
+    .split(/\s+and\s+/i)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length < 2) return [clause];
+
+  const used = new Set<string>();
+  const exploded: IntentClause[] = [];
+  for (const part of parts) {
+    const hints = clause.provider_hints.filter((hint) => new RegExp(`\\b${hint}\\b`, 'i').test(part));
+    if (hints.length === 0) continue;
+    exploded.push({ text: part, role: clause.role, provider_hints: hints });
+    hints.forEach((hint) => used.add(hint));
+  }
+
+  return exploded.length > 1 && clause.provider_hints.every((hint) => used.has(hint)) ? exploded : [clause];
 }
 
 function pickCandidate(
