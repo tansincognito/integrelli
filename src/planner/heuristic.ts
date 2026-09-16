@@ -1,5 +1,5 @@
 import { findFeedLinks } from '@/knowledge/graph';
-import type { SideEffectKind } from '@/knowledge/capability';
+import type { CapabilityInput, SideEffectKind } from '@/knowledge/capability';
 import type { SemanticType } from '@/knowledge/schema';
 import type { RetrievedCapability } from '@/retrieval';
 import type { Intent, IntentClause } from './intent';
@@ -60,6 +60,16 @@ export function generateHeuristicPlan(intent: Intent, candidates: RetrievedCapab
     const links = findFeedLinks(producerIds, destination.capability_id);
 
     for (const input of requiredInputs) {
+      // "identifier" is a deliberately broad semantic type (see graph.ts) — an
+      // event's own id and "which account to act as" both carry it, but wiring
+      // one into the other is a false match, not a real link. A field whose own
+      // documentation names the caller as the default (Gmail's userId: "me")
+      // isn't asking for upstream data at all.
+      if (isSelfIdentifierField(input)) {
+        mappings.push({ source: 'literal:me', destination: `${steps[i].id}.${input.path}` });
+        continue;
+      }
+
       const link = links.find((candidate) => candidate.to_path === input.path);
       if (link) {
         const producerStepId = stepIdByCapabilityId.get(link.from_capability_id);
@@ -163,6 +173,11 @@ const VERB_SIDE_EFFECTS: Array<{ words: string[]; kind: SideEffectKind }> = [
   { words: ['delete', 'remove', 'cancel'], kind: 'delete' },
   { words: ['get', 'list', 'read', 'fetch', 'check', 'look'], kind: 'read' },
 ];
+
+/** Matches the standard OpenAPI/Google-API phrasing for a "this means the caller" id field. */
+function isSelfIdentifierField(input: CapabilityInput): boolean {
+  return input.semantic_type === 'identifier' && /authenticated user/i.test(input.description ?? '');
+}
 
 function detectSideEffectKind(clause: IntentClause): SideEffectKind | undefined {
   if (clause.role === 'trigger') return undefined;
