@@ -331,13 +331,7 @@ export function validatePlan(candidate: unknown, options: ValidatePlanOptions = 
     const mapped = mappedDestinations.get(step.id) ?? new Set<string>();
     for (const input of capability.inputs) {
       if (!input.required) continue;
-      if (mapped.has(input.path)) continue;
-      // A required leaf is satisfied when its parent object is mapped wholesale,
-      // and a required parent object is equally satisfied when any of its own
-      // children is mapped — the executor's setByPath creates the parent as a
-      // side effect of writing to a nested path, so requiring a *separate*
-      // mapping for the container itself would demand a redundant one.
-      if ([...mapped].some((path) => input.path.startsWith(`${path}.`) || path.startsWith(`${input.path}.`))) continue;
+      if (isInputCovered(input.path, mapped)) continue;
 
       errors.push({
         severity: 'error',
@@ -353,6 +347,20 @@ export function validatePlan(candidate: unknown, options: ValidatePlanOptions = 
 
 function describe(field: SchemaField): string {
   return `${field.type}/${field.semantic_type}`;
+}
+
+/**
+ * A required input path is covered when it (or a mapped ancestor of it, or a
+ * mapped descendant of it) is in `mapped`. Shared between the required-input
+ * check above and the plan presenter (present.ts) so the two can never
+ * disagree about what counts as "provided."
+ */
+export function isInputCovered(inputPath: string, mapped: ReadonlySet<string>): boolean {
+  if (mapped.has(inputPath)) return true;
+  for (const path of mapped) {
+    if (inputPath.startsWith(`${path}.`) || path.startsWith(`${inputPath}.`)) return true;
+  }
+  return false;
 }
 
 /**

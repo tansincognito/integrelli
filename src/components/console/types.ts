@@ -35,9 +35,46 @@ export interface PlanResponseBody {
     errors: Array<{ code: string; message: string; step_id?: string }>;
     warnings: Array<{ code: string; message: string; step_id?: string }>;
   } | null;
+  presented_steps: PresentedStep[] | null;
   llm_calls: number;
   plan_source: 'llm' | 'heuristic' | null;
   error?: { code: string; message: string };
+}
+
+/** Mirrors src/planner/present.ts's PresentedStep — the flow-chart view of a compiled plan. */
+export interface PresentedStep {
+  step_id: string;
+  capability_id: string;
+  provider_id: string;
+  kind: 'action' | 'event';
+  purpose: string;
+  side_effect: string;
+  confidence: number;
+  authentication: { kind: string; env_var_name?: string; parameter_name?: string; scheme_description?: string };
+  fields: PresentedField[];
+  ready: boolean;
+  missing_required_count: number;
+}
+
+export interface PresentedField {
+  path: string;
+  depth: number;
+  required: boolean;
+  type: string;
+  semantic_type: string;
+  location: string;
+  status: 'mapped' | 'missing';
+  mapping?: PresentedMapping;
+}
+
+export interface PresentedMapping {
+  kind: 'literal' | 'field' | 'template' | 'implied';
+  summary: string;
+  raw: string;
+  transform?: string;
+  source_step_id?: string;
+  source_path?: string;
+  referenced_step_ids?: string[];
 }
 
 export interface CapabilityLibraryBody {

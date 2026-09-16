@@ -99,7 +99,7 @@ function buildInputs(draft: CapabilityDraft): CapabilityInput[] {
       };
     });
 
-  const fromBody: CapabilityInput[] = flattenSchema(draft.request_schema).map((field) => ({
+  const fromBody: CapabilityInput[] = flattenSchema(draft.request_schema, { excludeReadOnly: true }).map((field) => ({
     ...field,
     location: 'body' as const,
   }));
@@ -123,7 +123,7 @@ function buildInputs(draft: CapabilityDraft): CapabilityInput[] {
 }
 
 function buildOutputs(draft: CapabilityDraft): CapabilityOutput[] {
-  return dedupeByPath(flattenSchema(draft.response_schema));
+  return dedupeByPath(flattenSchema(draft.response_schema, { excludeWriteOnly: true }));
 }
 
 function dedupeByPath<T extends { path: string }>(fields: T[]): T[] {

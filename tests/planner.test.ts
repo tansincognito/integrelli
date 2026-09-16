@@ -227,16 +227,15 @@ describe('plan validation', () => {
   });
 
   it('warns when a plan leans on a capability that has never been cross-checked', () => {
-    const validation = validatePlan({
-      execution_mode: 'deterministic',
-      name: 'Create a contact',
-      description: 'Creates a HubSpot contact.',
-      steps: [{ id: 'step_1', capability: 'hubspot.create_contact', purpose: 'Create the contact.' }],
-      mappings: [
-        { source: 'literal:{}', destination: 'step_1.properties' },
-        { source: 'literal:a@b.com', destination: 'step_1.properties.email' },
-      ],
-    });
+    // Exercises the threshold mechanism directly (validatePlan's own
+    // confidenceWarningThreshold option) rather than depending on some real
+    // seeded provider currently sitting below the default 0.6 — providers
+    // migrate from markdown to real OpenAPI over time (see PROVIDER_SEEDS),
+    // which has broken this exact assertion twice by moving the provider it
+    // pointed at above the threshold. VALID_PLAN's capabilities are real
+    // OpenAPI records (confidence 0.95); asking for a threshold just above
+    // that reproduces "below threshold" without naming a specific provider.
+    const validation = validatePlan(VALID_PLAN, { confidenceWarningThreshold: 0.96 });
 
     expect(validation.valid).toBe(true);
     expect(validation.warnings.some((warning) => warning.code === 'low_confidence_capability')).toBe(true);

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { Capability } from '@/knowledge/capability';
 import { loadStore } from '@/knowledge/store';
 import { buildGraph, findFeedLinks } from '@/knowledge/graph';
 import { buildCapabilityDocument, capabilityDocumentHash } from '@/retrieval/document';
@@ -8,6 +9,28 @@ import { retrieveCapabilities } from '@/retrieval';
 
 const loaded = loadStore();
 const capabilities = loaded.store.capabilities;
+
+/** Minimal fixture, confidence set explicitly rather than borrowed from whichever real provider currently sits at a given confidence — real providers migrate from markdown to OpenAPI over time (see PROVIDER_SEEDS), so anchoring a test to "today's lowest-confidence real capability" breaks every time one does. */
+function fixtureCapability(overrides: Partial<Capability> & Pick<Capability, 'id' | 'confidence'>): Capability {
+  return {
+    provider_id: 'fixture',
+    api_version_id: 'fixture@v1',
+    kind: 'action',
+    name: overrides.id,
+    description: 'Fixture capability for a retrieval-ranking test.',
+    category: 'other',
+    inputs: [],
+    outputs: [],
+    authentication: { kind: 'none' },
+    permissions: [],
+    rate_limits: null,
+    idempotency: { supported: false },
+    side_effects: { kind: 'create', description: 'Fixture.', reversible: true },
+    source: { document_source_id: 'fixture', pointer: '#', extractor: 'openapi', extracted_at: new Date().toISOString() },
+    last_verified: new Date().toISOString(),
+    ...overrides,
+  };
+}
 
 describe('capability embedding documents', () => {
   it('describes one capability, not one documentation page', () => {
@@ -63,16 +86,19 @@ describe('ranking metadata', () => {
   });
 
   it('breaks ties toward the more trustworthy record', () => {
-    const scored = capabilities.map((capability) => ({ id: capability.id, score: 0.5 }));
-    const ranked = rankCandidates(scored, {
-      capabilitiesById: loaded.capabilitiesById,
-      providerHints: [],
-      method: 'lexical',
-    });
+    const openApi = fixtureCapability({ id: 'fixture.trusted', confidence: 0.95 });
+    const prose = fixtureCapability({ id: 'fixture.unverified', confidence: 0.55 });
+    const capabilitiesById = new Map(loaded.capabilitiesById).set(openApi.id, openApi).set(prose.id, prose);
 
-    const openApiRecord = ranked.find((item) => item.confidence === 0.95)!;
-    const proseRecord = ranked.find((item) => item.confidence === 0.55)!;
-    expect(ranked.indexOf(openApiRecord)).toBeLessThan(ranked.indexOf(proseRecord));
+    const scored = [
+      { id: openApi.id, score: 0.5 },
+      { id: prose.id, score: 0.5 },
+    ];
+    const ranked = rankCandidates(scored, { capabilitiesById, providerHints: [], method: 'lexical' });
+
+    expect(ranked.findIndex((item) => item.capability_id === openApi.id)).toBeLessThan(
+      ranked.findIndex((item) => item.capability_id === prose.id)
+    );
   });
 
   it('guarantees a named provider is represented even when it ranks poorly', () => {

@@ -37,6 +37,10 @@ export interface JsonSchemaNode {
   nullable?: boolean;
   minimum?: number;
   maximum?: number;
+  /** Server sets this; a client can never legitimately supply it — excluded from flattened inputs. */
+  readOnly?: boolean;
+  /** A client can only ever supply this; excluded from flattened outputs. */
+  writeOnly?: boolean;
   /** Preserved verbatim for keywords we do not model. */
   [k: string]: unknown;
 }
@@ -151,10 +155,17 @@ const MAX_FLATTEN_DEPTH = 4;
  * Depth is capped: upstream specs (Stripe especially) contain deeply nested
  * objects whose tail is never a useful mapping target, and an uncapped walk
  * blows up both the planner prompt and the embedding document.
+ *
+ * `excludeReadOnly`/`excludeWriteOnly`: a request schema flattened into
+ * `inputs` should skip `readOnly` fields (the server sets them; a client
+ * sending one is either ignored or rejected upstream, and it is never
+ * something a plan should be asked to map into) and, symmetrically, a
+ * response schema flattened into `outputs` should skip `writeOnly` fields.
+ * Both default off so a caller with no opinion gets the whole schema.
  */
 export function flattenSchema(
   schema: JsonSchemaNode | null | undefined,
-  options: { prefix?: string; depth?: number } = {}
+  options: { prefix?: string; depth?: number; excludeReadOnly?: boolean; excludeWriteOnly?: boolean } = {}
 ): SchemaField[] {
   if (!schema) return [];
   const prefix = options.prefix ?? '';
@@ -166,6 +177,9 @@ export function flattenSchema(
 
   if (schema.properties) {
     for (const [name, child] of Object.entries(schema.properties)) {
+      if (options.excludeReadOnly && child.readOnly === true) continue;
+      if (options.excludeWriteOnly && child.writeOnly === true) continue;
+
       const path = prefix ? `${prefix}.${name}` : name;
       const type = normalizeJsonType(child.type, child);
       const format = typeof child.format === 'string' ? child.format : undefined;
@@ -182,9 +196,9 @@ export function flattenSchema(
       });
 
       if (type === 'object') {
-        fields.push(...flattenSchema(child, { prefix: path, depth: depth + 1 }));
+        fields.push(...flattenSchema(child, { prefix: path, depth: depth + 1, excludeReadOnly: options.excludeReadOnly, excludeWriteOnly: options.excludeWriteOnly }));
       } else if (type === 'array' && child.items) {
-        fields.push(...flattenSchema(child.items, { prefix: `${path}[]`, depth: depth + 1 }));
+        fields.push(...flattenSchema(child.items, { prefix: `${path}[]`, depth: depth + 1, excludeReadOnly: options.excludeReadOnly, excludeWriteOnly: options.excludeWriteOnly }));
       }
     }
   }

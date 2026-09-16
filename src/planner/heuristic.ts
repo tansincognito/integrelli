@@ -85,6 +85,35 @@ export function generateHeuristicPlan(intent: Intent, candidates: RetrievedCapab
       const template = buildContentTemplate(destination.capability_id, input.path, producers, stepIdByCapabilityId);
       if (template) mappings.push({ source: template.source, destination: `${steps[i].id}.${input.path}`, transform: template.transform });
     }
+
+    // A required *container* (HubSpot's create_contact.properties: mandatory
+    // to send, but a free-form bag whose individual keys — email, firstname,
+    // ... — are each optional) can pass the loop above with none of its own
+    // children mapped, since none of them were individually required. That
+    // leaves it required-but-empty, which is honest about the schema and
+    // useless in practice. If any child (required or not) has a real can_feed
+    // match, wire exactly one in — enough for the container to carry real
+    // content, not a blanket "fill every optional field" pass.
+    for (const container of requiredInputs) {
+      const childPrefix = `${container.path}.`;
+      const children = destination.capability.inputs.filter((candidate) => candidate.path.startsWith(childPrefix));
+      if (children.length === 0) continue;
+
+      const destinationPrefix = `${steps[i].id}.`;
+      const alreadyCovered = mappings.some(
+        (m) => m.destination === `${destinationPrefix}${container.path}` || m.destination.startsWith(`${destinationPrefix}${childPrefix}`)
+      );
+      if (alreadyCovered) continue;
+
+      for (const child of children) {
+        const link = links.find((candidate) => candidate.to_path === child.path);
+        if (!link) continue;
+        const producerStepId = stepIdByCapabilityId.get(link.from_capability_id);
+        if (!producerStepId) continue;
+        mappings.push({ source: `${producerStepId}.${link.from_path}`, destination: `${destinationPrefix}${child.path}` });
+        break;
+      }
+    }
   }
 
   const providerChain = [...new Set(bounded.map((candidate) => candidate.provider))];
