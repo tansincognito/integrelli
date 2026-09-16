@@ -8,9 +8,12 @@ export { extractIntent } from './intent';
 export { validatePlan } from './validator';
 export { PlannerUnavailableError, PlanGenerationError } from './planner';
 export { presentPlan } from './present';
+export { computeWorkflowRisks } from './risks';
+export { generateCurlScript } from './export-curl';
 export type { WorkflowPlan } from './schema';
 export type { PlanValidation, PlanIssue } from './validator';
 export type { PresentedStep, PresentedField, PresentedMapping, MappingSourceKind } from './present';
+export type { WorkflowRisk } from './risks';
 
 /**
  * End-to-end planning (architecture.md sections 7 and 8):

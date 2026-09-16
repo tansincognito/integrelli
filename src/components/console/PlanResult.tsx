@@ -7,6 +7,8 @@ import type { ExecutionTrace } from '@/types';
 import { TraceView } from '@/components/run/TraceView';
 import type { PlanResponseBody } from './types';
 import { WorkflowChart } from './WorkflowChart';
+import { RiskPanel } from './RiskPanel';
+import { CurlExport } from './CurlExport';
 
 type RunMode = 'test' | 'live';
 
@@ -117,6 +119,10 @@ export function PlanResult({
           )}
         </div>
       )}
+
+      {body.risks.length > 0 && <RiskPanel risks={body.risks} />}
+
+      {body.curl_script && <CurlExport script={body.curl_script} planName={body.plan?.name ?? 'workflow'} />}
 
       {validation?.valid && body.plan && (
         <div className="mt-6 rounded-xl border border-border-strong bg-panel px-5 py-4">

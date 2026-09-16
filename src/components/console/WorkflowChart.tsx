@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronRight, KeyRound, XCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronRight, Gauge, KeyRound, RefreshCw, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import type { PresentedField, PresentedMapping, PresentedStep } from './types';
 
@@ -76,6 +76,30 @@ function StepCard({ step, index }: { step: PresentedStep; index: number }) {
         </div>
       )}
 
+      {step.kind === 'action' && (
+        <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-muted-strong">
+          {step.rate_limits && (
+            <span
+              className="flex items-center gap-1 rounded border border-border px-1.5 py-0.5"
+              title={step.rate_limits.note}
+            >
+              <Gauge size={10} className="shrink-0" />
+              {step.rate_limits.requests ?? '?'}/{step.rate_limits.window_seconds ?? '?'}s
+            </span>
+          )}
+          <span
+            className={cn(
+              'flex items-center gap-1 rounded border px-1.5 py-0.5',
+              step.idempotency.supported ? 'border-border' : 'border-warning/30 text-warning'
+            )}
+            title={step.idempotency.mechanism}
+          >
+            <RefreshCw size={10} className="shrink-0" />
+            {step.idempotency.supported ? 'idempotent' : 'not idempotent — retries may duplicate'}
+          </span>
+        </div>
+      )}
+
       {step.fields.length > 0 && (
         <ul className="flex flex-col gap-1 border-t border-border pt-2.5">
           {step.fields.map((field) => (
@@ -131,7 +155,11 @@ function FieldRow({ field }: { field: PresentedField }) {
               </button>
             )}
           </div>
-          <MappingSummary mapping={field.mapping} />
+          {field.status === 'mapped' ? (
+            <MappingSummary mapping={field.mapping} />
+          ) : (
+            <MissingFieldHint field={field} />
+          )}
           {expanded && field.mapping && (
             <pre className="mt-1 whitespace-pre-wrap break-words rounded border border-border bg-black/30 px-2 py-1.5 font-mono text-[10px] leading-relaxed text-muted-strong">
               {field.mapping.raw}
@@ -144,17 +172,34 @@ function FieldRow({ field }: { field: PresentedField }) {
 }
 
 function MappingSummary({ mapping }: { mapping?: PresentedMapping }) {
-  if (!mapping) {
-    return <p className="text-[11px] text-danger">not provided — you need to supply this</p>;
-  }
-
-  const toneClass =
-    mapping.kind === 'implied' ? 'text-muted italic' : mapping.kind === 'literal' ? 'text-muted-strong' : 'text-muted-strong';
+  if (!mapping) return null;
+  const toneClass = mapping.kind === 'implied' ? 'text-muted italic' : 'text-muted-strong';
 
   return (
     <p className={cn('text-[11px]', toneClass)}>
       {mapping.summary}
       {mapping.transform && <span className="ml-1.5 text-accent">via {mapping.transform}</span>}
     </p>
+  );
+}
+
+/** What a "missing" field actually needs — the upstream API's own type/description/allowed values, not just a bare rejection. */
+function MissingFieldHint({ field }: { field: PresentedField }) {
+  return (
+    <div className="text-[11px] text-danger">
+      <p>
+        not provided — provide{' '}
+        <span className="font-mono text-danger/90">
+          {field.type}
+          {field.format ? `(${field.format})` : ''}
+        </span>
+      </p>
+      {field.description && <p className="mt-0.5 text-muted-strong">{field.description}</p>}
+      {field.enum && field.enum.length > 0 && (
+        <p className="mt-0.5 text-muted-strong">
+          one of: <span className="font-mono text-accent">{field.enum.join(', ')}</span>
+        </p>
+      )}
+    </div>
   );
 }

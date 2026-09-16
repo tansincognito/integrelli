@@ -36,6 +36,8 @@ export interface PlanResponseBody {
     warnings: Array<{ code: string; message: string; step_id?: string }>;
   } | null;
   presented_steps: PresentedStep[] | null;
+  risks: WorkflowRisk[];
+  curl_script: string | null;
   llm_calls: number;
   plan_source: 'llm' | 'heuristic' | null;
   error?: { code: string; message: string };
@@ -51,6 +53,8 @@ export interface PresentedStep {
   side_effect: string;
   confidence: number;
   authentication: { kind: string; env_var_name?: string; parameter_name?: string; scheme_description?: string };
+  rate_limits: { requests?: number; window_seconds?: number; note?: string } | null;
+  idempotency: { supported: boolean; mechanism?: string; key_location?: string };
   fields: PresentedField[];
   ready: boolean;
   missing_required_count: number;
@@ -65,6 +69,9 @@ export interface PresentedField {
   location: string;
   status: 'mapped' | 'missing';
   mapping?: PresentedMapping;
+  description?: string;
+  format?: string;
+  enum?: Array<string | number | boolean | null>;
 }
 
 export interface PresentedMapping {
@@ -75,6 +82,13 @@ export interface PresentedMapping {
   source_step_id?: string;
   source_path?: string;
   referenced_step_ids?: string[];
+}
+
+export interface WorkflowRisk {
+  severity: 'high' | 'medium';
+  code: 'retry_unsafe' | 'rate_limit_collision';
+  step_id: string;
+  message: string;
 }
 
 export interface CapabilityLibraryBody {
