@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "built_at": "2026-09-14T20:17:38.952Z",
+  "built_at": "2026-09-16T19:50:52.147Z",
   "providers": [
     {
       "id": "stripe",
@@ -227,7 +227,7 @@
         "label": "Stripe OpenAPI 3.1 (trimmed local mirror)"
       },
       "content_hash": "9f8f5912d317d2fb38630d1c89e778f37bf6bc6839f5ec261e270313b9873328",
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "gmail@v1",
@@ -242,7 +242,7 @@
         "label": "Gmail API v1 (OpenAPI rendering of the discovery document, trimmed)"
       },
       "content_hash": "7a53024f4e11183d3a6a43a1dfae4dee1fdf9542f62b7436ffd7595c54f95c5f",
-      "last_verified": "2026-08-25T08:43:56.977Z"
+      "last_verified": "2026-09-16T19:50:52.119Z"
     },
     {
       "id": "slack@1.7.0",
@@ -257,7 +257,7 @@
         "label": "Slack Web API OpenAPI (trimmed local mirror)"
       },
       "content_hash": "d8405cdc19479885d4277eea9870e5ffee8338785fdef0ee31156bc00fa75e66",
-      "last_verified": "2026-08-25T08:43:56.981Z"
+      "last_verified": "2026-09-16T19:50:52.123Z"
     },
     {
       "id": "elevenlabs@v1",
@@ -272,7 +272,7 @@
         "label": "ElevenLabs API reference (documentation prose)"
       },
       "content_hash": "535227745ecbdb7f48dd5a71cff56b9830dfd43ef80fc4e26a58698dc5a9081e",
-      "last_verified": "2026-08-25T08:43:56.984Z"
+      "last_verified": "2026-09-16T19:50:52.126Z"
     },
     {
       "id": "hubspot@v3",
@@ -287,7 +287,7 @@
         "label": "HubSpot CRM contacts reference (documentation prose, no OpenAPI seeded)"
       },
       "content_hash": "76a2e2b8e877fb6db140160a6b62d544591126937b17c98ee7d86153ccbe9193",
-      "last_verified": "2026-08-25T08:43:56.987Z"
+      "last_verified": "2026-09-16T19:50:52.128Z"
     },
     {
       "id": "github@2022-11-28",
@@ -302,7 +302,7 @@
         "label": "GitHub REST API (trimmed local mirror of the official OpenAPI description)"
       },
       "content_hash": "82f49a6e6584f5f5ec3c0c03958aeb9b39617b716c01cf646b4f76f95f06c0bf",
-      "last_verified": "2026-09-14T20:17:38.917Z"
+      "last_verified": "2026-09-16T19:50:52.130Z"
     },
     {
       "id": "twilio@1.0.0",
@@ -317,7 +317,7 @@
         "label": "Twilio Programmable Messaging (trimmed local mirror). credential_env_var must hold base64(AccountSid:AuthToken) — Basic auth here is pre-encoded, not a raw token."
       },
       "content_hash": "71d2691109f7dc0b6492b6952623a4a549ce75004b052446bdf85d7656f1186d",
-      "last_verified": "2026-09-14T20:17:24.212Z"
+      "last_verified": "2026-09-16T19:50:52.133Z"
     },
     {
       "id": "discord@10",
@@ -332,7 +332,7 @@
         "label": "Discord API (trimmed local mirror). credential_env_var must hold \"Bot <token>\" verbatim — the header auth scheme substitutes the env var value as-is."
       },
       "content_hash": "52682337fa2ed8b3450093486db5914550cf02698db738876699a061b100e928",
-      "last_verified": "2026-09-14T20:17:24.215Z"
+      "last_verified": "2026-09-16T19:50:52.134Z"
     },
     {
       "id": "notion@2025-09-03",
@@ -347,7 +347,7 @@
         "label": "Notion API (trimmed local mirror, fetched 2026-09 — uses the current data_sources query endpoint, not the deprecated databases/query one)."
       },
       "content_hash": "095b39e678823c506da78e34c39d3150e804ce3a9d435d712f6b021d01eb3226",
-      "last_verified": "2026-09-14T20:17:38.932Z"
+      "last_verified": "2026-09-16T19:50:52.136Z"
     },
     {
       "id": "asana@1.0",
@@ -362,7 +362,7 @@
         "label": "Asana API reference (documentation prose — upstream OpenAPI source is YAML and this pipeline only parses JSON, so this provider ingests via the markdown path instead)."
       },
       "content_hash": "427dfbe50d6e5a6c12d694d888b56bd3c320c4e069e05aeca15734b2f6e8a718",
-      "last_verified": "2026-09-14T20:17:38.935Z"
+      "last_verified": "2026-09-16T19:50:52.138Z"
     },
     {
       "id": "square@2026-08-19",
@@ -377,7 +377,7 @@
         "label": "Square Connect API (trimmed local mirror)"
       },
       "content_hash": "a6dd614106d145ed830f6567594a623a1a5f8eb23fc52a7da2949e914b506626",
-      "last_verified": "2026-09-14T20:17:24.224Z"
+      "last_verified": "2026-09-16T19:50:52.141Z"
     },
     {
       "id": "docusign@2.1",
@@ -392,7 +392,7 @@
         "label": "DocuSign eSignature API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document — this pipeline's OpenAPI parser expects 3.x request/response shapes)."
       },
       "content_hash": "50e8c8c7959646290141af177dced42cb378d7e11a722812abf93c66bb1baf5a",
-      "last_verified": "2026-09-14T20:17:38.940Z"
+      "last_verified": "2026-09-16T19:50:52.142Z"
     },
     {
       "id": "mailchimp@3.0",
@@ -407,7 +407,7 @@
         "label": "Mailchimp Marketing API (trimmed local mirror, hand-converted from the upstream Swagger 2.0 document). credential_env_var must hold base64(\"anystring:<api_key>\") — Basic auth here is pre-encoded."
       },
       "content_hash": "6f6281aa3a111341739067f0801e1f26ad15fc479644d26248e7bf02d285fefa",
-      "last_verified": "2026-09-14T20:17:38.944Z"
+      "last_verified": "2026-09-16T19:50:52.144Z"
     },
     {
       "id": "box@2.0",
@@ -422,7 +422,7 @@
         "label": "Box Platform API (trimmed local mirror)"
       },
       "content_hash": "6f218da36d9b40a810b3e06b3ef4a6174bbda15d4a77d7a9fcac849beebb9759",
-      "last_verified": "2026-09-14T20:17:24.229Z"
+      "last_verified": "2026-09-16T19:50:52.145Z"
     },
     {
       "id": "pagerduty@2",
@@ -437,7 +437,7 @@
         "label": "PagerDuty REST API v2 (trimmed local mirror). credential_env_var must hold \"Token token=<key>\" verbatim — the header auth scheme substitutes the env var value as-is."
       },
       "content_hash": "b6f18e60028beb3bb5e19e8a5ccdedf9a1a6b19cad4944af32544fbf10755766",
-      "last_verified": "2026-09-14T20:17:38.951Z"
+      "last_verified": "2026-09-16T19:50:52.146Z"
     }
   ],
   "capabilities": [
@@ -652,10 +652,10 @@
         "pointer": "#/paths/~1v1~1checkout~1sessions/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.961Z"
+        "extracted_at": "2026-09-16T19:50:52.104Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.create_payment_link",
@@ -786,10 +786,10 @@
         "pointer": "#/paths/~1v1~1payment_links/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.967Z"
+        "extracted_at": "2026-09-16T19:50:52.110Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.create_customer",
@@ -917,10 +917,10 @@
         "pointer": "#/paths/~1v1~1customers/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.969Z"
+        "extracted_at": "2026-09-16T19:50:52.112Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.get_customer",
@@ -1020,10 +1020,10 @@
         "pointer": "#/paths/~1v1~1customers~1{customer}/get",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.971Z"
+        "extracted_at": "2026-09-16T19:50:52.114Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.create_refund",
@@ -1159,10 +1159,10 @@
         "pointer": "#/paths/~1v1~1refunds/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.971Z"
+        "extracted_at": "2026-09-16T19:50:52.115Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.get_payment_intent",
@@ -1283,10 +1283,10 @@
         "pointer": "#/paths/~1v1~1payment_intents~1{payment_intent}/get",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.973Z"
+        "extracted_at": "2026-09-16T19:50:52.116Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.payment_intent_succeeded",
@@ -1431,10 +1431,10 @@
         "pointer": "#/webhooks/payment_intent.succeeded/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.974Z"
+        "extracted_at": "2026-09-16T19:50:52.117Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "stripe.checkout_session_completed",
@@ -1591,10 +1591,10 @@
         "pointer": "#/webhooks/checkout.session.completed/post",
         "upstream_url": "https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.975Z"
+        "extracted_at": "2026-09-16T19:50:52.118Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.947Z"
+      "last_verified": "2026-09-16T19:50:52.101Z"
     },
     {
       "id": "gmail.send_message",
@@ -1685,10 +1685,10 @@
         "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages~1send/post",
         "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.977Z"
+        "extracted_at": "2026-09-16T19:50:52.120Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.977Z"
+      "last_verified": "2026-09-16T19:50:52.119Z"
     },
     {
       "id": "gmail.get_message",
@@ -1833,10 +1833,10 @@
         "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages~1{id}/get",
         "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.978Z"
+        "extracted_at": "2026-09-16T19:50:52.121Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.977Z"
+      "last_verified": "2026-09-16T19:50:52.119Z"
     },
     {
       "id": "gmail.list_messages",
@@ -1951,10 +1951,10 @@
         "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1messages/get",
         "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.979Z"
+        "extracted_at": "2026-09-16T19:50:52.122Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.977Z"
+      "last_verified": "2026-09-16T19:50:52.119Z"
     },
     {
       "id": "gmail.create_draft",
@@ -2051,19 +2051,19 @@
         "supported": false
       },
       "side_effects": {
-        "kind": "send",
+        "kind": "create",
         "description": "Creates a draft email message with the supplied encoded content.",
-        "reversible": false
+        "reversible": true
       },
       "source": {
         "document_source_id": "gmail.openapi",
         "pointer": "#/paths/~1gmail~1v1~1users~1{userId}~1drafts/post",
         "upstream_url": "https://gmail.googleapis.com/$discovery/rest?version=v1",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.980Z"
+        "extracted_at": "2026-09-16T19:50:52.122Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.977Z"
+      "last_verified": "2026-09-16T19:50:52.119Z"
     },
     {
       "id": "slack.chat_post_message",
@@ -2212,10 +2212,10 @@
         "pointer": "#/paths/~1chat.postMessage/post",
         "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.981Z"
+        "extracted_at": "2026-09-16T19:50:52.124Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.981Z"
+      "last_verified": "2026-09-16T19:50:52.123Z"
     },
     {
       "id": "slack.conversations_list",
@@ -2330,10 +2330,10 @@
         "pointer": "#/paths/~1conversations.list/get",
         "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.982Z"
+        "extracted_at": "2026-09-16T19:50:52.125Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.981Z"
+      "last_verified": "2026-09-16T19:50:52.123Z"
     },
     {
       "id": "slack.conversations_create",
@@ -2423,10 +2423,10 @@
         "pointer": "#/paths/~1conversations.create/post",
         "upstream_url": "https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json",
         "extractor": "openapi",
-        "extracted_at": "2026-08-25T08:43:56.983Z"
+        "extracted_at": "2026-09-16T19:50:52.125Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-08-25T08:43:56.981Z"
+      "last_verified": "2026-09-16T19:50:52.123Z"
     },
     {
       "id": "elevenlabs.text_to_speech",
@@ -2512,10 +2512,10 @@
         "pointer": "ElevenLabs API v1 > Text to Speech",
         "upstream_url": "https://elevenlabs.io/docs/api-reference",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-08-25T08:43:56.986Z"
+        "extracted_at": "2026-09-16T19:50:52.127Z"
       },
       "confidence": 0.8,
-      "last_verified": "2026-08-25T08:43:56.984Z"
+      "last_verified": "2026-09-16T19:50:52.126Z"
     },
     {
       "id": "elevenlabs.list_voices",
@@ -2566,10 +2566,10 @@
         "pointer": "ElevenLabs API v1 > List Voices",
         "upstream_url": "https://elevenlabs.io/docs/api-reference",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-08-25T08:43:56.986Z"
+        "extracted_at": "2026-09-16T19:50:52.128Z"
       },
       "confidence": 0.8,
-      "last_verified": "2026-08-25T08:43:56.984Z"
+      "last_verified": "2026-09-16T19:50:52.126Z"
     },
     {
       "id": "hubspot.create_contact",
@@ -2679,10 +2679,10 @@
         "pointer": "HubSpot CRM v3 > Create Contact",
         "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-08-25T08:43:56.987Z"
+        "extracted_at": "2026-09-16T19:50:52.129Z"
       },
       "confidence": 0.55,
-      "last_verified": "2026-08-25T08:43:56.987Z"
+      "last_verified": "2026-09-16T19:50:52.128Z"
     },
     {
       "id": "hubspot.search_contacts",
@@ -2756,10 +2756,10 @@
         "pointer": "HubSpot CRM v3 > Search Contacts",
         "upstream_url": "https://developers.hubspot.com/docs/api/crm/contacts",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-08-25T08:43:56.988Z"
+        "extracted_at": "2026-09-16T19:50:52.130Z"
       },
       "confidence": 0.55,
-      "last_verified": "2026-08-25T08:43:56.987Z"
+      "last_verified": "2026-09-16T19:50:52.128Z"
     },
     {
       "id": "github.create_repos_issue",
@@ -2888,10 +2888,10 @@
         "pointer": "#/paths/~1repos~1{owner}~1{repo}~1issues/post",
         "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.919Z"
+        "extracted_at": "2026-09-16T19:50:52.130Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.917Z"
+      "last_verified": "2026-09-16T19:50:52.130Z"
     },
     {
       "id": "github.create_issues_comment",
@@ -2982,10 +2982,10 @@
         "pointer": "#/paths/~1repos~1{owner}~1{repo}~1issues~1{issue_number}~1comments/post",
         "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.923Z"
+        "extracted_at": "2026-09-16T19:50:52.131Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.917Z"
+      "last_verified": "2026-09-16T19:50:52.130Z"
     },
     {
       "id": "github.create_repos_pull",
@@ -3115,10 +3115,10 @@
         "pointer": "#/paths/~1repos~1{owner}~1{repo}~1pulls/post",
         "upstream_url": "https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.925Z"
+        "extracted_at": "2026-09-16T19:50:52.132Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.917Z"
+      "last_verified": "2026-09-16T19:50:52.130Z"
     },
     {
       "id": "twilio.messages_json",
@@ -3247,10 +3247,10 @@
         "pointer": "#/paths/~12010-04-01~1Accounts~1{AccountSid}~1Messages.json/post",
         "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.212Z"
+        "extracted_at": "2026-09-16T19:50:52.133Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.212Z"
+      "last_verified": "2026-09-16T19:50:52.133Z"
     },
     {
       "id": "twilio.get_accounts_message",
@@ -3352,10 +3352,10 @@
         "pointer": "#/paths/~12010-04-01~1Accounts~1{AccountSid}~1Messages~1{Sid}.json/get",
         "upstream_url": "https://raw.githubusercontent.com/twilio/twilio-oai/main/spec/json/twilio_api_v2010.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.214Z"
+        "extracted_at": "2026-09-16T19:50:52.134Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.212Z"
+      "last_verified": "2026-09-16T19:50:52.133Z"
     },
     {
       "id": "discord.list_channels_messages",
@@ -3409,10 +3409,10 @@
         "pointer": "#/paths/~1channels~1{channel_id}~1messages/get",
         "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.215Z"
+        "extracted_at": "2026-09-16T19:50:52.134Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.215Z"
+      "last_verified": "2026-09-16T19:50:52.134Z"
     },
     {
       "id": "discord.create_channels_message",
@@ -3504,10 +3504,10 @@
         "pointer": "#/paths/~1channels~1{channel_id}~1messages/post",
         "upstream_url": "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.216Z"
+        "extracted_at": "2026-09-16T19:50:52.135Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.215Z"
+      "last_verified": "2026-09-16T19:50:52.134Z"
     },
     {
       "id": "notion.create_page",
@@ -3590,10 +3590,10 @@
         "pointer": "#/paths/~1v1~1pages/post",
         "upstream_url": "https://developers.notion.com/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.932Z"
+        "extracted_at": "2026-09-16T19:50:52.137Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.932Z"
+      "last_verified": "2026-09-16T19:50:52.136Z"
     },
     {
       "id": "notion.get_page",
@@ -3666,10 +3666,10 @@
         "pointer": "#/paths/~1v1~1pages~1{page_id}/get",
         "upstream_url": "https://developers.notion.com/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.933Z"
+        "extracted_at": "2026-09-16T19:50:52.137Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.932Z"
+      "last_verified": "2026-09-16T19:50:52.136Z"
     },
     {
       "id": "notion.create_data_sources_query",
@@ -3751,10 +3751,10 @@
         "pointer": "#/paths/~1v1~1data_sources~1{data_source_id}~1query/post",
         "upstream_url": "https://developers.notion.com/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.933Z"
+        "extracted_at": "2026-09-16T19:50:52.137Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.932Z"
+      "last_verified": "2026-09-16T19:50:52.136Z"
     },
     {
       "id": "asana.create_task",
@@ -3877,10 +3877,10 @@
         "pointer": "Asana API v1.0 > Create Task",
         "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-09-14T20:17:38.937Z"
+        "extracted_at": "2026-09-16T19:50:52.139Z"
       },
       "confidence": 0.55,
-      "last_verified": "2026-09-14T20:17:38.935Z"
+      "last_verified": "2026-09-16T19:50:52.138Z"
     },
     {
       "id": "asana.get_task",
@@ -3965,10 +3965,10 @@
         "pointer": "Asana API v1.0 > Get Task",
         "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-09-14T20:17:38.938Z"
+        "extracted_at": "2026-09-16T19:50:52.140Z"
       },
       "confidence": 0.55,
-      "last_verified": "2026-09-14T20:17:38.935Z"
+      "last_verified": "2026-09-16T19:50:52.138Z"
     },
     {
       "id": "asana.update_task",
@@ -4073,10 +4073,10 @@
         "pointer": "Asana API v1.0 > Update Task",
         "upstream_url": "https://developers.asana.com/reference/rest-api-reference",
         "extractor": "markdown-heuristic",
-        "extracted_at": "2026-09-14T20:17:38.939Z"
+        "extracted_at": "2026-09-16T19:50:52.140Z"
       },
       "confidence": 0.55,
-      "last_verified": "2026-09-14T20:17:38.935Z"
+      "last_verified": "2026-09-16T19:50:52.138Z"
     },
     {
       "id": "square.create_payment",
@@ -4202,10 +4202,10 @@
         "pointer": "#/paths/~1v2~1payments/post",
         "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.224Z"
+        "extracted_at": "2026-09-16T19:50:52.141Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.224Z"
+      "last_verified": "2026-09-16T19:50:52.141Z"
     },
     {
       "id": "square.create_customer",
@@ -4300,10 +4300,10 @@
         "pointer": "#/paths/~1v2~1customers/post",
         "upstream_url": "https://raw.githubusercontent.com/square/connect-api-specification/master/api.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.225Z"
+        "extracted_at": "2026-09-16T19:50:52.142Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.224Z"
+      "last_verified": "2026-09-16T19:50:52.141Z"
     },
     {
       "id": "docusign.create_accounts_envelope",
@@ -4413,10 +4413,10 @@
         "pointer": "#/paths/~1v2.1~1accounts~1{accountId}~1envelopes/post",
         "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.940Z"
+        "extracted_at": "2026-09-16T19:50:52.143Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.940Z"
+      "last_verified": "2026-09-16T19:50:52.142Z"
     },
     {
       "id": "docusign.get_accounts_envelope",
@@ -4497,10 +4497,10 @@
         "pointer": "#/paths/~1v2.1~1accounts~1{accountId}~1envelopes~1{envelopeId}/get",
         "upstream_url": "https://raw.githubusercontent.com/docusign/eSign-OpenAPI-Specification/master/esignature.rest.swagger-v2.1.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.941Z"
+        "extracted_at": "2026-09-16T19:50:52.143Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.940Z"
+      "last_verified": "2026-09-16T19:50:52.142Z"
     },
     {
       "id": "mailchimp.create_lists_member",
@@ -4593,10 +4593,10 @@
         "pointer": "#/paths/~1lists~1{list_id}~1members/post",
         "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.945Z"
+        "extracted_at": "2026-09-16T19:50:52.144Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.944Z"
+      "last_verified": "2026-09-16T19:50:52.144Z"
     },
     {
       "id": "mailchimp.send_action",
@@ -4637,10 +4637,10 @@
         "pointer": "#/paths/~1campaigns~1{campaign_id}~1actions~1send/post",
         "upstream_url": "https://api.mailchimp.com/schema/3.0/Swagger.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.945Z"
+        "extracted_at": "2026-09-16T19:50:52.145Z"
       },
       "confidence": 0.9,
-      "last_verified": "2026-09-14T20:17:38.944Z"
+      "last_verified": "2026-09-16T19:50:52.144Z"
     },
     {
       "id": "box.get_file",
@@ -4713,10 +4713,10 @@
         "pointer": "#/paths/~1files~1{file_id}/get",
         "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.229Z"
+        "extracted_at": "2026-09-16T19:50:52.145Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.229Z"
+      "last_verified": "2026-09-16T19:50:52.145Z"
     },
     {
       "id": "box.list_folders_items",
@@ -4783,10 +4783,10 @@
         "pointer": "#/paths/~1folders~1{folder_id}~1items/get",
         "upstream_url": "https://raw.githubusercontent.com/box/box-openapi/main/openapi.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:24.230Z"
+        "extracted_at": "2026-09-16T19:50:52.145Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:24.229Z"
+      "last_verified": "2026-09-16T19:50:52.145Z"
     },
     {
       "id": "pagerduty.create_incident",
@@ -4908,10 +4908,10 @@
         "pointer": "#/paths/~1incidents/post",
         "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.951Z"
+        "extracted_at": "2026-09-16T19:50:52.146Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.951Z"
+      "last_verified": "2026-09-16T19:50:52.146Z"
     },
     {
       "id": "pagerduty.get_incident",
@@ -4993,10 +4993,10 @@
         "pointer": "#/paths/~1incidents~1{id}/get",
         "upstream_url": "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json",
         "extractor": "openapi",
-        "extracted_at": "2026-09-14T20:17:38.952Z"
+        "extracted_at": "2026-09-16T19:50:52.147Z"
       },
       "confidence": 0.95,
-      "last_verified": "2026-09-14T20:17:38.951Z"
+      "last_verified": "2026-09-16T19:50:52.146Z"
     }
   ],
   "implementations": [

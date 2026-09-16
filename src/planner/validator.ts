@@ -332,8 +332,12 @@ export function validatePlan(candidate: unknown, options: ValidatePlanOptions = 
     for (const input of capability.inputs) {
       if (!input.required) continue;
       if (mapped.has(input.path)) continue;
-      // A required leaf is satisfied when its parent object is mapped wholesale.
-      if ([...mapped].some((path) => input.path.startsWith(`${path}.`))) continue;
+      // A required leaf is satisfied when its parent object is mapped wholesale,
+      // and a required parent object is equally satisfied when any of its own
+      // children is mapped — the executor's setByPath creates the parent as a
+      // side effect of writing to a nested path, so requiring a *separate*
+      // mapping for the container itself would demand a redundant one.
+      if ([...mapped].some((path) => input.path.startsWith(`${path}.`) || path.startsWith(`${input.path}.`))) continue;
 
       errors.push({
         severity: 'error',

@@ -47,6 +47,44 @@ const LINKABLE_SEMANTIC_TYPES: SemanticType[] = [
   'email', 'url', 'phone', 'identifier', 'currency_amount', 'currency_code', 'timestamp',
 ];
 
+/**
+ * Structural/suffix words that appear in almost every id-shaped field name and
+ * so carry no information about *what* the id identifies: stripped before
+ * comparing two `identifier` fields for a shared name token.
+ */
+const GENERIC_ID_TOKENS = new Set(['id', 'ids', 'sid', 'uuid', 'key', 'identifier', 'data', 'object', 'items']);
+
+/**
+ * Dotted path → lowercase word tokens, snake/camel boundaries split, generic
+ * id-suffix and JSON-envelope words removed. `email`/`url`/`phone`/currency/
+ * timestamp are precise enough on their own to justify a `can_feed` edge, but
+ * `identifier` is not — a HubSpot contact id and a Slack channel id are both
+ * "identifier" despite meaning nothing alike, so an identifier link also
+ * requires the two field paths to share a real word (e.g. both mention
+ * "customer") on top of the semantic-type match.
+ */
+function pathTokens(path: string): Set<string> {
+  const words = path
+    .replace(/\[\]/g, '')
+    .split('.')
+    .flatMap((segment) =>
+      segment
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+    )
+    .filter((word) => word.length > 0 && !GENERIC_ID_TOKENS.has(word));
+  return new Set(words);
+}
+
+function sharesNameToken(pathA: string, pathB: string): boolean {
+  const tokensA = pathTokens(pathA);
+  for (const token of pathTokens(pathB)) {
+    if (tokensA.has(token)) return true;
+  }
+  return false;
+}
+
 export function outputFieldNodeId(capabilityId: string, path: string): string {
   return `${capabilityId}#out:${path}`;
 }
@@ -118,6 +156,7 @@ export function deriveCanFeedEdges(capabilities: Capability[]): GraphEdge[] {
       if (!LINKABLE_SEMANTIC_TYPES.includes(output.semantic_type)) continue;
       for (const consumer of consumersBySemanticType.get(output.semantic_type) ?? []) {
         if (consumer.capabilityId === capability.id) continue;
+        if (output.semantic_type === 'identifier' && !sharesNameToken(output.path, consumer.path)) continue;
         edges.push({
           from: outputFieldNodeId(capability.id, output.path),
           to: inputFieldNodeId(consumer.capabilityId, consumer.path),
@@ -159,6 +198,7 @@ export function findFeedLinks(
       if (!LINKABLE_SEMANTIC_TYPES.includes(output.semantic_type)) continue;
       for (const input of consumer.inputs) {
         if (input.semantic_type !== output.semantic_type) continue;
+        if (output.semantic_type === 'identifier' && !sharesNameToken(output.path, input.path)) continue;
         links.push({
           from_capability_id: producer.id,
           from_path: output.path,

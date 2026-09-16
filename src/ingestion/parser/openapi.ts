@@ -487,10 +487,16 @@ export function inferSideEffects(method: HttpMethod, path: string, summary: stri
   const text = `${path} ${summary}`.toLowerCase();
   let kind: SideEffectKind;
 
+  // A "draft" is definitionally unsent — created and freely deletable — even
+  // when its own summary says "draft email message" (the word "message" alone
+  // would otherwise satisfy the send pattern below for an operation that sends
+  // nothing).
+  const isDraft = /\bdraft/.test(text);
+
   if (method === 'GET') kind = 'read';
   else if (method === 'DELETE') kind = 'delete';
   else if (method === 'PUT' || method === 'PATCH') kind = 'update';
-  else if (/\bsend\b|message|email|sms|notify/.test(text)) kind = 'send';
+  else if (!isDraft && /\bsend\b|message|email|sms|notify/.test(text)) kind = 'send';
   else kind = 'create';
 
   const reversible = kind === 'read' || kind === 'create' || kind === 'update';
