@@ -1,61 +1,2529 @@
 {
   "openapi": "3.0.0",
-  "info": { "title": "Discord API (trimmed local mirror)", "version": "10" },
-  "servers": [{ "url": "https://discord.com/api/v10" }],
-  "security": [{ "BotToken": [] }],
-  "components": {
-    "securitySchemes": {
-      "BotToken": { "type": "apiKey", "name": "Authorization", "in": "header", "description": "Format: `Bot <token>`" }
-    },
-    "schemas": {
-      "Message": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "channel_id": { "type": "string" },
-          "content": { "type": "string" },
-          "timestamp": { "type": "string" }
-        }
-      }
-    }
+  "info": {
+    "title": "Discord API (curated real subset)",
+    "version": "10",
+    "description": "Curated subset (2 operations) extracted verbatim from the real published OpenAPI document at https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json. 0 \"expandable resource\" anyOf/oneOf unions were collapsed to their plain-string-id branch (the default-response shape without expansion); 39 other polymorphic unions were stubbed (x-integrelli-truncated) because the deterministic parser does not resolve oneOf/anyOf. 1 nested schema(s) beyond depth 4 were also stubbed: OAuth2Scopes."
   },
+  "servers": [
+    {
+      "url": "https://discord.com/api/v10"
+    }
+  ],
   "paths": {
     "/channels/{channel_id}/messages": {
       "post": {
-        "summary": "Create a message in a channel",
-        "parameters": [
-          { "name": "channel_id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
+        "operationId": "create_message",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": { "type": "string", "description": "Message contents, up to 2000 characters." },
-                  "tts": { "type": "boolean" }
+                "$ref": "#/components/schemas/MessageCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/MessageCreateRequest"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "files[0]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[1]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[2]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[3]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[4]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[5]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[6]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[7]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[8]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      },
+                      "files[9]": {
+                        "type": "string",
+                        "contentEncoding": "binary"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "200 response for create_message",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              },
+              "X-RateLimit-Reset-After": {
+                "$ref": "#/components/headers/X-RateLimit-Reset-After"
+              },
+              "X-RateLimit-Bucket": {
+                "$ref": "#/components/headers/X-RateLimit-Bucket"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
                 }
               }
             }
+          },
+          "429": {
+            "$ref": "#/components/responses/ClientRatelimitedResponse"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/ClientErrorResponse"
           }
         },
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Message" } } } }
-        }
+        "security": [
+          {
+            "BotToken": []
+          }
+        ]
       },
+      "parameters": [
+        {
+          "name": "channel_id",
+          "in": "path",
+          "schema": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "required": true
+        }
+      ],
       "get": {
-        "summary": "List messages in a channel",
+        "operationId": "list_messages",
         "parameters": [
-          { "name": "channel_id", "in": "path", "required": true, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+          {
+            "name": "around",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Message" } } } }
+            "description": "200 response for list_messages",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "$ref": "#/components/headers/X-RateLimit-Limit"
+              },
+              "X-RateLimit-Remaining": {
+                "$ref": "#/components/headers/X-RateLimit-Remaining"
+              },
+              "X-RateLimit-Reset": {
+                "$ref": "#/components/headers/X-RateLimit-Reset"
+              },
+              "X-RateLimit-Reset-After": {
+                "$ref": "#/components/headers/X-RateLimit-Reset-After"
+              },
+              "X-RateLimit-Bucket": {
+                "$ref": "#/components/headers/X-RateLimit-Bucket"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "$ref": "#/components/schemas/MessageResponse"
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ClientRatelimitedResponse"
+          },
+          "4XX": {
+            "$ref": "#/components/responses/ClientErrorResponse"
+          }
+        },
+        "security": [
+          {
+            "BotToken": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BotToken": {
+        "type": "apiKey",
+        "description": "Discord bot token",
+        "name": "Authorization",
+        "in": "header"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "https://discord.com/api/oauth2/authorize",
+            "refreshUrl": "https://discord.com/api/oauth2/token",
+            "scopes": {
+              "activities.invites.write": "allows your app to send activity invites - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "activities.read": "allows your app to fetch data from a user's \"Now Playing/Recently Played\" list - requires Discord approval",
+              "activities.write": "allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "applications.builds.read": "allows your app to read build data for a user's applications",
+              "applications.builds.upload": "allows your app to upload/update builds for a user's applications - requires Discord approval",
+              "applications.commands": "allows your app to use commands in a guild",
+              "applications.commands.permissions.update": "allows your app to update permissions for its commands in a guild a user has permissions to",
+              "applications.entitlements": "allows your app to read entitlements for a user's applications",
+              "applications.store.update": "allows your app to read and update store data (SKUs, store listings, achievements, etc.) for a user's applications",
+              "bot": "for oauth2 bots, this puts the bot in the user's selected guild by default",
+              "connections": "allows /users/@me/connections to return linked third-party accounts",
+              "dm_channels.read": "allows your app to see information about the user's DMs and group DMs - requires Discord approval",
+              "email": "enables /users/@me to return an email",
+              "gdm.join": "allows your app to join users to a group dm",
+              "guilds": "allows /users/@me/guilds to return basic information about all of a user's guilds",
+              "guilds.join": "allows /guilds/{guild.id}/members/{user.id} to be used for joining users to a guild",
+              "guilds.members.read": "allows /users/@me/guilds/{guild.id}/member to return a user's member information in a guild",
+              "identify": "allows /users/@me without email",
+              "messages.read": "for local rpc server api access, this allows you to read messages from all client channels (otherwise restricted to channels/guilds your app creates)",
+              "openid": "for OpenID Connect, this allows your app to receive user id and basic profile information",
+              "relationships.read": "allows your app to know a user's friends and implicit relationships - requires Discord approval",
+              "rpc": "for local rpc server access, this allows you to control a user's local Discord client - requires Discord approval",
+              "rpc.activities.write": "for local rpc server access, this allows you to update a user's activity - requires Discord approval",
+              "rpc.notifications.read": "for local rpc server access, this allows you to receive notifications pushed out to the user - requires Discord approval",
+              "rpc.screenshare.read": "for local rpc server access, this allows you to read a user's screenshare status- requires Discord approval",
+              "rpc.screenshare.write": "for local rpc server access, this allows you to update a user's screenshare settings- requires Discord approval",
+              "rpc.video.read": "for local rpc server access, this allows you to read a user's video status - requires Discord approval",
+              "rpc.video.write": "for local rpc server access, this allows you to update a user's video settings - requires Discord approval",
+              "rpc.voice.read": "for local rpc server access, this allows you to read a user's voice settings and listen for voice events - requires Discord approval",
+              "rpc.voice.write": "for local rpc server access, this allows you to update a user's voice settings - requires Discord approval",
+              "voice": "allows your app to connect to voice on user's behalf and see all the voice members - requires Discord approval",
+              "webhook.incoming": "this generates a webhook that is returned in the oauth token response for authorization code grants"
+            }
+          },
+          "clientCredentials": {
+            "tokenUrl": "https://discord.com/api/oauth2/token",
+            "refreshUrl": "https://discord.com/api/oauth2/token",
+            "scopes": {
+              "activities.invites.write": "allows your app to send activity invites - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "activities.read": "allows your app to fetch data from a user's \"Now Playing/Recently Played\" list - requires Discord approval",
+              "activities.write": "allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "applications.builds.read": "allows your app to read build data for a user's applications",
+              "applications.builds.upload": "allows your app to upload/update builds for a user's applications - requires Discord approval",
+              "applications.commands": "allows your app to use commands in a guild",
+              "applications.commands.permissions.update": "allows your app to update permissions for its commands in a guild a user has permissions to",
+              "applications.commands.update": "allows your app to update its commands using a Bearer token - client credentials grant only",
+              "applications.entitlements": "allows your app to read entitlements for a user's applications",
+              "applications.store.update": "allows your app to read and update store data (SKUs, store listings, achievements, etc.) for a user's applications",
+              "bot": "for oauth2 bots, this puts the bot in the user's selected guild by default",
+              "connections": "allows /users/@me/connections to return linked third-party accounts",
+              "dm_channels.read": "allows your app to see information about the user's DMs and group DMs - requires Discord approval",
+              "email": "enables /users/@me to return an email",
+              "gdm.join": "allows your app to join users to a group dm",
+              "guilds": "allows /users/@me/guilds to return basic information about all of a user's guilds",
+              "guilds.join": "allows /guilds/{guild.id}/members/{user.id} to be used for joining users to a guild",
+              "guilds.members.read": "allows /users/@me/guilds/{guild.id}/member to return a user's member information in a guild",
+              "identify": "allows /users/@me without email",
+              "messages.read": "for local rpc server api access, this allows you to read messages from all client channels (otherwise restricted to channels/guilds your app creates)",
+              "openid": "for OpenID Connect, this allows your app to receive user id and basic profile information",
+              "relationships.read": "allows your app to know a user's friends and implicit relationships - requires Discord approval",
+              "rpc": "for local rpc server access, this allows you to control a user's local Discord client - requires Discord approval",
+              "rpc.activities.write": "for local rpc server access, this allows you to update a user's activity - requires Discord approval",
+              "rpc.notifications.read": "for local rpc server access, this allows you to receive notifications pushed out to the user - requires Discord approval",
+              "rpc.screenshare.read": "for local rpc server access, this allows you to read a user's screenshare status- requires Discord approval",
+              "rpc.screenshare.write": "for local rpc server access, this allows you to update a user's screenshare settings- requires Discord approval",
+              "rpc.video.read": "for local rpc server access, this allows you to read a user's video status - requires Discord approval",
+              "rpc.video.write": "for local rpc server access, this allows you to update a user's video settings - requires Discord approval",
+              "rpc.voice.read": "for local rpc server access, this allows you to read a user's voice settings and listen for voice events - requires Discord approval",
+              "rpc.voice.write": "for local rpc server access, this allows you to update a user's voice settings - requires Discord approval",
+              "voice": "allows your app to connect to voice on user's behalf and see all the voice members - requires Discord approval",
+              "webhook.incoming": "this generates a webhook that is returned in the oauth token response for authorization code grants"
+            }
+          },
+          "authorizationCode": {
+            "authorizationUrl": "https://discord.com/api/oauth2/authorize",
+            "tokenUrl": "https://discord.com/api/oauth2/token",
+            "refreshUrl": "https://discord.com/api/oauth2/token",
+            "scopes": {
+              "activities.invites.write": "allows your app to send activity invites - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "activities.read": "allows your app to fetch data from a user's \"Now Playing/Recently Played\" list - requires Discord approval",
+              "activities.write": "allows your app to update a user's activity - requires Discord approval (NOT REQUIRED FOR GAMESDK ACTIVITY MANAGER)",
+              "applications.builds.read": "allows your app to read build data for a user's applications",
+              "applications.builds.upload": "allows your app to upload/update builds for a user's applications - requires Discord approval",
+              "applications.commands": "allows your app to use commands in a guild",
+              "applications.commands.permissions.update": "allows your app to update permissions for its commands in a guild a user has permissions to",
+              "applications.entitlements": "allows your app to read entitlements for a user's applications",
+              "applications.store.update": "allows your app to read and update store data (SKUs, store listings, achievements, etc.) for a user's applications",
+              "bot": "for oauth2 bots, this puts the bot in the user's selected guild by default",
+              "connections": "allows /users/@me/connections to return linked third-party accounts",
+              "dm_channels.read": "allows your app to see information about the user's DMs and group DMs - requires Discord approval",
+              "email": "enables /users/@me to return an email",
+              "gdm.join": "allows your app to join users to a group dm",
+              "guilds": "allows /users/@me/guilds to return basic information about all of a user's guilds",
+              "guilds.join": "allows /guilds/{guild.id}/members/{user.id} to be used for joining users to a guild",
+              "guilds.members.read": "allows /users/@me/guilds/{guild.id}/member to return a user's member information in a guild",
+              "identify": "allows /users/@me without email",
+              "messages.read": "for local rpc server api access, this allows you to read messages from all client channels (otherwise restricted to channels/guilds your app creates)",
+              "openid": "for OpenID Connect, this allows your app to receive user id and basic profile information",
+              "relationships.read": "allows your app to know a user's friends and implicit relationships - requires Discord approval",
+              "role_connections.write": "allows your app to update a user's connection and metadata for the app",
+              "rpc": "for local rpc server access, this allows you to control a user's local Discord client - requires Discord approval",
+              "rpc.activities.write": "for local rpc server access, this allows you to update a user's activity - requires Discord approval",
+              "rpc.notifications.read": "for local rpc server access, this allows you to receive notifications pushed out to the user - requires Discord approval",
+              "rpc.screenshare.read": "for local rpc server access, this allows you to read a user's screenshare status- requires Discord approval",
+              "rpc.screenshare.write": "for local rpc server access, this allows you to update a user's screenshare settings- requires Discord approval",
+              "rpc.video.read": "for local rpc server access, this allows you to read a user's video status - requires Discord approval",
+              "rpc.video.write": "for local rpc server access, this allows you to update a user's video settings - requires Discord approval",
+              "rpc.voice.read": "for local rpc server access, this allows you to read a user's voice settings and listen for voice events - requires Discord approval",
+              "rpc.voice.write": "for local rpc server access, this allows you to update a user's voice settings - requires Discord approval",
+              "voice": "allows your app to connect to voice on user's behalf and see all the voice members - requires Discord approval",
+              "webhook.incoming": "this generates a webhook that is returned in the oauth token response for authorization code grants"
+            }
           }
         }
+      }
+    },
+    "schemas": {
+      "MessageCreateRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 4000
+          },
+          "embeds": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RichEmbed"
+            },
+            "maxItems": 10
+          },
+          "allowed_mentions": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "sticker_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "maxItems": 3
+          },
+          "components": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            },
+            "maxItems": 40
+          },
+          "flags": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "attachments": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MessageAttachmentRequest"
+            },
+            "maxItems": 10
+          },
+          "poll": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "shared_client_theme": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "message_reference": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "nonce": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "enforce_nonce": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "tts": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/MessageType"
+          },
+          "content": {
+            "type": "string"
+          },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          },
+          "mention_roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "uniqueItems": true
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageAttachmentResponse"
+            }
+          },
+          "embeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEmbedResponse"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "edited_timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "stickers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "sticker_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageStickerItemResponse"
+            }
+          },
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "channel_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "author": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "pinned": {
+            "type": "boolean"
+          },
+          "mention_everyone": {
+            "type": "boolean"
+          },
+          "tts": {
+            "type": "boolean"
+          },
+          "call": {
+            "$ref": "#/components/schemas/MessageCallResponse"
+          },
+          "activity": {
+            "$ref": "#/components/schemas/MessageActivityResponse"
+          },
+          "application": {
+            "$ref": "#/components/schemas/BasicApplicationResponseWithBot"
+          },
+          "application_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "interaction": {
+            "$ref": "#/components/schemas/MessageInteractionResponse"
+          },
+          "nonce": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "webhook_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "message_reference": {
+            "$ref": "#/components/schemas/MessageReferenceResponse"
+          },
+          "thread": {
+            "$ref": "#/components/schemas/ThreadResponse"
+          },
+          "mention_channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageMentionChannelResponse"
+            }
+          },
+          "role_subscription_data": {
+            "$ref": "#/components/schemas/MessageRoleSubscriptionDataResponse"
+          },
+          "purchase_notification": {
+            "$ref": "#/components/schemas/PurchaseNotificationResponse"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "resolved": {
+            "$ref": "#/components/schemas/ResolvedObjectsResponse"
+          },
+          "poll": {
+            "$ref": "#/components/schemas/PollResponse"
+          },
+          "shared_client_theme": {
+            "$ref": "#/components/schemas/CustomClientThemeResponse"
+          },
+          "interaction_metadata": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "message_snapshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageSnapshotResponse"
+            }
+          },
+          "lobby_member": {
+            "$ref": "#/components/schemas/MessageLobbyMemberResponse"
+          },
+          "reactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageReactionResponse"
+            }
+          },
+          "referenced_message": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        },
+        "required": [
+          "type",
+          "content",
+          "mentions",
+          "mention_roles",
+          "attachments",
+          "embeds",
+          "timestamp",
+          "edited_timestamp",
+          "flags",
+          "components",
+          "id",
+          "channel_id",
+          "author",
+          "pinned",
+          "mention_everyone",
+          "tts"
+        ]
+      },
+      "SnowflakeType": {
+        "type": "string",
+        "pattern": "^(0|[1-9][0-9]*)$",
+        "format": "snowflake"
+      },
+      "RichEmbed": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 152133
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 2048,
+            "format": "uri"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 256
+          },
+          "color": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 16777215
+          },
+          "timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 4096
+          },
+          "author": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "image": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "thumbnail": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "footer": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "fields": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/RichEmbedField"
+            },
+            "maxItems": 25
+          },
+          "provider": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "video": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        }
+      },
+      "MessageAttachmentRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "filename": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024
+          },
+          "duration_secs": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 2147483647,
+            "format": "double"
+          },
+          "waveform": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 400
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1024
+          },
+          "is_spoiler": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "MessageType": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType",
+            "description": "the user's id"
+          },
+          "username": {
+            "type": "string",
+            "description": "the user's username, not unique across the platform"
+          },
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the user's avatar hash"
+          },
+          "discriminator": {
+            "type": "string",
+            "description": "the user's Discord-tag"
+          },
+          "public_flags": {
+            "type": "integer",
+            "description": "the public flags on a user's account",
+            "format": "int32"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/Int53Type",
+            "description": "the flags on a user's account"
+          },
+          "bot": {
+            "type": "boolean",
+            "description": "whether the user belongs to an OAuth2 application"
+          },
+          "system": {
+            "type": "boolean",
+            "description": "whether the user is an Official Discord System user (part of the urgent message system)"
+          },
+          "banner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the user's banner hash"
+          },
+          "accent_color": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "the user's banner color encoded as an integer representation of hexadecimal color code",
+            "format": "int32"
+          },
+          "global_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the user's display name, if it is set"
+          },
+          "avatar_decoration_data": {
+            "type": "object",
+            "description": "data for the user's avatar decoration (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "collectibles": {
+            "type": "object",
+            "description": "data for the user's collectibles (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "primary_guild": {
+            "type": "object",
+            "description": "the user's primary guild (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        },
+        "required": [
+          "id",
+          "username",
+          "avatar",
+          "discriminator",
+          "public_flags",
+          "flags",
+          "global_name",
+          "primary_guild"
+        ]
+      },
+      "MessageAttachmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "proxy_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "height": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "duration_secs": {
+            "type": "number",
+            "format": "double"
+          },
+          "waveform": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "ephemeral": {
+            "type": "boolean"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "placeholder_version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "application": {
+            "$ref": "#/components/schemas/ApplicationResponse"
+          },
+          "clip_created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "clip_participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "filename",
+          "size",
+          "url",
+          "proxy_url"
+        ]
+      },
+      "MessageEmbedResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEmbedFieldResponse"
+            }
+          },
+          "author": {
+            "$ref": "#/components/schemas/MessageEmbedAuthorResponse"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/MessageEmbedProviderResponse"
+          },
+          "image": {
+            "$ref": "#/components/schemas/MessageEmbedImageResponse"
+          },
+          "thumbnail": {
+            "$ref": "#/components/schemas/MessageEmbedImageResponse"
+          },
+          "video": {
+            "$ref": "#/components/schemas/MessageEmbedVideoResponse"
+          },
+          "footer": {
+            "$ref": "#/components/schemas/MessageEmbedFooterResponse"
+          },
+          "flags": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContainerComponentResponse"
+            }
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "MessageStickerItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "format_type": {
+            "$ref": "#/components/schemas/StickerFormatTypes"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "format_type"
+        ]
+      },
+      "MessageCallResponse": {
+        "type": "object",
+        "properties": {
+          "ended_timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "participants"
+        ]
+      },
+      "MessageActivityResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ActivityActionTypes"
+          },
+          "party_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "BasicApplicationResponseWithBot": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "cover_image": {
+            "type": "string"
+          },
+          "primary_sku_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flags_new": {
+            "type": "string"
+          },
+          "bot": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon",
+          "description",
+          "type",
+          "flags",
+          "flags_new"
+        ]
+      },
+      "MessageInteractionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "type": {
+            "$ref": "#/components/schemas/InteractionTypes"
+          },
+          "name": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "name_localized": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "name"
+        ]
+      },
+      "MessageReferenceResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/MessageReferenceType"
+          },
+          "channel_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "message_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "guild_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          }
+        },
+        "required": [
+          "type",
+          "channel_id"
+        ]
+      },
+      "ThreadResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "type": {
+            "type": "integer",
+            "enum": [
+              10,
+              11,
+              12
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChannelTypes"
+              }
+            ],
+            "format": "int32"
+          },
+          "last_message_id": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "last_pin_timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "guild_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parent_id": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "rate_limit_per_user": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bitrate": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "user_limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rtc_region": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "video_quality_mode": {
+            "$ref": "#/components/schemas/VideoQualityModes"
+          },
+          "permissions": {
+            "type": "string"
+          },
+          "owner_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "thread_metadata": {
+            "$ref": "#/components/schemas/ThreadMetadataResponse"
+          },
+          "message_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "member_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total_message_sent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "applied_tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            }
+          },
+          "member": {
+            "$ref": "#/components/schemas/ThreadMemberResponse"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "flags",
+          "guild_id",
+          "name",
+          "owner_id",
+          "thread_metadata",
+          "message_count",
+          "member_count",
+          "total_message_sent"
+        ]
+      },
+      "MessageMentionChannelResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ChannelTypes"
+          },
+          "guild_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "guild_id"
+        ]
+      },
+      "MessageRoleSubscriptionDataResponse": {
+        "type": "object",
+        "properties": {
+          "role_subscription_listing_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "tier_name": {
+            "type": "string"
+          },
+          "total_months_subscribed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "is_renewal": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "role_subscription_listing_id",
+          "tier_name",
+          "total_months_subscribed",
+          "is_renewal"
+        ]
+      },
+      "PurchaseNotificationResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/PurchaseType"
+          },
+          "guild_product_purchase": {
+            "$ref": "#/components/schemas/GuildProductPurchaseResponse"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "ResolvedObjectsResponse": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          },
+          "members": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BasicGuildMemberResponse"
+            }
+          },
+          "channels": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "roles": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/GuildRoleResponse"
+            }
+          }
+        }
+      },
+      "PollResponse": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "$ref": "#/components/schemas/PollMediaResponse",
+            "description": "The question of the poll. Only `text` is supported."
+          },
+          "answers": {
+            "type": "array",
+            "description": "Each of the answers available in the poll",
+            "items": {
+              "$ref": "#/components/schemas/PollAnswerResponse"
+            }
+          },
+          "expiry": {
+            "type": "string",
+            "description": "The time when the poll ends",
+            "format": "date-time"
+          },
+          "allow_multiselect": {
+            "type": "boolean",
+            "description": "Whether a user can select multiple answers"
+          },
+          "layout_type": {
+            "$ref": "#/components/schemas/PollLayoutTypes",
+            "description": "The layout type of the poll"
+          },
+          "results": {
+            "$ref": "#/components/schemas/PollResultsResponse",
+            "description": "The results of the poll"
+          }
+        },
+        "required": [
+          "question",
+          "answers",
+          "expiry",
+          "allow_multiselect",
+          "layout_type",
+          "results"
+        ]
+      },
+      "CustomClientThemeResponse": {
+        "type": "object",
+        "properties": {
+          "colors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gradient_angle": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "base_mix": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "base_theme": {
+            "$ref": "#/components/schemas/MessageShareCustomUserThemeBaseTheme"
+          }
+        },
+        "required": [
+          "colors",
+          "gradient_angle",
+          "base_mix",
+          "base_theme"
+        ]
+      },
+      "MessageSnapshotResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "$ref": "#/components/schemas/MinimalContentMessageResponse"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "MessageLobbyMemberResponse": {
+        "type": "object",
+        "properties": {
+          "additional_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "additional_name"
+        ]
+      },
+      "MessageReactionResponse": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "$ref": "#/components/schemas/MessageReactionEmojiResponse"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count_details": {
+            "$ref": "#/components/schemas/MessageReactionCountDetailsResponse"
+          },
+          "burst_colors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "me_burst": {
+            "type": "boolean"
+          },
+          "me": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "emoji",
+          "count",
+          "count_details",
+          "burst_colors",
+          "me_burst",
+          "me"
+        ]
+      },
+      "RichEmbedField": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "inline": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "Int53Type": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991,
+        "format": "int64"
+      },
+      "ApplicationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "cover_image": {
+            "type": "string"
+          },
+          "primary_sku_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flags_new": {
+            "type": "string"
+          },
+          "bot": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "vibegrations_project_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "guild_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "rpc_origins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "bot_public": {
+            "type": "boolean"
+          },
+          "bot_require_code_grant": {
+            "type": "boolean"
+          },
+          "terms_of_service_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "privacy_policy_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "custom_install_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "install_params": {
+            "$ref": "#/components/schemas/ApplicationOAuth2InstallParamsResponse"
+          },
+          "integration_types_config": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ApplicationIntegrationTypeConfigurationResponse"
+            }
+          },
+          "verify_key": {
+            "type": "string"
+          },
+          "max_participants": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon",
+          "description",
+          "type",
+          "flags",
+          "flags_new",
+          "verify_key"
+        ]
+      },
+      "MessageEmbedFieldResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "inline": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "value",
+          "inline"
+        ]
+      },
+      "MessageEmbedAuthorResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "icon_url": {
+            "type": "string"
+          },
+          "proxy_icon_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MessageEmbedProviderResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MessageEmbedImageResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "proxy_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "width": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "height": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "placeholder_version": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "description": {
+            "type": "string"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/UInt32Type"
+          }
+        }
+      },
+      "MessageEmbedVideoResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "proxy_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "width": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "height": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "placeholder": {
+            "type": "string"
+          },
+          "placeholder_version": {
+            "$ref": "#/components/schemas/UInt32Type"
+          },
+          "description": {
+            "type": "string"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/UInt32Type"
+          }
+        }
+      },
+      "MessageEmbedFooterResponse": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "icon_url": {
+            "type": "string"
+          },
+          "proxy_icon_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "ContainerComponentResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "integer",
+            "enum": [
+              17
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MessageComponentTypes"
+              }
+            ],
+            "format": "int32"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accent_color": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "spoiler": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "type",
+          "id",
+          "accent_color",
+          "components",
+          "spoiler"
+        ]
+      },
+      "StickerFormatTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "ActivityActionTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "InteractionTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "MessageReferenceType": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "ChannelTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "VideoQualityModes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "ThreadMetadataResponse": {
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "archive_timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "auto_archive_duration": {
+            "$ref": "#/components/schemas/ThreadAutoArchiveDuration"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "create_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "invitable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "archived",
+          "archive_timestamp",
+          "auto_archive_duration",
+          "locked"
+        ]
+      },
+      "ThreadMemberResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "user_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "join_timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "member": {
+            "$ref": "#/components/schemas/GuildMemberResponse"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "join_timestamp",
+          "flags"
+        ]
+      },
+      "PurchaseType": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "GuildProductPurchaseResponse": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "product_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "listing_id",
+          "product_name"
+        ]
+      },
+      "BasicGuildMemberResponse": {
+        "type": "object",
+        "properties": {
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the member's guild avatar hash"
+          },
+          "avatar_decoration_data": {
+            "type": "object",
+            "description": "data for the member's guild avatar decoration (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "banner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the member's guild banner hash"
+          },
+          "communication_disabled_until": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out",
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "integer",
+            "description": "guild member flags represented as a bit set, defaults to 0",
+            "format": "int32"
+          },
+          "joined_at": {
+            "type": "string",
+            "description": "when the user joined the guild",
+            "format": "date-time"
+          },
+          "nick": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "this user's guild nickname"
+          },
+          "pending": {
+            "type": "boolean",
+            "description": "whether the user has not yet passed the guild's Membership Screening requirements"
+          },
+          "premium_since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "when the user started boosting the guild",
+            "format": "date-time"
+          },
+          "roles": {
+            "type": "array",
+            "description": "array of role object ids",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "uniqueItems": true
+          },
+          "collectibles": {
+            "type": "object",
+            "description": "data for the member's collectibles (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        },
+        "required": [
+          "avatar",
+          "banner",
+          "communication_disabled_until",
+          "flags",
+          "joined_at",
+          "nick",
+          "pending",
+          "premium_since",
+          "roles"
+        ]
+      },
+      "GuildRoleResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "colors": {
+            "$ref": "#/components/schemas/GuildRoleColorsResponse"
+          },
+          "hoist": {
+            "type": "boolean"
+          },
+          "managed": {
+            "type": "boolean"
+          },
+          "mentionable": {
+            "type": "boolean"
+          },
+          "icon": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unicode_emoji": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tags": {
+            "$ref": "#/components/schemas/GuildRoleTagsResponse"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "permissions",
+          "position",
+          "color",
+          "colors",
+          "hoist",
+          "managed",
+          "mentionable",
+          "icon",
+          "unicode_emoji",
+          "flags"
+        ]
+      },
+      "PollMediaResponse": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text of the field"
+          },
+          "emoji": {
+            "$ref": "#/components/schemas/MessageReactionEmojiResponse",
+            "description": "The emoji of the field"
+          }
+        }
+      },
+      "PollAnswerResponse": {
+        "type": "object",
+        "properties": {
+          "answer_id": {
+            "type": "integer",
+            "description": "The ID of the answer",
+            "format": "int32"
+          },
+          "poll_media": {
+            "$ref": "#/components/schemas/PollMediaResponse",
+            "description": "The data of the answer"
+          }
+        },
+        "required": [
+          "answer_id",
+          "poll_media"
+        ]
+      },
+      "PollLayoutTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "PollResultsResponse": {
+        "type": "object",
+        "properties": {
+          "answer_counts": {
+            "type": "array",
+            "description": "The counts for each answer",
+            "items": {
+              "$ref": "#/components/schemas/PollResultsEntryResponse"
+            }
+          },
+          "is_finalized": {
+            "type": "boolean",
+            "description": "Whether the votes have been precisely counted"
+          }
+        },
+        "required": [
+          "answer_counts",
+          "is_finalized"
+        ]
+      },
+      "MessageShareCustomUserThemeBaseTheme": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "MinimalContentMessageResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/MessageType"
+          },
+          "content": {
+            "type": "string"
+          },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserResponse"
+            }
+          },
+          "mention_roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "uniqueItems": true
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageAttachmentResponse"
+            }
+          },
+          "embeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEmbedResponse"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "edited_timestamp": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "stickers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+              "x-integrelli-truncated": true
+            }
+          },
+          "sticker_items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageStickerItemResponse"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "content",
+          "mentions",
+          "mention_roles",
+          "attachments",
+          "embeds",
+          "timestamp",
+          "edited_timestamp",
+          "flags",
+          "components"
+        ]
+      },
+      "MessageReactionEmojiResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "animated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "MessageReactionCountDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "burst": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "normal": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "burst",
+          "normal"
+        ]
+      },
+      "ApplicationOAuth2InstallParamsResponse": {
+        "type": "object",
+        "properties": {
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "applications.commands",
+                "bot"
+              ],
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/OAuth2Scopes"
+                }
+              ]
+            },
+            "uniqueItems": true
+          },
+          "permissions": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scopes",
+          "permissions"
+        ]
+      },
+      "ApplicationIntegrationTypeConfigurationResponse": {
+        "type": "object",
+        "properties": {
+          "oauth2_install_params": {
+            "$ref": "#/components/schemas/ApplicationOAuth2InstallParamsResponse"
+          }
+        }
+      },
+      "UInt32Type": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 4294967295,
+        "format": "int64"
+      },
+      "MessageComponentTypes": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "ThreadAutoArchiveDuration": {
+        "type": "object",
+        "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+        "x-integrelli-truncated": true
+      },
+      "GuildMemberResponse": {
+        "type": "object",
+        "properties": {
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the member's guild avatar hash"
+          },
+          "avatar_decoration_data": {
+            "type": "object",
+            "description": "data for the member's guild avatar decoration (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "banner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the member's guild banner hash"
+          },
+          "communication_disabled_until": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "when the user's timeout will expire and the user will be able to communicate in the guild again, null or a time in the past if the user is not timed out",
+            "format": "date-time"
+          },
+          "flags": {
+            "type": "integer",
+            "description": "guild member flags represented as a bit set, defaults to 0",
+            "format": "int32"
+          },
+          "joined_at": {
+            "type": "string",
+            "description": "when the user joined the guild",
+            "format": "date-time"
+          },
+          "nick": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "this user's guild nickname"
+          },
+          "pending": {
+            "type": "boolean",
+            "description": "whether the user has not yet passed the guild's Membership Screening requirements"
+          },
+          "premium_since": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "when the user started boosting the guild",
+            "format": "date-time"
+          },
+          "roles": {
+            "type": "array",
+            "description": "array of role object ids",
+            "items": {
+              "$ref": "#/components/schemas/SnowflakeType"
+            },
+            "uniqueItems": true
+          },
+          "collectibles": {
+            "type": "object",
+            "description": "data for the member's collectibles (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse",
+            "description": "the user this guild member represents"
+          },
+          "mute": {
+            "type": "boolean",
+            "description": "whether the user is muted in voice channels"
+          },
+          "deaf": {
+            "type": "boolean",
+            "description": "whether the user is deafened in voice channels"
+          }
+        },
+        "required": [
+          "avatar",
+          "banner",
+          "communication_disabled_until",
+          "flags",
+          "joined_at",
+          "nick",
+          "pending",
+          "premium_since",
+          "roles",
+          "user",
+          "mute",
+          "deaf"
+        ]
+      },
+      "GuildRoleColorsResponse": {
+        "type": "object",
+        "properties": {
+          "primary_color": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "secondary_color": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "tertiary_color": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          }
+        },
+        "required": [
+          "primary_color",
+          "secondary_color",
+          "tertiary_color"
+        ]
+      },
+      "GuildRoleTagsResponse": {
+        "type": "object",
+        "properties": {
+          "premium_subscriber": {
+            "type": "null"
+          },
+          "bot_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "integration_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "subscription_listing_id": {
+            "$ref": "#/components/schemas/SnowflakeType"
+          },
+          "available_for_purchase": {
+            "type": "null"
+          },
+          "guild_connections": {
+            "type": "null"
+          }
+        }
+      },
+      "PollResultsEntryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The answer_id",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "description": "The number of votes for this answer",
+            "format": "int32"
+          },
+          "me_voted": {
+            "type": "boolean",
+            "description": "Whether the current user voted for this answer"
+          }
+        },
+        "required": [
+          "id",
+          "count",
+          "me_voted"
+        ]
+      },
+      "OAuth2Scopes": {
+        "type": "object",
+        "description": "Truncated for this curated mirror (depth/size cap). Full schema: https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json#/components/schemas/OAuth2Scopes",
+        "x-integrelli-truncated": true
       }
     }
   }

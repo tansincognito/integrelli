@@ -139,7 +139,7 @@ describe('capability graph', () => {
   const graph = buildGraph(loaded);
 
   it('links provider → version → capability → implementation', () => {
-    expect(graph.edges).toContainEqual({ from: 'stripe', to: 'stripe@2024-06-20', kind: 'has_version' });
+    expect(graph.edges).toContainEqual({ from: 'stripe', to: 'stripe@2026-08-26.dahlia', kind: 'has_version' });
     expect(graph.edges.some((edge) => edge.kind === 'exposes' && edge.to === 'stripe.create_payment_link')).toBe(true);
     expect(
       graph.edges.some((edge) => edge.kind === 'implemented_by' && edge.from === 'stripe.create_payment_link')

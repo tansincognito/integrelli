@@ -2,8 +2,8 @@
   "version": 1,
   "entries": {
     "stripe.openapi": {
-      "content_hash": "9f8f5912d317d2fb38630d1c89e778f37bf6bc6839f5ec261e270313b9873328",
-      "fetched_at": "2026-09-16T20:26:31.286Z",
+      "content_hash": "31119a5a6802b2fec7805b839382cc17ba5c85b38143ceb8995f888b1b536eed",
+      "fetched_at": "2026-09-17T21:06:36.264Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "stripe.create_checkout_session",
@@ -17,8 +17,8 @@
       ]
     },
     "gmail.openapi": {
-      "content_hash": "7a53024f4e11183d3a6a43a1dfae4dee1fdf9542f62b7436ffd7595c54f95c5f",
-      "fetched_at": "2026-09-16T20:26:31.305Z",
+      "content_hash": "3febaca6f8b3a0b62320c1e34cd449a532afdc539774cf6ff49c30dac27a38dd",
+      "fetched_at": "2026-09-17T21:06:36.439Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "gmail.send_message",
@@ -28,8 +28,8 @@
       ]
     },
     "slack.openapi": {
-      "content_hash": "d8405cdc19479885d4277eea9870e5ffee8338785fdef0ee31156bc00fa75e66",
-      "fetched_at": "2026-09-16T20:26:31.310Z",
+      "content_hash": "e9c9d488dd0ed1beb6393b9e98586b9654192ecfe869bc4417a5cd2cd6baedd8",
+      "fetched_at": "2026-09-17T21:06:36.469Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "slack.chat_post_message",
@@ -39,7 +39,7 @@
     },
     "elevenlabs.docs": {
       "content_hash": "535227745ecbdb7f48dd5a71cff56b9830dfd43ef80fc4e26a58698dc5a9081e",
-      "fetched_at": "2026-09-16T20:26:31.314Z",
+      "fetched_at": "2026-09-17T21:06:36.496Z",
       "extractor_signature": "markdown-heuristic",
       "capability_ids": [
         "elevenlabs.text_to_speech",
@@ -56,8 +56,8 @@
       ]
     },
     "github.openapi": {
-      "content_hash": "82f49a6e6584f5f5ec3c0c03958aeb9b39617b716c01cf646b4f76f95f06c0bf",
-      "fetched_at": "2026-09-16T20:26:31.350Z",
+      "content_hash": "6efea67b1df774b0bbdeddb98e2ac2963709b7fd445c8917ff4b50181993cb87",
+      "fetched_at": "2026-09-17T21:06:36.522Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "github.create_repos_issue",
@@ -66,8 +66,8 @@
       ]
     },
     "twilio.openapi": {
-      "content_hash": "71d2691109f7dc0b6492b6952623a4a549ce75004b052446bdf85d7656f1186d",
-      "fetched_at": "2026-09-16T20:26:31.353Z",
+      "content_hash": "edfe3a35fecf73ec9cf64f6ee4ef280bab87e71d9d80bbf3a5862b8152a62bd6",
+      "fetched_at": "2026-09-17T21:06:36.596Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "twilio.messages_json",
@@ -75,8 +75,8 @@
       ]
     },
     "discord.openapi": {
-      "content_hash": "52682337fa2ed8b3450093486db5914550cf02698db738876699a061b100e928",
-      "fetched_at": "2026-09-16T20:26:31.354Z",
+      "content_hash": "204f24344829ab6149573d80cac72c50a0100faf81efb21c176a16e662e38d29",
+      "fetched_at": "2026-09-17T21:06:36.601Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "discord.list_channels_messages",
@@ -84,8 +84,8 @@
       ]
     },
     "notion.openapi": {
-      "content_hash": "095b39e678823c506da78e34c39d3150e804ce3a9d435d712f6b021d01eb3226",
-      "fetched_at": "2026-09-16T20:26:31.355Z",
+      "content_hash": "0b99bc894f9992477a892bb932e8e90de230d007485648ccfc60140043631e7d",
+      "fetched_at": "2026-09-17T21:06:36.678Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "notion.create_page",
@@ -104,8 +104,8 @@
       ]
     },
     "square.openapi": {
-      "content_hash": "a6dd614106d145ed830f6567594a623a1a5f8eb23fc52a7da2949e914b506626",
-      "fetched_at": "2026-09-16T20:26:31.392Z",
+      "content_hash": "38571a7519ce9dc81859a902cc75e851e0acbcc535d397531fcafecd95d4e799",
+      "fetched_at": "2026-09-17T21:06:36.717Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "square.create_payment",
@@ -113,8 +113,8 @@
       ]
     },
     "docusign.openapi": {
-      "content_hash": "50e8c8c7959646290141af177dced42cb378d7e11a722812abf93c66bb1baf5a",
-      "fetched_at": "2026-09-16T20:26:31.393Z",
+      "content_hash": "07353f4a9f09e936b93a783e2b8c64b87152f62c6d148183851c599e0528e50a",
+      "fetched_at": "2026-09-17T21:06:36.774Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "docusign.create_accounts_envelope",
@@ -122,8 +122,8 @@
       ]
     },
     "mailchimp.openapi": {
-      "content_hash": "6f6281aa3a111341739067f0801e1f26ad15fc479644d26248e7bf02d285fefa",
-      "fetched_at": "2026-09-16T20:26:31.394Z",
+      "content_hash": "c9a0cd3b46b14499cee1b7b783e985984afdaaf5b559d113a87ec19a838664b7",
+      "fetched_at": "2026-09-17T21:06:36.875Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "mailchimp.create_lists_member",
@@ -131,8 +131,8 @@
       ]
     },
     "box.openapi": {
-      "content_hash": "6f218da36d9b40a810b3e06b3ef4a6174bbda15d4a77d7a9fcac849beebb9759",
-      "fetched_at": "2026-09-16T20:26:31.395Z",
+      "content_hash": "a33f58983cb7bcdde250f33714a5ea040495f96deffe45e888dd98d7f30808ca",
+      "fetched_at": "2026-09-17T21:06:36.884Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "box.get_file",
@@ -140,8 +140,8 @@
       ]
     },
     "pagerduty.openapi": {
-      "content_hash": "b6f18e60028beb3bb5e19e8a5ccdedf9a1a6b19cad4944af32544fbf10755766",
-      "fetched_at": "2026-09-16T20:26:31.396Z",
+      "content_hash": "14692ce0adeb40606af9b8083513d2ad24094df111c0ac12dc8eb16a5ccac2b3",
+      "fetched_at": "2026-09-17T21:06:36.898Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "pagerduty.create_incident",
@@ -150,7 +150,7 @@
     },
     "hubspot.openapi": {
       "content_hash": "a980056dbf1bc802b9059dcb1b7e8cde4d15a0aff1d622f372507eebe00c1c38",
-      "fetched_at": "2026-09-16T20:26:31.319Z",
+      "fetched_at": "2026-09-17T21:06:36.500Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "hubspot.create_contact",
@@ -167,7 +167,7 @@
     },
     "asana.openapi": {
       "content_hash": "46a951defc4753f29f96c7b92387ea4b52706c7d7dee5f043a7fddb88775ee6a",
-      "fetched_at": "2026-09-16T20:26:31.357Z",
+      "fetched_at": "2026-09-17T21:06:36.682Z",
       "extractor_signature": "openapi",
       "capability_ids": [
         "asana.create_task",

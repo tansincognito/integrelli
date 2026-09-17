@@ -1,72 +1,228 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.0.0",
   "info": {
-    "title": "Slack Web API",
+    "title": "Slack Web API (curated real subset)",
     "version": "1.7.0",
-    "description": "Trimmed local mirror of the Slack Web API OpenAPI specification, covering the messaging capabilities seeded on Day 1. Upstream: https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json"
+    "description": "Curated subset (3 operations) extracted verbatim from the real published Swagger 2.0 document at https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json, converted to OpenAPI 3 shape (body/formData parameters folded into requestBody, response `schema` wrapped in `content`) — every field, description and constraint below is copied from the upstream document, only the envelope changed. 0 expandable-resource unions collapsed, 0 other unions stubbed. No schema hit the depth/size cap."
   },
-  "servers": [{ "url": "https://slack.com/api" }],
+  "servers": [
+    {
+      "url": "https://slack.com/api"
+    }
+  ],
+  "security": [],
   "paths": {
     "/chat.postMessage": {
       "post": {
+        "description": "Sends a message to a channel.",
+        "externalDocs": {
+          "description": "API method documentation",
+          "url": "https://api.slack.com/methods/chat.postMessage"
+        },
         "operationId": "chat_postMessage",
-        "summary": "Sends a message to a Slack channel, private group or direct message conversation.",
-        "security": [{ "slackAuth": ["chat:write"] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["channel"],
-                "properties": {
-                  "channel": {
-                    "type": "string",
-                    "description": "Channel, private group or user ID to post to. Channel names are also accepted."
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "Authentication token. Requires scope: `chat:write`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Typical success response",
+            "examples": {
+              "application/json": {
+                "channel": "C1H9RESGL",
+                "message": {
+                  "attachments": [
+                    {
+                      "fallback": "This is an attachment's fallback",
+                      "id": 1,
+                      "text": "This is an attachment"
+                    }
+                  ],
+                  "bot_id": "B19LU7CSY",
+                  "subtype": "bot_message",
+                  "text": "Here's a message for you",
+                  "ts": "1503435956.000247",
+                  "type": "message",
+                  "username": "ecto1"
+                },
+                "ok": true,
+                "ts": "1503435956.000247"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for successful response of chat.postMessage method",
+                  "properties": {
+                    "channel": {
+                      "$ref": "#/components/schemas/defs_channel"
+                    },
+                    "message": {
+                      "$ref": "#/components/schemas/objs_message"
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_true"
+                    },
+                    "ts": {
+                      "$ref": "#/components/schemas/defs_ts"
+                    }
                   },
-                  "text": {
-                    "type": "string",
-                    "description": "The message text. Required unless blocks or attachments are supplied."
+                  "required": [
+                    "ok",
+                    "channel",
+                    "ts",
+                    "message"
+                  ],
+                  "title": "chat.postMessage success schema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Typical error response if too many attachments are included",
+            "examples": {
+              "application/json": {
+                "error": "too_many_attachments",
+                "ok": false
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for error response chat.postMessage method",
+                  "properties": {
+                    "callstack": {
+                      "description": "Note: PHP callstack is only visible in dev/qa",
+                      "type": "string"
+                    },
+                    "error": {
+                      "enum": [
+                        "channel_not_found",
+                        "not_in_channel",
+                        "is_archived",
+                        "msg_too_long",
+                        "no_text",
+                        "too_many_attachments",
+                        "rate_limited",
+                        "not_authed",
+                        "invalid_auth",
+                        "account_inactive",
+                        "invalid_arg_name",
+                        "invalid_array_arg",
+                        "invalid_charset",
+                        "invalid_form_data",
+                        "invalid_post_type",
+                        "missing_post_type"
+                      ],
+                      "type": "string"
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_false"
+                    }
                   },
-                  "blocks": {
-                    "type": "array",
-                    "description": "Structured Block Kit blocks making up the message.",
-                    "items": { "type": "object" }
-                  },
-                  "thread_ts": {
-                    "type": "string",
-                    "description": "Timestamp of the parent message, to post this message as a threaded reply."
-                  },
-                  "unfurl_links": { "type": "boolean", "description": "Whether to unfurl links in the message." }
+                  "required": [
+                    "ok",
+                    "error"
+                  ],
+                  "title": "chat.postMessage error schema",
+                  "type": "object"
                 }
               }
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Message posted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["ok"],
-                  "properties": {
-                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
-                    "channel": { "type": "string", "description": "ID of the channel the message landed in." },
-                    "ts": { "type": "string", "description": "Timestamp identifier of the posted message." },
-                    "message": {
-                      "type": "object",
-                      "description": "The message as stored by Slack.",
-                      "properties": {
-                        "text": { "type": "string", "description": "Final message text." },
-                        "user": { "type": "string", "description": "ID of the posting user or bot." },
-                        "ts": { "type": "string", "description": "Timestamp identifier of the message." }
-                      }
-                    },
-                    "error": { "type": "string", "description": "Error code when ok is false." }
+        "security": [
+          {
+            "slackAuth": [
+              "chat:write:user",
+              "chat:write:bot"
+            ]
+          }
+        ],
+        "tags": [
+          "chat"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "as_user": {
+                    "type": "string",
+                    "description": "Pass true to post the message as the authed user, instead of as a bot. Defaults to false. See [authorship](#authorship) below."
+                  },
+                  "attachments": {
+                    "type": "string",
+                    "description": "A JSON-based array of structured attachments, presented as a URL-encoded string."
+                  },
+                  "blocks": {
+                    "type": "string",
+                    "description": "A JSON-based array of structured blocks, presented as a URL-encoded string."
+                  },
+                  "channel": {
+                    "type": "string",
+                    "description": "Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. See [below](#channels) for more details."
+                  },
+                  "icon_emoji": {
+                    "type": "string",
+                    "description": "Emoji to use as the icon for this message. Overrides `icon_url`. Must be used in conjunction with `as_user` set to `false`, otherwise ignored. See [authorship](#authorship) below."
+                  },
+                  "icon_url": {
+                    "type": "string",
+                    "description": "URL to an image to use as the icon for this message. Must be used in conjunction with `as_user` set to false, otherwise ignored. See [authorship](#authorship) below."
+                  },
+                  "link_names": {
+                    "type": "boolean",
+                    "description": "Find and link channel names and usernames."
+                  },
+                  "mrkdwn": {
+                    "type": "boolean",
+                    "description": "Disable Slack markup parsing by setting to `false`. Enabled by default."
+                  },
+                  "parse": {
+                    "type": "string",
+                    "description": "Change how messages are treated. Defaults to `none`. See [below](#formatting)."
+                  },
+                  "reply_broadcast": {
+                    "type": "boolean",
+                    "description": "Used in conjunction with `thread_ts` and indicates whether reply should be made visible to everyone in the channel or conversation. Defaults to `false`."
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "How this field works and whether it is required depends on other fields you use in your API call. [See below](#text_usage) for more detail."
+                  },
+                  "thread_ts": {
+                    "type": "string",
+                    "description": "Provide another message's `ts` value to make this message a reply. Avoid using a reply's `ts` value; use its parent instead."
+                  },
+                  "unfurl_links": {
+                    "type": "boolean",
+                    "description": "Pass true to enable unfurling of primarily text-based content."
+                  },
+                  "unfurl_media": {
+                    "type": "boolean",
+                    "description": "Pass false to disable unfurling of media content."
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "Set your bot's user name. Must be used in conjunction with `as_user` set to false, otherwise ignored. See [authorship](#authorship) below."
                   }
-                }
+                },
+                "required": [
+                  "channel"
+                ]
               }
             }
           }
@@ -75,101 +231,431 @@
     },
     "/conversations.list": {
       "get": {
+        "description": "Lists all channels in a Slack team.",
+        "externalDocs": {
+          "description": "API method documentation",
+          "url": "https://api.slack.com/methods/conversations.list"
+        },
         "operationId": "conversations_list",
-        "summary": "Lists all channels and conversations in a Slack workspace, so a channel can be found by name.",
-        "security": [{ "slackAuth": ["channels:read"] }],
         "parameters": [
           {
-            "name": "types",
+            "name": "token",
             "in": "query",
-            "required": false,
-            "description": "Comma-separated conversation types: public_channel, private_channel, mpim, im.",
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "description": "Maximum number of conversations to return per page.",
-            "schema": { "type": "integer" }
+            "description": "Authentication token. Requires scope: `conversations:read`",
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "exclude_archived",
             "in": "query",
-            "required": false,
-            "description": "Whether to exclude archived channels.",
-            "schema": { "type": "boolean" }
+            "description": "Set to `true` to exclude archived channels from the list",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "types",
+            "in": "query",
+            "description": "Mix and match channel types by providing a comma-separated list of any combination of `public_channel`, `private_channel`, `mpim`, `im`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of items to return. Fewer than the requested number of items may be returned, even if the end of the list hasn't been reached. Must be an integer no larger than 1000.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Paginate through collections of data by setting the `cursor` parameter to a `next_cursor` attribute returned by a previous request's `response_metadata`. Default value fetches the first \"page\" of the collection. See [pagination](/docs/pagination) for more detail.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Conversation list",
+            "description": "Typical success response with only public channels",
+            "examples": {
+              "application/json": {
+                "channels": [
+                  {
+                    "created": 1449252889,
+                    "creator": "U012A3CDE",
+                    "id": "C012AB3CD",
+                    "is_archived": false,
+                    "is_channel": true,
+                    "is_ext_shared": false,
+                    "is_general": true,
+                    "is_group": false,
+                    "is_im": false,
+                    "is_member": true,
+                    "is_mpim": false,
+                    "is_org_shared": false,
+                    "is_pending_ext_shared": false,
+                    "is_private": false,
+                    "is_shared": false,
+                    "name": "general",
+                    "name_normalized": "general",
+                    "num_members": 4,
+                    "pending_shared": [],
+                    "previous_names": [],
+                    "purpose": {
+                      "creator": "",
+                      "last_set": 0,
+                      "value": "This channel is for team-wide communication and announcements. All team members are in this channel."
+                    },
+                    "topic": {
+                      "creator": "",
+                      "last_set": 0,
+                      "value": "Company-wide announcements and work-based matters"
+                    },
+                    "unlinked": 0
+                  },
+                  {
+                    "created": 1449252889,
+                    "creator": "U061F7AUR",
+                    "id": "C061EG9T2",
+                    "is_archived": false,
+                    "is_channel": true,
+                    "is_ext_shared": false,
+                    "is_general": false,
+                    "is_group": false,
+                    "is_im": false,
+                    "is_member": true,
+                    "is_mpim": false,
+                    "is_org_shared": false,
+                    "is_pending_ext_shared": false,
+                    "is_private": false,
+                    "is_shared": false,
+                    "name": "random",
+                    "name_normalized": "random",
+                    "num_members": 4,
+                    "pending_shared": [],
+                    "previous_names": [],
+                    "purpose": {
+                      "creator": "",
+                      "last_set": 0,
+                      "value": "A place for non-work-related flimflam, faffing, hodge-podge or jibber-jabber you'd prefer to keep out of more focused work-related channels."
+                    },
+                    "topic": {
+                      "creator": "",
+                      "last_set": 0,
+                      "value": "Non-work banter and water cooler conversation"
+                    },
+                    "unlinked": 0
+                  }
+                ],
+                "ok": true,
+                "response_metadata": {
+                  "next_cursor": "dGVhbTpDMDYxRkE1UEI="
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": ["ok"],
+                  "additionalProperties": false,
+                  "description": "Schema for successful response from conversations.list method",
                   "properties": {
-                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
                     "channels": {
-                      "type": "array",
-                      "description": "Matching conversations.",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": { "type": "string", "description": "Channel ID." },
-                          "name": { "type": "string", "description": "Channel name without the leading hash." },
-                          "is_channel": { "type": "boolean", "description": "Whether this is a public channel." },
-                          "is_private": { "type": "boolean", "description": "Whether this conversation is private." }
+                        "$ref": "#/components/schemas/objs_conversation"
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_true"
+                    },
+                    "response_metadata": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "next_cursor": {
+                          "type": "string"
                         }
-                      }
+                      },
+                      "required": [
+                        "next_cursor"
+                      ],
+                      "type": "object"
                     }
-                  }
+                  },
+                  "required": [
+                    "ok",
+                    "channels"
+                  ],
+                  "title": "conversations.list success schema",
+                  "type": "object"
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/conversations.create": {
-      "post": {
-        "operationId": "conversations_create",
-        "summary": "Creates a new Slack channel.",
-        "security": [{ "slackAuth": ["channels:manage"] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["name"],
-                "properties": {
-                  "name": { "type": "string", "description": "Name of the channel to create." },
-                  "is_private": { "type": "boolean", "description": "Create a private channel instead of a public one." }
+          },
+          "default": {
+            "description": "Typical error response",
+            "examples": {
+              "application/json": {
+                "error": "invalid_auth",
+                "ok": false
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for error response from conversations.list method",
+                  "properties": {
+                    "callstack": {
+                      "description": "Note: PHP callstack is only visible in dev/qa",
+                      "type": "string"
+                    },
+                    "error": {
+                      "enum": [
+                        "missing_scope",
+                        "not_authed",
+                        "invalid_auth",
+                        "account_inactive",
+                        "invalid_arg_name",
+                        "invalid_array_arg",
+                        "invalid_charset",
+                        "invalid_form_data",
+                        "invalid_post_type",
+                        "missing_post_type",
+                        "invalid_json",
+                        "json_not_object",
+                        "request_timeout",
+                        "upgrade_required"
+                      ],
+                      "type": "string"
+                    },
+                    "needed": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_false"
+                    },
+                    "provided": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "error"
+                  ],
+                  "title": "conversations.list error schema",
+                  "type": "object"
                 }
               }
             }
           }
         },
+        "security": [
+          {
+            "slackAuth": [
+              "channels:read",
+              "groups:read",
+              "im:read",
+              "mpim:read"
+            ]
+          }
+        ],
+        "tags": [
+          "conversations"
+        ]
+      }
+    },
+    "/conversations.create": {
+      "post": {
+        "description": "Initiates a public or private channel-based conversation",
+        "externalDocs": {
+          "description": "API method documentation",
+          "url": "https://api.slack.com/methods/conversations.create"
+        },
+        "operationId": "conversations_create",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "Authentication token. Requires scope: `conversations:write`",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Channel created",
+            "description": "If successful, the command returns a rather stark [conversation object](/types/conversation)",
+            "examples": {
+              "application/json": {
+                "channel": {
+                  "created": 1504554479,
+                  "creator": "U0123456",
+                  "id": "C0EAQDV4Z",
+                  "is_archived": false,
+                  "is_channel": true,
+                  "is_ext_shared": false,
+                  "is_general": false,
+                  "is_group": false,
+                  "is_im": false,
+                  "is_member": true,
+                  "is_mpim": false,
+                  "is_org_shared": false,
+                  "is_pending_ext_shared": false,
+                  "is_private": false,
+                  "is_shared": false,
+                  "last_read": "0000000000.000000",
+                  "latest": null,
+                  "name": "endeavor",
+                  "name_normalized": "endeavor",
+                  "pending_shared": [],
+                  "previous_names": [],
+                  "priority": 0,
+                  "purpose": {
+                    "creator": "",
+                    "last_set": 0,
+                    "value": ""
+                  },
+                  "topic": {
+                    "creator": "",
+                    "last_set": 0,
+                    "value": ""
+                  },
+                  "unlinked": 0,
+                  "unread_count": 0,
+                  "unread_count_display": 0
+                },
+                "ok": true
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": ["ok"],
+                  "additionalProperties": false,
+                  "description": "Schema for successful response conversations.create method",
                   "properties": {
-                    "ok": { "type": "boolean", "description": "Whether the call succeeded." },
                     "channel": {
-                      "type": "object",
-                      "description": "The created channel.",
-                      "properties": {
-                        "id": { "type": "string", "description": "Channel ID." },
-                        "name": { "type": "string", "description": "Channel name." }
-                      }
+                      "$ref": "#/components/schemas/objs_conversation"
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_true"
                     }
+                  },
+                  "required": [
+                    "ok",
+                    "channel"
+                  ],
+                  "title": "conversations.create success schema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Typical error response when name already in use",
+            "examples": {
+              "application/json": {
+                "error": "name_taken",
+                "ok": false
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Schema for error response from conversations.create method",
+                  "properties": {
+                    "callstack": {
+                      "description": "Note: PHP callstack is only visible in dev/qa",
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "error": {
+                      "enum": [
+                        "method_not_supported_for_channel_type",
+                        "missing_scope",
+                        "name_taken",
+                        "restricted_action",
+                        "no_channel",
+                        "invalid_name_required",
+                        "invalid_name_punctuation",
+                        "invalid_name_maxlength",
+                        "invalid_name_specials",
+                        "invalid_name",
+                        "not_authed",
+                        "invalid_auth",
+                        "account_inactive",
+                        "user_is_bot",
+                        "user_is_restricted",
+                        "invalid_arg_name",
+                        "invalid_array_arg",
+                        "invalid_charset",
+                        "invalid_form_data",
+                        "invalid_post_type",
+                        "missing_post_type",
+                        "team_added_to_org",
+                        "invalid_json",
+                        "json_not_object",
+                        "request_timeout",
+                        "upgrade_required"
+                      ],
+                      "type": "string"
+                    },
+                    "needed": {
+                      "type": "string"
+                    },
+                    "ok": {
+                      "$ref": "#/components/schemas/defs_ok_false"
+                    },
+                    "provided": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "error"
+                  ],
+                  "title": "conversations.create error schema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "slackAuth": [
+              "channels:write",
+              "groups:write",
+              "im:write",
+              "mpim:write"
+            ]
+          }
+        ],
+        "tags": [
+          "conversations"
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the public or private channel to create"
+                  },
+                  "is_private": {
+                    "type": "boolean",
+                    "description": "Create a private channel instead of a public one"
                   }
                 }
               }
@@ -182,9 +668,1790 @@
   "components": {
     "securitySchemes": {
       "slackAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "Slack bot or user OAuth token sent as a bearer token."
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "scopes": {
+              "admin": "admin",
+              "admin.apps:read": "admin.apps:read",
+              "admin.apps:write": "admin.apps:write",
+              "admin.conversations:read": "admin.conversations:read",
+              "admin.conversations:write": "admin.conversations:write",
+              "admin.invites:read": "admin.invites:read",
+              "admin.invites:write": "admin.invites:write",
+              "admin.teams:read": "admin.teams:read",
+              "admin.teams:write": "admin.teams:write",
+              "admin.usergroups:read": "admin.usergroups:read",
+              "admin.usergroups:write": "admin.usergroups:write",
+              "admin.users:read": "admin.users:read",
+              "admin.users:write": "admin.users:write",
+              "authorizations:read": "authorizations:read",
+              "bot": "Bot user scope",
+              "calls:read": "calls:read",
+              "calls:write": "calls:write",
+              "channels:history": "channels:history",
+              "channels:manage": "channels:manage",
+              "channels:read": "channels:read",
+              "channels:write": "channels:write",
+              "chat:write": "chat:write",
+              "chat:write:bot": "Author messages as a bot",
+              "chat:write:user": "Author messages as a user",
+              "conversations:history": "conversations:history",
+              "conversations:read": "conversations:read",
+              "conversations:write": "conversations:write",
+              "dnd:read": "dnd:read",
+              "dnd:write": "dnd:write",
+              "emoji:read": "emoji:read",
+              "files:read": "files:read",
+              "files:write:user": "files:write:user",
+              "groups:history": "groups:history",
+              "groups:read": "groups:read",
+              "groups:write": "groups:write",
+              "identity.basic": "identity.basic",
+              "im:history": "im:history",
+              "im:read": "im:read",
+              "im:write": "im:write",
+              "links:write": "links:write",
+              "mpim:history": "mpim:history",
+              "mpim:read": "mpim:read",
+              "mpim:write": "mpim:write",
+              "none": "No scope required",
+              "pins:read": "pins:read",
+              "pins:write": "pins:write",
+              "reactions:read": "reactions:read",
+              "reactions:write": "reactions:write",
+              "reminders:read": "reminders:read",
+              "reminders:write": "reminders:write",
+              "remote_files:read": "remote_files:read",
+              "remote_files:share": "remote_files:share",
+              "remote_files:write": "remote_files:write",
+              "rtm:stream": "rtm:stream",
+              "search:read": "search:read",
+              "stars:read": "stars:read",
+              "stars:write": "stars:write",
+              "team:read": "team:read",
+              "tokens.basic": "tokens.basic",
+              "usergroups:read": "usergroups:read",
+              "usergroups:write": "usergroups:write",
+              "users.profile:read": "users.profile:read",
+              "users.profile:write": "users.profile:write",
+              "users:read": "users:read",
+              "users:read.email": "users:read.email",
+              "users:write": "users:write",
+              "workflow.steps:execute": "workflow.steps:execute"
+            },
+            "authorizationUrl": "https://slack.com/oauth/authorize",
+            "tokenUrl": "https://slack.com/api/oauth.access"
+          }
+        }
+      }
+    },
+    "schemas": {
+      "defs_channel": {
+        "pattern": "^[CGD][A-Z0-9]{8,}$",
+        "title": "Channel-like conversation ID",
+        "type": "string"
+      },
+      "objs_message": {
+        "additionalProperties": false,
+        "properties": {
+          "attachments": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "fallback": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "integer"
+                },
+                "image_bytes": {
+                  "type": "integer"
+                },
+                "image_height": {
+                  "type": "integer"
+                },
+                "image_url": {
+                  "type": "string"
+                },
+                "image_width": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "type": "object"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "blocks": {
+            "$ref": "#/components/schemas/blocks"
+          },
+          "bot_id": {
+            "items": [
+              {
+                "$ref": "#/components/schemas/defs_bot_id"
+              },
+              {
+                "title": "Nil bot_id set when display_as_bot is false",
+                "type": "null"
+              }
+            ]
+          },
+          "bot_profile": {
+            "$ref": "#/components/schemas/objs_bot_profile"
+          },
+          "client_msg_id": {
+            "type": "string"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/objs_comment"
+          },
+          "display_as_bot": {
+            "type": "boolean"
+          },
+          "file": {
+            "$ref": "#/components/schemas/objs_file"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/objs_file"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "icons": {
+            "additionalProperties": false,
+            "properties": {
+              "emoji": {
+                "type": "string"
+              },
+              "image_64": {
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inviter": {
+            "$ref": "#/components/schemas/defs_user_id"
+          },
+          "is_delayed_message": {
+            "type": "boolean"
+          },
+          "is_intro": {
+            "type": "boolean"
+          },
+          "is_starred": {
+            "type": "boolean"
+          },
+          "last_read": {
+            "$ref": "#/components/schemas/defs_ts"
+          },
+          "latest_reply": {
+            "$ref": "#/components/schemas/defs_ts"
+          },
+          "name": {
+            "type": "string"
+          },
+          "old_name": {
+            "type": "string"
+          },
+          "parent_user_id": {
+            "$ref": "#/components/schemas/defs_user_id"
+          },
+          "permalink": {
+            "format": "uri",
+            "type": "string"
+          },
+          "pinned_to": {
+            "items": {
+              "$ref": "#/components/schemas/defs_channel"
+            },
+            "type": "array"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "reactions": {
+            "items": {
+              "$ref": "#/components/schemas/objs_reaction"
+            },
+            "type": "array"
+          },
+          "reply_count": {
+            "type": "integer"
+          },
+          "reply_users": {
+            "items": {
+              "$ref": "#/components/schemas/defs_user_id"
+            },
+            "minItems": 1,
+            "type": "array",
+            "uniqueItems": true
+          },
+          "reply_users_count": {
+            "type": "integer"
+          },
+          "source_team": {
+            "$ref": "#/components/schemas/defs_workspace_id"
+          },
+          "subscribed": {
+            "type": "boolean"
+          },
+          "subtype": {
+            "type": "string"
+          },
+          "team": {
+            "$ref": "#/components/schemas/defs_workspace_id"
+          },
+          "text": {
+            "type": "string"
+          },
+          "thread_ts": {
+            "$ref": "#/components/schemas/defs_ts"
+          },
+          "topic": {
+            "type": "string"
+          },
+          "ts": {
+            "$ref": "#/components/schemas/defs_ts"
+          },
+          "type": {
+            "type": "string"
+          },
+          "unread_count": {
+            "type": "integer"
+          },
+          "upload": {
+            "type": "boolean"
+          },
+          "user": {
+            "$ref": "#/components/schemas/defs_user_id"
+          },
+          "user_profile": {
+            "$ref": "#/components/schemas/objs_user_profile_short"
+          },
+          "user_team": {
+            "$ref": "#/components/schemas/defs_workspace_id"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "type",
+          "ts"
+        ],
+        "title": "Message object",
+        "type": "object"
+      },
+      "defs_ok_true": {
+        "enum": [
+          true
+        ],
+        "title": "default success response",
+        "type": "boolean"
+      },
+      "defs_ts": {
+        "pattern": "^\\d{10}\\.\\d{6}$",
+        "title": "Timestamp in format 0123456789.012345",
+        "type": "string"
+      },
+      "defs_ok_false": {
+        "enum": [
+          false
+        ],
+        "title": "default failure response",
+        "type": "boolean"
+      },
+      "objs_conversation": {
+        "items": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "accepted_user": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "connected_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_workspace_id"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "conversation_host_id": {
+                "$ref": "#/components/schemas/defs_workspace_id"
+              },
+              "created": {
+                "type": "integer"
+              },
+              "creator": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "display_counts": {
+                "additionalProperties": false,
+                "properties": {
+                  "display_counts": {
+                    "type": "integer"
+                  },
+                  "guest_counts": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "display_counts",
+                  "guest_counts"
+                ],
+                "type": "object"
+              },
+              "enterprise_id": {
+                "$ref": "#/components/schemas/defs_enterprise_id"
+              },
+              "has_pins": {
+                "type": "boolean"
+              },
+              "id": {
+                "$ref": "#/components/schemas/defs_channel"
+              },
+              "internal_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "is_archived": {
+                "type": "boolean"
+              },
+              "is_channel": {
+                "type": "boolean"
+              },
+              "is_ext_shared": {
+                "type": "boolean"
+              },
+              "is_frozen": {
+                "type": "boolean"
+              },
+              "is_general": {
+                "type": "boolean"
+              },
+              "is_global_shared": {
+                "type": "boolean"
+              },
+              "is_group": {
+                "type": "boolean"
+              },
+              "is_im": {
+                "type": "boolean"
+              },
+              "is_member": {
+                "type": "boolean"
+              },
+              "is_moved": {
+                "type": "integer"
+              },
+              "is_mpim": {
+                "enum": [
+                  false
+                ],
+                "type": "boolean"
+              },
+              "is_non_threadable": {
+                "type": "boolean"
+              },
+              "is_open": {
+                "type": "boolean"
+              },
+              "is_org_default": {
+                "type": "boolean"
+              },
+              "is_org_mandatory": {
+                "type": "boolean"
+              },
+              "is_org_shared": {
+                "type": "boolean"
+              },
+              "is_pending_ext_shared": {
+                "type": "boolean"
+              },
+              "is_private": {
+                "type": "boolean"
+              },
+              "is_read_only": {
+                "type": "boolean"
+              },
+              "is_shared": {
+                "type": "boolean"
+              },
+              "is_starred": {
+                "type": "boolean"
+              },
+              "is_thread_only": {
+                "type": "boolean"
+              },
+              "last_read": {
+                "$ref": "#/components/schemas/defs_ts"
+              },
+              "latest": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/objs_message"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "members": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_user_id"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "name": {
+                "type": "string"
+              },
+              "name_normalized": {
+                "type": "string"
+              },
+              "num_members": {
+                "type": "integer"
+              },
+              "parent_conversation": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/defs_channel"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pending_connected_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "pending_shared": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "pin_count": {
+                "type": "integer"
+              },
+              "previous_names": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_channel_name"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "priority": {
+                "type": "number"
+              },
+              "purpose": {
+                "additionalProperties": false,
+                "properties": {
+                  "creator": {
+                    "$ref": "#/components/schemas/defs_topic_purpose_creator"
+                  },
+                  "last_set": {
+                    "type": "integer"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value",
+                  "creator",
+                  "last_set"
+                ],
+                "type": "object"
+              },
+              "shared_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "shares": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "accepted_user": {
+                      "$ref": "#/components/schemas/defs_user_id"
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "team": {
+                      "$ref": "#/components/schemas/objs_team"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/defs_user_id"
+                    }
+                  },
+                  "required": [
+                    "team",
+                    "user",
+                    "is_active"
+                  ],
+                  "type": "object"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "timezone_count": {
+                "type": "integer"
+              },
+              "topic": {
+                "additionalProperties": false,
+                "properties": {
+                  "creator": {
+                    "$ref": "#/components/schemas/defs_topic_purpose_creator"
+                  },
+                  "last_set": {
+                    "type": "integer"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value",
+                  "creator",
+                  "last_set"
+                ],
+                "type": "object"
+              },
+              "unlinked": {
+                "title": "Field to determine whether a channel has ever been shared/disconnected in the past",
+                "type": "integer"
+              },
+              "unread_count": {
+                "type": "integer"
+              },
+              "unread_count_display": {
+                "type": "integer"
+              },
+              "use_case": {
+                "type": "string"
+              },
+              "user": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "created",
+              "creator",
+              "is_archived",
+              "is_channel",
+              "is_general",
+              "is_mpim",
+              "is_group",
+              "is_org_shared",
+              "is_im",
+              "is_shared",
+              "is_private",
+              "name_normalized",
+              "topic",
+              "purpose"
+            ],
+            "title": "Conversation object",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "accepted_user": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "connected_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "conversation_host_id": {
+                "$ref": "#/components/schemas/defs_workspace_id"
+              },
+              "created": {
+                "type": "integer"
+              },
+              "creator": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "display_counts": {
+                "additionalProperties": false,
+                "properties": {
+                  "display_counts": {
+                    "type": "integer"
+                  },
+                  "guest_counts": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "display_counts",
+                  "guest_counts"
+                ],
+                "type": "object"
+              },
+              "id": {
+                "$ref": "#/components/schemas/defs_channel"
+              },
+              "internal_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "is_archived": {
+                "type": "boolean"
+              },
+              "is_channel": {
+                "type": "boolean"
+              },
+              "is_ext_shared": {
+                "type": "boolean"
+              },
+              "is_frozen": {
+                "type": "boolean"
+              },
+              "is_general": {
+                "type": "boolean"
+              },
+              "is_group": {
+                "type": "boolean"
+              },
+              "is_im": {
+                "type": "boolean"
+              },
+              "is_member": {
+                "type": "boolean"
+              },
+              "is_moved": {
+                "type": "integer"
+              },
+              "is_mpim": {
+                "enum": [
+                  true
+                ],
+                "type": "boolean"
+              },
+              "is_non_threadable": {
+                "type": "boolean"
+              },
+              "is_open": {
+                "type": "boolean"
+              },
+              "is_org_shared": {
+                "type": "boolean"
+              },
+              "is_pending_ext_shared": {
+                "type": "boolean"
+              },
+              "is_private": {
+                "type": "boolean"
+              },
+              "is_read_only": {
+                "type": "boolean"
+              },
+              "is_shared": {
+                "type": "boolean"
+              },
+              "is_starred": {
+                "type": "boolean"
+              },
+              "is_thread_only": {
+                "type": "boolean"
+              },
+              "last_read": {
+                "$ref": "#/components/schemas/defs_ts"
+              },
+              "latest": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/objs_message"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "members": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_user_id"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "name": {
+                "type": "string"
+              },
+              "name_normalized": {
+                "type": "string"
+              },
+              "num_members": {
+                "type": "integer"
+              },
+              "parent_conversation": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/defs_channel"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pending_connected_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "pending_shared": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "pin_count": {
+                "type": "integer"
+              },
+              "previous_names": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_channel_name"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "priority": {
+                "type": "number"
+              },
+              "purpose": {
+                "additionalProperties": false,
+                "properties": {
+                  "creator": {
+                    "$ref": "#/components/schemas/defs_topic_purpose_creator"
+                  },
+                  "last_set": {
+                    "type": "integer"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value",
+                  "creator",
+                  "last_set"
+                ],
+                "type": "object"
+              },
+              "shared_team_ids": {
+                "items": {
+                  "$ref": "#/components/schemas/defs_team"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "shares": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "accepted_user": {
+                      "$ref": "#/components/schemas/defs_user_id"
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "team": {
+                      "$ref": "#/components/schemas/objs_team"
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/defs_user_id"
+                    }
+                  },
+                  "required": [
+                    "team",
+                    "user",
+                    "is_active"
+                  ],
+                  "type": "object"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "timezone_count": {
+                "type": "integer"
+              },
+              "topic": {
+                "additionalProperties": false,
+                "properties": {
+                  "creator": {
+                    "$ref": "#/components/schemas/defs_topic_purpose_creator"
+                  },
+                  "last_set": {
+                    "type": "integer"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "value",
+                  "creator",
+                  "last_set"
+                ],
+                "type": "object"
+              },
+              "unlinked": {
+                "title": "Field to determine whether a channel has ever been shared/disconnected in the past",
+                "type": "integer"
+              },
+              "unread_count": {
+                "type": "integer"
+              },
+              "unread_count_display": {
+                "type": "integer"
+              },
+              "user": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "created",
+              "creator",
+              "is_archived",
+              "is_channel",
+              "is_general",
+              "is_mpim",
+              "is_group",
+              "is_org_shared",
+              "is_im",
+              "is_shared",
+              "is_private",
+              "name_normalized",
+              "topic",
+              "purpose"
+            ],
+            "title": "Conversation MPIM Object",
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "created": {
+                "type": "integer"
+              },
+              "has_pins": {
+                "type": "boolean"
+              },
+              "id": {
+                "$ref": "#/components/schemas/defs_dm_id"
+              },
+              "is_archived": {
+                "type": "boolean"
+              },
+              "is_ext_shared": {
+                "type": "boolean"
+              },
+              "is_frozen": {
+                "type": "boolean"
+              },
+              "is_im": {
+                "type": "boolean"
+              },
+              "is_open": {
+                "type": "boolean"
+              },
+              "is_org_shared": {
+                "type": "boolean"
+              },
+              "is_shared": {
+                "type": "boolean"
+              },
+              "is_starred": {
+                "type": "boolean"
+              },
+              "is_user_deleted": {
+                "type": "boolean"
+              },
+              "last_read": {
+                "$ref": "#/components/schemas/defs_ts"
+              },
+              "latest": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/objs_message"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "parent_conversation": {
+                "items": [
+                  {
+                    "$ref": "#/components/schemas/defs_channel"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "pin_count": {
+                "type": "integer"
+              },
+              "priority": {
+                "type": "number"
+              },
+              "shares": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "date_create": {
+                      "type": "integer"
+                    },
+                    "id": {
+                      "$ref": "#/components/schemas/defs_team"
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "team": {
+                      "$ref": "#/components/schemas/objs_team"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "team",
+                    "date_create",
+                    "is_active"
+                  ],
+                  "type": "object"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "unread_count": {
+                "type": "integer"
+              },
+              "unread_count_display": {
+                "type": "integer"
+              },
+              "user": {
+                "$ref": "#/components/schemas/defs_user_id"
+              },
+              "version": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "created",
+              "is_im",
+              "is_org_shared",
+              "user",
+              "priority"
+            ],
+            "title": "Conversation IM Channel Object from conversations.* methods",
+            "type": "object"
+          }
+        ]
+      },
+      "blocks": {
+        "description": "This is a very loose definition, in the future, we'll populate this with deeper schema in this definition namespace.",
+        "items": {
+          "additionalProperties": true,
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "type": "object"
+        },
+        "title": "Block Kit blocks",
+        "type": "array"
+      },
+      "defs_bot_id": {
+        "pattern": "^B[A-Z0-9]{8,}$",
+        "title": "Bot User ID",
+        "type": "string"
+      },
+      "objs_bot_profile": {
+        "additionalProperties": false,
+        "properties": {
+          "app_id": {
+            "$ref": "#/components/schemas/defs_app_id"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "icons": {
+            "additionalProperties": false,
+            "properties": {
+              "image_36": {
+                "format": "uri",
+                "type": "string"
+              },
+              "image_48": {
+                "format": "uri",
+                "type": "string"
+              },
+              "image_72": {
+                "format": "uri",
+                "type": "string"
+              }
+            },
+            "required": [
+              "image_36",
+              "image_48",
+              "image_72"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "$ref": "#/components/schemas/defs_bot_id"
+          },
+          "name": {
+            "type": "string"
+          },
+          "team_id": {
+            "$ref": "#/components/schemas/defs_team"
+          },
+          "updated": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "deleted",
+          "name",
+          "updated",
+          "app_id",
+          "icons",
+          "team_id"
+        ],
+        "title": "Bot Profile Object",
+        "type": "object"
+      },
+      "objs_comment": {
+        "additionalProperties": false,
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "created": {
+            "type": "integer"
+          },
+          "id": {
+            "$ref": "#/components/schemas/defs_comment_id"
+          },
+          "is_intro": {
+            "type": "boolean"
+          },
+          "is_starred": {
+            "type": "boolean"
+          },
+          "num_stars": {
+            "type": "integer"
+          },
+          "pinned_info": {
+            "$ref": "#/components/schemas/defs_pinned_info"
+          },
+          "pinned_to": {
+            "items": {
+              "$ref": "#/components/schemas/defs_channel"
+            },
+            "type": "array"
+          },
+          "reactions": {
+            "items": {
+              "$ref": "#/components/schemas/objs_reaction"
+            },
+            "type": "array"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "user": {
+            "$ref": "#/components/schemas/defs_user_id"
+          }
+        },
+        "required": [
+          "id",
+          "created",
+          "timestamp",
+          "user",
+          "is_intro",
+          "comment"
+        ],
+        "title": "File Comment Object",
+        "type": "object"
+      },
+      "objs_file": {
+        "additionalProperties": false,
+        "properties": {
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/defs_channel_id"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "comments_count": {
+            "type": "integer"
+          },
+          "created": {
+            "type": "integer"
+          },
+          "date_delete": {
+            "type": "integer"
+          },
+          "display_as_bot": {
+            "type": "boolean"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "editor": {
+            "$ref": "#/components/schemas/defs_user_id"
+          },
+          "external_id": {
+            "type": "string"
+          },
+          "external_type": {
+            "type": "string"
+          },
+          "external_url": {
+            "format": "uri",
+            "type": "string"
+          },
+          "filetype": {
+            "type": "string"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/defs_group_id"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "has_rich_preview": {
+            "type": "boolean"
+          },
+          "id": {
+            "$ref": "#/components/schemas/defs_file_id"
+          },
+          "image_exif_rotation": {
+            "type": "integer"
+          },
+          "ims": {
+            "items": {
+              "$ref": "#/components/schemas/defs_dm_id"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "is_external": {
+            "type": "boolean"
+          },
+          "is_public": {
+            "type": "boolean"
+          },
+          "is_starred": {
+            "type": "boolean"
+          },
+          "is_tombstoned": {
+            "type": "boolean"
+          },
+          "last_editor": {
+            "$ref": "#/components/schemas/defs_user_id"
+          },
+          "mimetype": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "non_owner_editable": {
+            "type": "boolean"
+          },
+          "num_stars": {
+            "type": "integer"
+          },
+          "original_h": {
+            "type": "integer"
+          },
+          "original_w": {
+            "type": "integer"
+          },
+          "permalink": {
+            "format": "uri",
+            "type": "string"
+          },
+          "permalink_public": {
+            "format": "uri",
+            "type": "string"
+          },
+          "pinned_info": {
+            "$ref": "#/components/schemas/defs_pinned_info"
+          },
+          "pinned_to": {
+            "items": {
+              "$ref": "#/components/schemas/defs_channel"
+            },
+            "type": "array"
+          },
+          "pretty_type": {
+            "type": "string"
+          },
+          "preview": {
+            "type": "string"
+          },
+          "public_url_shared": {
+            "type": "boolean"
+          },
+          "reactions": {
+            "items": {
+              "$ref": "#/components/schemas/objs_reaction"
+            },
+            "type": "array"
+          },
+          "shares": {
+            "additionalProperties": false,
+            "properties": {
+              "private": {
+                "additionalProperties": false
+              },
+              "public": {
+                "additionalProperties": false
+              }
+            },
+            "type": "object"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "source_team": {
+            "$ref": "#/components/schemas/defs_team"
+          },
+          "state": {
+            "type": "string"
+          },
+          "thumb_1024": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_1024_h": {
+            "type": "integer"
+          },
+          "thumb_1024_w": {
+            "type": "integer"
+          },
+          "thumb_160": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_360": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_360_h": {
+            "type": "integer"
+          },
+          "thumb_360_w": {
+            "type": "integer"
+          },
+          "thumb_480": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_480_h": {
+            "type": "integer"
+          },
+          "thumb_480_w": {
+            "type": "integer"
+          },
+          "thumb_64": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_720": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_720_h": {
+            "type": "integer"
+          },
+          "thumb_720_w": {
+            "type": "integer"
+          },
+          "thumb_80": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_800": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_800_h": {
+            "type": "integer"
+          },
+          "thumb_800_w": {
+            "type": "integer"
+          },
+          "thumb_960": {
+            "format": "uri",
+            "type": "string"
+          },
+          "thumb_960_h": {
+            "type": "integer"
+          },
+          "thumb_960_w": {
+            "type": "integer"
+          },
+          "thumb_tiny": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "integer"
+          },
+          "url_private": {
+            "format": "uri",
+            "type": "string"
+          },
+          "url_private_download": {
+            "format": "uri",
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "user_team": {
+            "$ref": "#/components/schemas/defs_team"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "title": "file object",
+        "type": "object"
+      },
+      "defs_user_id": {
+        "pattern": "^[UW][A-Z0-9]{2,}$",
+        "title": "User ID",
+        "type": "string"
+      },
+      "objs_reaction": {
+        "additionalProperties": true,
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/components/schemas/defs_user_id"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "users",
+          "count"
+        ],
+        "title": "Reaction object",
+        "type": "object"
+      },
+      "defs_workspace_id": {
+        "pattern": "^[TE][A-Z0-9]{8,}$",
+        "title": "Team or Enterprise ID",
+        "type": "string"
+      },
+      "objs_user_profile_short": {
+        "additionalProperties": false,
+        "properties": {
+          "avatar_hash": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "display_name_normalized": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "image_72": {
+            "format": "uri",
+            "type": "string"
+          },
+          "is_restricted": {
+            "type": "boolean"
+          },
+          "is_ultra_restricted": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "real_name": {
+            "type": "string"
+          },
+          "real_name_normalized": {
+            "type": "string"
+          },
+          "team": {
+            "$ref": "#/components/schemas/defs_workspace_id"
+          }
+        },
+        "required": [
+          "avatar_hash",
+          "image_72",
+          "first_name",
+          "real_name",
+          "display_name",
+          "team",
+          "name",
+          "is_restricted",
+          "is_ultra_restricted"
+        ],
+        "type": "object"
+      },
+      "defs_enterprise_id": {
+        "pattern": "^[E][A-Z0-9]{8,}$",
+        "title": "Enterprise ID",
+        "type": "string"
+      },
+      "defs_team": {
+        "pattern": "^[T][A-Z0-9]{2,}$",
+        "title": "Team ID",
+        "type": "string"
+      },
+      "defs_channel_name": {
+        "title": "Name of a channel",
+        "type": "string"
+      },
+      "defs_topic_purpose_creator": {
+        "pattern": "^[UW][A-Z0-9]{8,}$|^$",
+        "title": "User ID or empty string, used for topic and purpose creation",
+        "type": "string"
+      },
+      "objs_team": {
+        "additionalProperties": false,
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "avatar_base_url": {
+            "format": "uri",
+            "type": "string"
+          },
+          "created": {
+            "type": "integer"
+          },
+          "date_create": {
+            "type": "integer"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "discoverable": {
+            "items": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "domain": {
+            "type": "string"
+          },
+          "email_domain": {
+            "type": "string"
+          },
+          "enterprise_id": {
+            "$ref": "#/components/schemas/defs_enterprise_id"
+          },
+          "enterprise_name": {
+            "$ref": "#/components/schemas/defs_enterprise_name"
+          },
+          "external_org_migrations": {
+            "$ref": "#/components/schemas/objs_external_org_migrations"
+          },
+          "has_compliance_export": {
+            "type": "boolean"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/objs_icon"
+          },
+          "id": {
+            "$ref": "#/components/schemas/defs_workspace_id"
+          },
+          "is_assigned": {
+            "type": "boolean"
+          },
+          "is_enterprise": {
+            "type": "integer"
+          },
+          "is_over_storage_limit": {
+            "type": "boolean"
+          },
+          "limit_ts": {
+            "type": "integer"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "messages_count": {
+            "type": "integer"
+          },
+          "msg_edit_window_mins": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "over_integrations_limit": {
+            "type": "boolean"
+          },
+          "over_storage_limit": {
+            "type": "boolean"
+          },
+          "pay_prod_cur": {
+            "type": "string"
+          },
+          "plan": {
+            "enum": [
+              "",
+              "std",
+              "plus",
+              "compliance",
+              "enterprise"
+            ],
+            "type": "string"
+          },
+          "primary_owner": {
+            "$ref": "#/components/schemas/objs_primary_owner"
+          },
+          "sso_provider": {
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "domain",
+          "email_domain",
+          "icon"
+        ],
+        "title": "Team Object",
+        "type": "object"
+      },
+      "defs_dm_id": {
+        "pattern": "^[D][A-Z0-9]{8,}$",
+        "title": "Direct Message Channel ID",
+        "type": "string"
+      },
+      "defs_app_id": {
+        "pattern": "^A[A-Z0-9]{1,}$",
+        "title": "App ID",
+        "type": "string"
+      },
+      "defs_comment_id": {
+        "pattern": "^Fc[A-Z0-9]{8,}$",
+        "title": "File Comment ID",
+        "type": "string"
+      },
+      "defs_pinned_info": {
+        "additionalProperties": false,
+        "title": "Info for a pinned item",
+        "type": "object"
+      },
+      "defs_channel_id": {
+        "pattern": "^[C][A-Z0-9]{2,}$",
+        "title": "Channel ID",
+        "type": "string"
+      },
+      "defs_group_id": {
+        "pattern": "^[G][A-Z0-9]{8,}$",
+        "title": "Private Channel ID",
+        "type": "string"
+      },
+      "defs_file_id": {
+        "pattern": "^[F][A-Z0-9]{8,}$",
+        "title": "File ID",
+        "type": "string"
+      },
+      "defs_enterprise_name": {
+        "title": "Name of the enterprise org",
+        "type": "string"
+      },
+      "objs_external_org_migrations": {
+        "properties": {
+          "current": {
+            "items": {
+              "properties": {
+                "date_started": {
+                  "type": "integer"
+                },
+                "team_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "team_id",
+                "date_started"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "date_updated": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date_updated",
+          "current"
+        ],
+        "title": "External Org Migrations",
+        "type": "object"
+      },
+      "objs_icon": {
+        "properties": {
+          "image_102": {
+            "type": "string"
+          },
+          "image_132": {
+            "type": "string"
+          },
+          "image_230": {
+            "type": "string"
+          },
+          "image_34": {
+            "type": "string"
+          },
+          "image_44": {
+            "type": "string"
+          },
+          "image_68": {
+            "type": "string"
+          },
+          "image_88": {
+            "type": "string"
+          },
+          "image_default": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "objs_primary_owner": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email"
+        ],
+        "type": "object"
       }
     }
   }

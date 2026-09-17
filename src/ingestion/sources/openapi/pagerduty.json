@@ -1,45 +1,144 @@
 {
   "openapi": "3.0.0",
-  "info": { "title": "PagerDuty REST API v2 (trimmed local mirror)", "version": "2" },
-  "servers": [{ "url": "https://api.pagerduty.com" }],
-  "security": [{ "apiKeyAuth": [] }],
-  "components": {
-    "securitySchemes": {
-      "apiKeyAuth": { "type": "apiKey", "name": "Authorization", "in": "header", "description": "Format: `Token token=<API_KEY>`" }
-    },
-    "schemas": {
-      "Incident": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "status": { "type": "string" },
-          "title": { "type": "string" },
-          "urgency": { "type": "string" },
-          "html_url": { "type": "string" }
-        }
-      }
-    }
+  "info": {
+    "title": "PagerDuty API (curated real subset)",
+    "version": "2.0.0",
+    "description": "Curated subset (2 operations) extracted verbatim from the real published OpenAPI document at https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json. 0 \"expandable resource\" anyOf/oneOf unions were collapsed to their plain-string-id branch (the default-response shape without expansion); 12 other polymorphic unions were stubbed (x-integrelli-truncated) because the deterministic parser does not resolve oneOf/anyOf. No schema hit the depth/size cap."
   },
+  "servers": [
+    {
+      "url": "https://api.pagerduty.com",
+      "description": "PagerDuty V2 API."
+    }
+  ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
   "paths": {
     "/incidents": {
       "post": {
-        "summary": "Create an incident",
+        "x-pd-requires-scope": "incidents.write",
+        "x-pd-operation-limit": true,
+        "tags": [
+          "Incidents"
+        ],
+        "operationId": "createIncident",
+        "description": "Create an incident synchronously without a corresponding event from a monitoring service.\n\nAn incident represents a problem or an issue that needs to be addressed and resolved.\n\nFor more information see the [API Concepts Document](../../api-reference/a47605517c19a-api-concepts#incidents)\n\nScoped OAuth requires: `incidents.write`\n\nThis API operation has operation specific rate limits. See the [Rate Limits](https://developer.pagerduty.com/docs/72d3b724589e3-rest-api-rate-limits) page for more information.\n",
+        "summary": "Create an Incident",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/header_Accept"
+          },
+          {
+            "$ref": "#/components/parameters/header_Content-Type"
+          },
+          {
+            "$ref": "#/components/parameters/from_header"
+          }
+        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["incident"],
                 "properties": {
                   "incident": {
                     "type": "object",
-                    "required": ["type", "title", "service"],
+                    "description": "Details of the incident to be created.",
                     "properties": {
-                      "type": { "type": "string", "enum": ["incident"] },
-                      "title": { "type": "string" },
-                      "service": { "type": "object", "description": "A PagerDuty service reference." },
-                      "urgency": { "type": "string", "enum": ["high", "low"] }
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "incident"
+                        ]
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "A succinct description of the nature, symptoms, cause, or effect of the incident."
+                      },
+                      "service": {
+                        "$ref": "#/components/schemas/ServiceReference"
+                      },
+                      "priority": {
+                        "$ref": "#/components/schemas/PriorityReference"
+                      },
+                      "urgency": {
+                        "type": "string",
+                        "description": "The urgency of the incident",
+                        "enum": [
+                          "high",
+                          "low"
+                        ]
+                      },
+                      "body": {
+                        "$ref": "#/components/schemas/IncidentBody"
+                      },
+                      "incident_key": {
+                        "type": "string",
+                        "description": "A string which identifies the incident. Sending subsequent requests referencing the same service and with the same incident_key will result in those requests being rejected if an open incident matches that incident_key."
+                      },
+                      "assignments": {
+                        "type": "array",
+                        "description": "Assign the incident to these assignees. Cannot be specified if an escalation policy is given.",
+                        "items": {
+                          "properties": {
+                            "assignee": {
+                              "$ref": "#/components/schemas/UserReference"
+                            }
+                          }
+                        }
+                      },
+                      "incident_type": {
+                        "$ref": "#/components/schemas/IncidentTypeReference"
+                      },
+                      "escalation_policy": {
+                        "$ref": "#/components/schemas/EscalationPolicyReference"
+                      },
+                      "conference_bridge": {
+                        "$ref": "#/components/schemas/ConferenceBridge"
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "title",
+                      "service"
+                    ]
+                  }
+                },
+                "required": [
+                  "incident"
+                ]
+              },
+              "examples": {
+                "request": {
+                  "summary": "Request Example",
+                  "value": {
+                    "incident": {
+                      "type": "incident",
+                      "title": "The server is on fire.",
+                      "service": {
+                        "id": "PWIXJZS",
+                        "type": "service_reference"
+                      },
+                      "priority": {
+                        "id": "P53ZZH5",
+                        "type": "priority_reference"
+                      },
+                      "urgency": "high",
+                      "incident_key": "baf7cf21b1da41b4b0221008339ff357",
+                      "body": {
+                        "type": "incident_body",
+                        "details": "A disk is getting full on this machine. You should investigate what is causing the disk to fill, and ensure that there is an automated process in place for ensuring data is rotated (eg. logs should have logrotate around them). If data is expected to stay on this disk forever, you should start planning to scale up to a larger disk."
+                      },
+                      "incident_type": {
+                        "name": "major_incident"
+                      },
+                      "escalation_policy": {
+                        "id": "PT20YPA",
+                        "type": "escalation_policy_reference"
+                      }
                     }
                   }
                 }
@@ -48,18 +147,1052 @@
           }
         },
         "responses": {
-          "201": { "description": "Created", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Incident" } } } }
+          "201": {
+            "description": "The incident object created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "incident": {
+                      "$ref": "#/components/schemas/Incident"
+                    }
+                  },
+                  "required": [
+                    "incident"
+                  ]
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Response Example",
+                    "value": {
+                      "incident": {
+                        "id": "PT4KHLK",
+                        "type": "incident",
+                        "title": "The server is on fire.",
+                        "summary": "[#1234] The server is on fire.",
+                        "self": "https://api.pagerduty.com/incidents/PT4KHLK",
+                        "html_url": "https://subdomain.pagerduty.com/incidents/PT4KHLK",
+                        "incident_number": 1234,
+                        "created_at": "2015-10-06T21:30:42Z",
+                        "updated_at": "2015-10-06T21:40:23Z",
+                        "status": "triggered",
+                        "incident_key": "baf7cf21b1da41b4b0221008339ff357",
+                        "service": {
+                          "id": "PWIXJZS",
+                          "type": "service_reference",
+                          "summary": "My Mail Service",
+                          "self": "https://api.pagerduty.com/services/PWIXJZS",
+                          "html_url": "https://subdomain.pagerduty.com/service-directory/PWIXJZS"
+                        },
+                        "priority": {
+                          "id": "P53ZZH5",
+                          "type": "priority_reference",
+                          "summary": "P2",
+                          "self": "https://api.pagerduty.com/priorities/P53ZZH5"
+                        },
+                        "assigned_via": "escalation_policy",
+                        "assignments": [
+                          {
+                            "at": "2015-11-10T00:31:52Z",
+                            "assignee": {
+                              "id": "PXPGF42",
+                              "type": "user_reference",
+                              "summary": "Earline Greenholt",
+                              "self": "https://api.pagerduty.com/users/PXPGF42",
+                              "html_url": "https://subdomain.pagerduty.com/users/PXPGF42"
+                            }
+                          }
+                        ],
+                        "resolved_at": null,
+                        "last_status_change_at": "2015-10-06T21:38:23Z",
+                        "last_status_change_by": {
+                          "id": "PXPGF42",
+                          "type": "user_reference",
+                          "summary": "Earline Greenholt",
+                          "self": "https://api.pagerduty.com/users/PXPGF42",
+                          "html_url": "https://subdomain.pagerduty.com/users/PXPGF42"
+                        },
+                        "first_trigger_log_entry": {
+                          "id": "Q02JTSNZWHSEKV",
+                          "type": "trigger_log_entry_reference",
+                          "summary": "Triggered through the API",
+                          "self": "https://api.pagerduty.com/log_entries/Q02JTSNZWHSEKV?incident_id=PT4KHLK",
+                          "html_url": "https://subdomain.pagerduty.com/incidents/PT4KHLK/log_entries/Q02JTSNZWHSEKV"
+                        },
+                        "incident_type": {
+                          "name": "major_incident"
+                        },
+                        "escalation_policy": {
+                          "id": "PT20YPA",
+                          "type": "escalation_policy_reference",
+                          "summary": "Another Escalation Policy",
+                          "self": "https://api.pagerduty.com/escalation_policies/PT20YPA",
+                          "html_url": "https://subdomain.pagerduty.com/escalation_policies/PT20YPA"
+                        },
+                        "teams": [
+                          {
+                            "id": "PQ9K7I8",
+                            "type": "team_reference",
+                            "summary": "Engineering",
+                            "self": "https://api.pagerduty.com/teams/PQ9K7I8",
+                            "html_url": "https://subdomain.pagerduty.com/teams/PQ9K7I8"
+                          }
+                        ],
+                        "urgency": "high"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ArgumentError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
         }
       }
     },
     "/incidents/{id}": {
       "get": {
+        "x-pd-requires-scope": "incidents.read",
+        "tags": [
+          "Incidents"
+        ],
+        "operationId": "getIncident",
+        "description": "Show detailed information about an incident. Accepts either an incident id, or an incident number.\n\nAn incident represents a problem or an issue that needs to be addressed and resolved.\n\nFor more information see the [API Concepts Document](../../api-reference/a47605517c19a-api-concepts#incidents)\n\nScoped OAuth requires: `incidents.read`\n",
         "summary": "Get an incident",
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "$ref": "#/components/parameters/header_Accept"
+          },
+          {
+            "$ref": "#/components/parameters/header_Content-Type"
+          },
+          {
+            "$ref": "#/components/parameters/id"
+          },
+          {
+            "$ref": "#/components/parameters/include_incident"
+          }
         ],
         "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Incident" } } } }
+          "200": {
+            "description": "The incident requested.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "incident": {
+                      "$ref": "#/components/schemas/Incident"
+                    }
+                  },
+                  "required": [
+                    "incident"
+                  ]
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Response Example",
+                    "value": {
+                      "incident": {
+                        "id": "PT4KHLK",
+                        "type": "incident",
+                        "summary": "[#1234] The server is on fire.",
+                        "self": "https://api.pagerduty.com/incidents/PT4KHLK",
+                        "html_url": "https://subdomain.pagerduty.com/incidents/PT4KHLK",
+                        "incident_number": 1234,
+                        "title": "The server is on fire.",
+                        "created_at": "2015-10-06T21:30:42Z",
+                        "updated_at": "2015-10-06T21:40:23Z",
+                        "status": "acknowledged",
+                        "incident_key": "baf7cf21b1da41b4b0221008339ff357",
+                        "service": {
+                          "id": "PIJ90N7",
+                          "type": "service_reference",
+                          "summary": "My Mail Service",
+                          "self": "https://api.pagerduty.com/services/PIJ90N7",
+                          "html_url": "https://subdomain.pagerduty.com/service-directory/PIJ90N7"
+                        },
+                        "assignments": [
+                          {
+                            "at": "2015-11-10T00:31:52Z",
+                            "assignee": {
+                              "id": "PXPGF42",
+                              "type": "user_reference",
+                              "summary": "Earline Greenholt",
+                              "self": "https://api.pagerduty.com/users/PXPGF42",
+                              "html_url": "https://subdomain.pagerduty.com/users/PXPGF42"
+                            }
+                          }
+                        ],
+                        "assigned_via": "escalation_policy",
+                        "last_status_change_at": "2015-10-06T21:38:23Z",
+                        "resolved_at": null,
+                        "first_trigger_log_entry": {
+                          "id": "Q02JTSNZWHSEKV",
+                          "type": "trigger_log_entry_reference",
+                          "summary": "Triggered through the API",
+                          "self": "https://api.pagerduty.com/log_entries/Q02JTSNZWHSEKV?incident_id=PT4KHLK",
+                          "html_url": "https://subdomain.pagerduty.com/incidents/PT4KHLK/log_entries/Q02JTSNZWHSEKV"
+                        },
+                        "alert_counts": {
+                          "all": 2,
+                          "triggered": 1,
+                          "resolved": 1
+                        },
+                        "is_mergeable": true,
+                        "incident_type": {
+                          "name": "incident_default"
+                        },
+                        "escalation_policy": {
+                          "id": "PT20YPA",
+                          "type": "escalation_policy_reference",
+                          "summary": "Another Escalation Policy",
+                          "self": "https://api.pagerduty.com/escalation_policies/PT20YPA",
+                          "html_url": "https://subdomain.pagerduty.com/escalation_policies/PT20YPA"
+                        },
+                        "teams": [
+                          {
+                            "id": "PQ9K7I8",
+                            "type": "team_reference",
+                            "summary": "Engineering",
+                            "self": "https://api.pagerduty.com/teams/PQ9K7I8",
+                            "html_url": "https://subdomain.pagerduty.com/teams/PQ9K7I8"
+                          }
+                        ],
+                        "pending_actions": [
+                          {
+                            "type": "unacknowledge",
+                            "at": "2015-11-10T01:02:52Z"
+                          },
+                          {
+                            "type": "resolve",
+                            "at": "2015-11-10T04:31:52Z"
+                          }
+                        ],
+                        "acknowledgements": [
+                          {
+                            "at": "2015-11-10T00:32:52Z",
+                            "acknowledger": {
+                              "id": "PXPGF42",
+                              "type": "user_reference",
+                              "summary": "Earline Greenholt",
+                              "self": "https://api.pagerduty.com/users/PXPGF42",
+                              "html_url": "https://subdomain.pagerduty.com/users/PXPGF42"
+                            }
+                          }
+                        ],
+                        "alert_grouping": {
+                          "grouping_type": "advanced",
+                          "started_at": "2015-10-06T21:30:42Z",
+                          "ended_at": null,
+                          "alert_grouping_active": true
+                        },
+                        "last_status_change_by": {
+                          "id": "PXPGF42",
+                          "type": "user_reference",
+                          "summary": "Earline Greenholt",
+                          "self": "https://api.pagerduty.com/users/PXPGF42",
+                          "html_url": "https://subdomain.pagerduty.com/users/PXPGF42"
+                        },
+                        "priority": {
+                          "id": "P53ZZH5",
+                          "type": "priority_reference",
+                          "summary": "P2",
+                          "self": "https://api.pagerduty.com/priorities/P53ZZH5"
+                        },
+                        "resolve_reason": null,
+                        "conference_bridge": {
+                          "conference_number": "+1-415-555-1212,,,,1234#",
+                          "conference_url": "https://example.com/acb-123"
+                        },
+                        "incidents_responders": [
+                          {
+                            "state": "pending",
+                            "user": {
+                              "id": "PL7A2O4",
+                              "type": "user_reference",
+                              "summary": "Lee Turner",
+                              "self": "https://api.pagerduty.com/users/PL7A2O4",
+                              "html_url": "https://subdomain.pagerduty.com/users/PL7A2O4",
+                              "avatar_url": "https://pd-static-assets.pagerduty.com/users/blank-avatar.png"
+                            },
+                            "incident": {
+                              "id": "PXP12GZ",
+                              "type": "incident_reference",
+                              "summary": "Ongoing Incident in Mailroom",
+                              "self": "https://api.pagerduty.com/incidents/PXP12GZ",
+                              "html_url": "https://subdomain.pagerduty.com/incidents/PXP12GZ"
+                            },
+                            "updated_at": "2018-08-09T14:40:48-07:00",
+                            "message": "Please help with issue - join bridge at +1(234)-567-8910",
+                            "requester": {
+                              "id": "P09TT3C",
+                              "type": "user_reference",
+                              "summary": "Jane Doe",
+                              "self": "https://api.pagerduty.com/users/P09TT3C",
+                              "html_url": "https://subdomain.pagerduty.com/users/P09TT3C",
+                              "avatar_url": "https://pd-static-assets.pagerduty.com/users/blank-avatar.png"
+                            },
+                            "requested_at": "2018-08-09T21:40:49Z"
+                          }
+                        ],
+                        "responder_requests": [
+                          {
+                            "incident": {
+                              "id": "PXP12GZ",
+                              "type": "incident_reference",
+                              "summary": "Ongoing Incident in Mailroom",
+                              "self": "https://api.pagerduty.com/incidents/PXP12GZ",
+                              "html_url": "https://subdomain.pagerduty.com/incidents/PXP12GZ"
+                            },
+                            "requester": {
+                              "id": "P09TT3C",
+                              "type": "user_reference",
+                              "summary": "Jane Doe",
+                              "self": "https://api.pagerduty.com/users/P09TT3C",
+                              "html_url": "https://subdomain.pagerduty.com/users/P09TT3C"
+                            },
+                            "requested_at": "2018-08-16T14:55:17-07:00",
+                            "message": "Please help with issue - join bridge at +1(234)-567-8910",
+                            "responder_request_targets": [
+                              {
+                                "responder_request_target": {
+                                  "type": "user",
+                                  "id": "PL7A2O4",
+                                  "incidents_responders": [
+                                    {
+                                      "state": "pending",
+                                      "user": {
+                                        "id": "PL7A2O4",
+                                        "type": "user_reference",
+                                        "summary": "Lee Turner",
+                                        "self": "https://api.pagerduty.com/users/PL7A2O4",
+                                        "html_url": "https://subdomain.pagerduty.com/users/PL7A2O4",
+                                        "avatar_url": "https://pd-static-assets.pagerduty.com/users/blank-avatar.png"
+                                      },
+                                      "incident": {
+                                        "id": "PXP12GZ",
+                                        "type": "incident_reference",
+                                        "summary": "Ongoing Incident in Mailroom",
+                                        "self": "https://api.pagerduty.com/incidents/PXP12GZ",
+                                        "html_url": "https://subdomain.pagerduty.com/incidents/PXP12GZ"
+                                      },
+                                      "updated_at": "2018-08-09T14:40:48-07:00",
+                                      "message": "Please help with issue - join bridge at +1(234)-567-8910",
+                                      "requester": {
+                                        "id": "P09TT3C",
+                                        "type": "user_reference",
+                                        "summary": "Jane Doe",
+                                        "self": "https://api.pagerduty.com/users/P09TT3C",
+                                        "html_url": "https://subdomain.pagerduty.com/users/P09TT3C",
+                                        "avatar_url": "https://pd-static-assets.pagerduty.com/users/blank-avatar.png"
+                                      },
+                                      "requested_at": "2018-08-09T21:40:49Z"
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "urgency": "high",
+                        "custom_fields": [
+                          {
+                            "id": "PT4KHEE",
+                            "type": "field_value",
+                            "name": "environment",
+                            "display_name": "Runtime Environment",
+                            "description": "environment where incident occurred",
+                            "data_type": "string",
+                            "field_type": "single_value_fixed",
+                            "value": "production"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ArgumentError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "The API Key with format `Token token=<API_KEY>`"
+      }
+    },
+    "schemas": {
+      "ServiceReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Reference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "service_reference"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "PriorityReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Reference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "priority_reference"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "IncidentBody": {
+        "type": "object",
+        "properties": {
+          "details": {
+            "type": "object",
+            "description": "Additional incident details."
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "UserReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Reference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "user_reference"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "IncidentTypeReference": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the Incident Type."
+          }
+        }
+      },
+      "EscalationPolicyReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Reference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "escalation_policy_reference"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ConferenceBridge": {
+        "type": "object",
+        "properties": {
+          "conference_number": {
+            "type": "string",
+            "description": "The phone number of the conference call for the conference bridge. Phone numbers should be formatted like +1 415-555-1212,,,,1234#, where a comma (,) represents a one-second wait and pound (#) completes access code input."
+          },
+          "conference_url": {
+            "type": "string",
+            "format": "url",
+            "description": "An URL for the conference bridge. This could be a link to a web conference or Slack channel."
+          }
+        }
+      },
+      "Incident": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Tag/allOf/0"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "incident_number": {
+                "type": "integer",
+                "readOnly": true,
+                "description": "The number of the incident. This is unique across your account."
+              },
+              "title": {
+                "type": "string",
+                "readOnly": false,
+                "description": "A succinct description of the nature, symptoms, cause, or effect of the incident."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The time the incident was first triggered.",
+                "example": "2019-12-01T20:00:00Z",
+                "readOnly": true
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2019-12-01T21:02:00Z",
+                "description": "The time the incident was last modified."
+              },
+              "status": {
+                "type": "string",
+                "description": "The current status of the incident.",
+                "enum": [
+                  "triggered",
+                  "acknowledged",
+                  "resolved"
+                ]
+              },
+              "incident_key": {
+                "type": "string",
+                "readOnly": true,
+                "description": "The incident's de-duplication key."
+              },
+              "service": {
+                "type": "object",
+                "description": "The service the incident is on. If the `include[]=services` query parameter is provided, the full service definition will be returned. (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+                "x-integrelli-truncated": true
+              },
+              "assignments": {
+                "type": "array",
+                "description": "List of all assignments for this incident. This list will be empty if the `Incident.status` is `resolved`. Returns a user reference for each assignment. Full user definitions will be returned if the `include[]=assignees` query parameter is provided.",
+                "items": {
+                  "$ref": "#/components/schemas/Assignment"
+                }
+              },
+              "assigned_via": {
+                "type": "string",
+                "description": "How the current incident assignments were decided.  Note that `direct_assignment` incidents will not escalate up the attached `escalation_policy`",
+                "enum": [
+                  "escalation_policy",
+                  "direct_assignment"
+                ],
+                "readOnly": true
+              },
+              "last_status_change_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The time the status of the incident last changed. If the incident is not currently acknowledged or resolved, this will be the incident's `updated_at`.",
+                "example": "2019-12-01T21:01:00Z",
+                "readOnly": true
+              },
+              "resolved_at": {
+                "type": "string",
+                "format": "date-time",
+                "example": "2019-12-01T21:01:00Z",
+                "description": "The time the incident became \"resolved\" or `null` if the incident is not resolved."
+              },
+              "first_trigger_log_entry": {
+                "type": "object",
+                "description": "The first log entry on the incident. The log entry will be of type `TriggerLogEntry` and will represent information about how the incident was triggered. If the `include[]=first_trigger_log_entries` query parameter is provided, the full log entry definition will be returned. (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+                "x-integrelli-truncated": true
+              },
+              "alert_counts": {
+                "$ref": "#/components/schemas/AlertCount"
+              },
+              "is_mergeable": {
+                "type": "boolean",
+                "description": "Whether the incident is mergeable. Only incidents that have alerts, or that are manually created can be merged.",
+                "readOnly": true
+              },
+              "incident_type": {
+                "description": "The incident type of the incident.",
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the Incident Type."
+                  }
+                }
+              },
+              "escalation_policy": {
+                "type": "object",
+                "description": "The escalation policy attached to the service that the incident is on. If the `include[]=escalation_policies` query parameter is provided, the full escalation policy definition will be returned. (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+                "x-integrelli-truncated": true
+              },
+              "teams": {
+                "type": "array",
+                "description": "The teams involved in the incident’s lifecycle. If the `include[]=teams` query parameter is provided, the full team definitions will be returned.",
+                "items": {
+                  "type": "object",
+                  "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+                  "x-integrelli-truncated": true
+                }
+              },
+              "pending_actions": {
+                "type": "array",
+                "readOnly": true,
+                "description": "The list of pending_actions on the incident. A pending_action object contains a type of action which can be escalate, unacknowledge, resolve or urgency_change. A pending_action object contains at, the time at which the action will take place. An urgency_change pending_action will contain to, the urgency that the incident will change to.",
+                "items": {
+                  "$ref": "#/components/schemas/IncidentAction"
+                }
+              },
+              "acknowledgements": {
+                "type": "array",
+                "description": "List of all acknowledgements for this incident. This list will be empty if the `Incident.status` is `resolved` or `triggered`. If the `include[]=acknowledgers` query parameter is provided, the full user or service definitions will be returned for each acknowledgement entry.",
+                "items": {
+                  "$ref": "#/components/schemas/Acknowledgement"
+                }
+              },
+              "alert_grouping": {
+                "description": "Describes the alert grouping state of this incident. Will be null if the incident has no alerts.",
+                "type": "object",
+                "properties": {
+                  "grouping_type": {
+                    "type": "string",
+                    "enum": [
+                      "basic",
+                      "advanced",
+                      "rules"
+                    ]
+                  },
+                  "started_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ended_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "alert_grouping_active": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "last_status_change_by": {
+                "type": "object",
+                "description": "The entity that last changed the status of the incident. If the `include[]=agents` query parameter is provided, the full user/service/integration definition will be returned. (polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+                "x-integrelli-truncated": true
+              },
+              "priority": {
+                "$ref": "#/components/schemas/Priority"
+              },
+              "resolve_reason": {
+                "$ref": "#/components/schemas/ResolveReason"
+              },
+              "conference_bridge": {
+                "description": "The conference bridge information attached to the incident. Only returned if the `include[]=conference_bridge` query parameter is provided.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/ConferenceBridge"
+                  }
+                ]
+              },
+              "incidents_responders": {
+                "description": "The responders on the incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.",
+                "type": "array",
+                "readOnly": true,
+                "items": {
+                  "$ref": "#/components/schemas/IncidentsRespondersReference"
+                }
+              },
+              "responder_requests": {
+                "description": "Previous responder requests made on this incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.",
+                "type": "array",
+                "readOnly": true,
+                "items": {
+                  "$ref": "#/components/schemas/ResponderRequest"
+                }
+              },
+              "urgency": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "low"
+                ],
+                "description": "The current urgency of the incident."
+              },
+              "body": {
+                "description": "The additional incident body details. Only returned if the `include[]=body` query parameter is provided.",
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/IncidentBody"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "Reference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Tag/allOf/0"
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "id"
+            ]
+          }
+        ]
+      },
+      "Assignment": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time at which the assignment was created."
+          },
+          "assignee": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        },
+        "required": [
+          "at",
+          "assignee"
+        ]
+      },
+      "AlertCount": {
+        "type": "object",
+        "properties": {
+          "triggered": {
+            "type": "integer",
+            "description": "The count of triggered alerts grouped into this incident"
+          },
+          "resolved": {
+            "type": "integer",
+            "description": "The count of resolved alerts grouped into this incident"
+          },
+          "all": {
+            "type": "integer",
+            "description": "The total count of alerts grouped into this incident"
+          }
+        }
+      },
+      "IncidentAction": {
+        "description": "An incident action is a pending change to an incident that will automatically happen at some future time.",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "unacknowledge",
+              "escalate",
+              "resolve",
+              "urgency_change"
+            ]
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "to": {
+            "description": "The urgency that the incident will change to. This field is only present when the type is `urgency_change`.",
+            "type": "string",
+            "enum": [
+              "high"
+            ]
+          }
+        },
+        "discriminator": {
+          "propertyName": "type"
+        },
+        "required": [
+          "type",
+          "at"
+        ]
+      },
+      "Acknowledgement": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time at which the acknowledgement was created."
+          },
+          "acknowledger": {
+            "type": "object",
+            "description": "(polymorphic field — oneOf/anyOf not resolved in this curated mirror; see upstream schema)",
+            "x-integrelli-truncated": true
+          }
+        },
+        "required": [
+          "at",
+          "acknowledger"
+        ]
+      },
+      "Priority": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Tag/allOf/0"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The user-provided short name of the priority."
+              },
+              "description": {
+                "type": "string",
+                "description": "The user-provided description of the priority."
+              }
+            }
+          }
+        ]
+      },
+      "ResolveReason": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The reason the incident was resolved. The only reason currently supported is merge.",
+            "default": "merge_resolve_reason",
+            "enum": [
+              "merge_resolve_reason"
+            ]
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IncidentReference"
+          }
+        }
+      },
+      "IncidentsRespondersReference": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "The status of the responder being added to the incident",
+            "enum": [
+              "pending",
+              "joined",
+              "declined",
+              "user_cancelled"
+            ],
+            "example": "pending"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserReference"
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IncidentReference"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message sent with the responder request"
+          },
+          "requester": {
+            "$ref": "#/components/schemas/UserReference"
+          },
+          "requested_at": {
+            "type": "string"
+          },
+          "escalation_policy_requests": {
+            "type": "array",
+            "description": "Names of escalation policies that this responder was requested through, if applicable",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ResponderRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the responder request"
+          },
+          "incident": {
+            "$ref": "#/components/schemas/IncidentReference"
+          },
+          "requester": {
+            "$ref": "#/components/schemas/UserReference"
+          },
+          "requested_at": {
+            "type": "string",
+            "description": "The time the request was made"
+          },
+          "message": {
+            "type": "string",
+            "description": "The message sent with the responder request"
+          },
+          "responder_request_targets": {
+            "type": "array",
+            "description": "The array of targets the responder request is being sent to",
+            "items": {
+              "$ref": "#/components/schemas/ResponderRequestTargetReference"
+            }
+          }
+        }
+      },
+      "IncidentReference": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Reference"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "incident_reference"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "ResponderRequestTargetReference": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of target (either a user or an escalation policy)"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the user or escalation policy"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "incident_responders": {
+            "type": "array",
+            "description": "An array of responders associated with the specified incident",
+            "items": {
+              "$ref": "#/components/schemas/IncidentsRespondersReference"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "header_Accept": {
+        "name": "Accept",
+        "description": "The `Accept` header is used as a versioning header.",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "default": "application/vnd.pagerduty+json;version=2"
+        }
+      },
+      "header_Content-Type": {
+        "name": "Content-Type",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "default": "application/json",
+          "enum": [
+            "application/json"
+          ]
+        }
+      },
+      "from_header": {
+        "name": "From",
+        "in": "header",
+        "description": "The email address of a valid user associated with the account making the request.",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "email"
+        }
+      },
+      "id": {
+        "name": "id",
+        "description": "The ID of the resource.",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "include_incident": {
+        "name": "include[]",
+        "in": "query",
+        "description": "Array of additional details to include.",
+        "explode": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "acknowledgers",
+            "agents",
+            "assignees",
+            "conference_bridge",
+            "custom_fields",
+            "escalation_policies",
+            "first_trigger_log_entries",
+            "priorities",
+            "services",
+            "teams",
+            "users"
+          ],
+          "uniqueItems": true
         }
       }
     }

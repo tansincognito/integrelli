@@ -198,7 +198,15 @@ export function flattenSchema(
       if (type === 'object') {
         fields.push(...flattenSchema(child, { prefix: path, depth: depth + 1, excludeReadOnly: options.excludeReadOnly, excludeWriteOnly: options.excludeWriteOnly }));
       } else if (type === 'array' && child.items) {
-        fields.push(...flattenSchema(child.items, { prefix: `${path}[]`, depth: depth + 1, excludeReadOnly: options.excludeReadOnly, excludeWriteOnly: options.excludeWriteOnly }));
+        // An item's own `required` fields (e.g. tax_id_data[].type) only bind
+        // when the array itself must be supplied. Stripe's real schemas mark
+        // plenty of item fields required inside arrays that are themselves
+        // optional (create_customer's tax_id_data is never required) — without
+        // this guard, the required-input-coverage check would force every
+        // plan to map a field the caller is free to omit entirely.
+        const arrayRequired = requiredSet.has(name);
+        const itemFields = flattenSchema(child.items, { prefix: `${path}[]`, depth: depth + 1, excludeReadOnly: options.excludeReadOnly, excludeWriteOnly: options.excludeWriteOnly });
+        fields.push(...(arrayRequired ? itemFields : itemFields.map((field) => ({ ...field, required: false }))));
       }
     }
   }
