@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "embed": "tsx scripts/build-embeddings.ts",
-    "ingest": "tsx scripts/ingest.ts"
+    "ingest": "tsx scripts/ingest.ts",
+    "eval:drift": "tsx scripts/eval-drift.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.122",

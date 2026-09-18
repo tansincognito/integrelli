@@ -23,6 +23,8 @@ import { LiveAdapter } from './live-adapter';
 import { LiveModeGateError } from './live-mode-gate-error';
 import { readOAuthRefreshConfig } from './oauth-token';
 import type { HttpAdapter } from './adapter';
+import { DriftInjectorAdapter } from '@/healing/drift-injector';
+import type { DriftScenario } from '@/healing/types';
 
 /**
  * Execution engine for the ingested capability graph (`src/generated/capability-store.json`),
@@ -46,6 +48,8 @@ export interface CapabilityRunOptions {
   seed: string;
   mode: ExecutionMode;
   faults: FaultInjection[];
+  /** Self-healing eval hook (src/healing) — mutates a step's response before the engine sees it. */
+  driftScenarios?: DriftScenario[];
 }
 
 /** Env var(s) live mode needs for this capability's auth, or `null` if the auth kind can't be satisfied at all. */
@@ -298,7 +302,11 @@ export async function runCapabilityWorkflow(
     stepImplementation.set(step.id, implementation);
   });
 
-  const adapter = buildCapabilityAdapter(options, stepCapability, stepImplementation, stepIndex);
+  const baseAdapter = buildCapabilityAdapter(options, stepCapability, stepImplementation, stepIndex);
+  const adapter =
+    options.driftScenarios && options.driftScenarios.length > 0
+      ? new DriftInjectorAdapter(baseAdapter, options.driftScenarios)
+      : baseAdapter;
 
   const mappingsByStep = new Map<string, ResolvedMapping[]>();
   for (const mapping of validation.resolved_mappings) {

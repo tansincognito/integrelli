@@ -1,6 +1,6 @@
 # Integration Intelligence Architecture
 
-Living document. Last substantive update: Day 1.
+Living document. Last substantive update: Day 3.
 
 ---
 
@@ -51,6 +51,8 @@ src/
                       ingestion-cache.json
   app/api/            workflow/plan, capabilities (new); plan, execute (existing)
   components/console/ the prompt console and API library UI
+  healing/            self-healing loop: drift injection, classification,
+                      patching (Day 3 — see section 18)
 ```
 
 The pre-existing endpoint-level pipeline (`/api/plan`, `src/lib/llm`,
@@ -515,18 +517,31 @@ contradicted, and loses 0.05 with no response schema.
    error?
 4. **Graph density.** `can_feed` is O(outputs × inputs) within a semantic type.
    19 capabilities already produce 319 edges. At what size does this need
-   indexing rather than derivation on load?
+   indexing rather than derivation on load? *Partially answered Day 3*: real
+   specs pushed the corpus to 50 capabilities / ~7,100 fields / 76,440
+   `can_feed` edges, and `buildGraph()` still runs in ~170ms at well under
+   200MB RSS — one provider's over-generous curation caps OOM'd it first
+   (see §18), not edge count itself. Still not a plan past a few hundred
+   capabilities.
 5. **Version drift.** When Stripe ships a new API version, what should happen to
    workflows referencing the old one — automatic migration, a diff report, or a
-   hard failure?
+   hard failure? The self-healing loop (§18) answers the adjacent question —
+   what happens when a *field* on the current version silently changes shape
+   — but not this one; a version bump is still undetected until something
+   downstream breaks.
 
 ---
 
 ## 15. Known Technical Risks
 
-1. **The seeded documents are trimmed local mirrors, not the upstream specs.**
-   The real Stripe OpenAPI document is several megabytes and uses `oneOf` and
-   `anyOf` heavily. The parser inlines `$ref` and `allOf` only.
+1. ~~The seeded documents are trimmed local mirrors, not the upstream specs.~~
+   **Fixed Day 3** for all 15 providers (`scripts/vendor-*-spec.ts`) — every
+   source is now a curated-but-verbatim subset of the real published spec.
+   The `oneOf`/`anyOf` half of this risk is real and unresolved, though: the
+   parser still only inlines `$ref`/`allOf`, so every curation script
+   collapses "string-or-expanded-object" unions to the string branch and
+   stubs everything else (`x-integrelli-truncated`) rather than modeling it.
+   See §18 for what that curation work itself surfaced.
 2. **The heuristic extractor reads the shape our own fixtures use.** Real
    documentation is HTML with inconsistent tables. On such input the heuristic
    will return null and the pipeline will have to fall back to the LLM path.
@@ -927,7 +942,208 @@ wrong answers before the real ones:
 
 ---
 
-## 18. Future Architecture
+## 18. Day 3 Review
+
+### Against Day 2's recommendations
+
+1. Gateway key / real extraction+embeddings+planner measurement — **not
+   done**. Still unset.
+2. Ingest one real upstream spec end to end — **done, and taken further
+   than asked**: all 15 providers now vendor a curated-but-verbatim subset
+   of their real published spec (`scripts/vendor-*-spec.ts`), not just
+   Stripe. Three formats needed handling, not one: OpenAPI 3
+   (`scripts/lib/openapi3-curator.ts`), Swagger 2 — Slack, DocuSign,
+   Mailchimp, converted to OpenAPI 3 shape
+   (`scripts/lib/swagger2-curator.ts`) — and Google's Discovery format
+   (Gmail, bespoke script, bare-name `$ref`s and dict-shaped parameters).
+3. Compare the two extractors, calibrate confidence — **not done**.
+4. Endpoint allowlist — **not done. Still the most serious open security
+   gap**, now more so: live mode plus 15 real hostnames instead of 5.
+5. Console decision (`/` vs `/workspace`) — **not done**.
+6. Move `trace-store.ts` off flat files — **not done**.
+
+Like Day 2, Day 3 mostly didn't touch its predecessor's list — it went two
+different directions: finishing the real-spec conversion Day 2 started by
+accident (fixing Stripe surfaced how much of "Day 1" was still hand-typed),
+and starting the flagship self-healing loop the product brief actually asks
+for.
+
+### What Day 3 actually built
+
+**Real specs for all 15 providers.** Investigating "convert Stripe to a real
+spec" (requested directly) turned up that HubSpot and Asana already were —
+`scripts/vendor-hubspot-spec.ts`/`vendor-asana-spec.ts` existed from before
+Day 1 was reviewed, curating verbatim real operations, not hand-typing them.
+The other 13 were genuinely hand-typed. All 13 are now real. Two shared
+curation engines do the work:
+
+- `openapi3-curator.ts`: fetches the real document, extracts the named
+  operations verbatim, collapses "string-or-expanded-object" `anyOf`/`oneOf`
+  unions to the string branch (the accurate default-response shape without
+  `expand[]`), stubs every other union (`x-integrelli-truncated` — the
+  parser doesn't resolve unions at all, so keeping their full `$ref` closure
+  would just grow the file for a shape nothing downstream can use), and
+  closes over the remaining schema refs with a depth/count cap.
+- `swagger2-curator.ts`: the same, plus converting Swagger 2's shape to
+  OpenAPI 3 (`in: body`/`in: formData` params → `requestBody`, response
+  `schema` → `content`, `type: basic` → `type: http, scheme: basic`) and,
+  for Mailchimp specifically, resolving `$ref`s that point to *absolute
+  URLs* on Mailchimp's own schema server — fetched, memoized, and rewritten
+  into the same local-named-ref space the rest of the pipeline expects,
+  since the ingestion parser only ever resolves `#/...` pointers.
+
+Three real bugs came out of this, none visible against hand-typed fixtures:
+
+1. `src/knowledge/schema.ts`'s `flattenSchema` marked an array item's
+   required fields (Stripe's `tax_id_data[].type`/`.value`) as unconditionally
+   required, even though the array itself is optional — real specs use this
+   pattern constantly, hand-typed fixtures never happened to.
+2. `openapi3-curator.ts` (first pass) didn't resolve `$ref`s to
+   `#/components/parameters/*` — GitHub's real spec references path
+   parameters this way, so `owner`/`repo`/`issue_number` silently vanished
+   along with their required-ness.
+3. DocuSign's real envelope/tabs schema graph flattened to ~99,000 fields
+   under the shared curator's default caps and OOM'd `can_feed` derivation.
+   Not a graph-size problem (§14 Q4) — a curation-generosity problem, fixed
+   by tightening that one provider's depth/schema caps
+   (`scripts/vendor-docusign-spec.ts`).
+
+Four golden-query rank expectations moved (`tests/fixtures/golden-queries.ts`)
+now that provider descriptions are real prose instead of hand-tuned strings
+— published as the new real numbers with a comment explaining the shift,
+not reverse-engineered back to the old ones.
+
+**OpenRouter as a third model backend.** `src/models/index.ts` gained a
+free-tier language-model option (`OPENROUTER_API_KEY`, via
+`@ai-sdk/openai-compatible`) alongside the Gateway and direct Gemini —
+planner/extraction only, since OpenRouter has no embeddings endpoint. Had to
+pin `@ai-sdk/openai-compatible@2.0.75`; the latest (3.0.51) targets a newer
+provider-spec major version than `ai@6.0.0` (already in this repo) supports.
+
+**The self-healing loop — started.** `src/healing/`:
+
+- `drift-injector.ts`: an `HttpAdapter` decorator, the same seam the
+  existing fault-injection panel already uses for 429/500s, one layer
+  further out. Mutates one step's response per scenario: renames a field,
+  changes its JS type, swaps in an enum value outside the schema's declared
+  list, or forces 401/404.
+- `classifier.ts`: deterministic, no model call. Step-level signal (401/403
+  → `expired_token`, 404 → `removed_endpoint`) plus a mapping-level
+  contract-conformance check — independent of whether the engine's own
+  execution marked anything failed, because nothing in the engine validates
+  outbound values today, so `type_change` and `new_enum_value` drift
+  wouldn't otherwise be visible at all. Renamed-field recovery matches
+  candidates by *semantic type* (reusing `inferSemanticType` from
+  ingestion), not bare JS type — an object with a dozen string fields makes
+  "same JSON type" alone a weak signal.
+- `patch.ts`: one patch per classification. `renamed_field` remaps the
+  plan's mapping; `type_change`/`new_enum_value` patch the capability
+  graph's own record (nothing was blocking execution, so the fix is
+  correcting what the graph believes, not the plan); `expired_token`
+  proposes a refresh-and-retry; `removed_endpoint` **always escalates** —
+  no local signal justifies guessing a replacement endpoint.
+- `repair-loop.ts`: run → classify → patch → re-run-or-reclassify →
+  `auto_repaired` / `escalated` / `wrong_patch`, one attempt per finding.
+
+`capability-engine.ts` gained one optional field (`driftScenarios` on
+`CapabilityRunOptions`) and three lines wrapping the adapter — no change to
+existing execution behaviour when it's unused.
+
+**A first eval tranche.** `tests/fixtures/drift-scenarios.ts` (13 scenarios
+across the 5 classes + 1 negative control, against two real plans) and
+`npm run eval:drift`. Current result: 100% detection, 100%
+correct-classification, 83.3% auto-repair, 0% wrong-patch — the auto-repair
+ceiling is 83.3%, not 100%, *by construction*, since `removed_endpoint`
+(2 of 12 scored scenarios) always escalates.
+
+### Self-review
+
+- *Is the real-spec claim actually true now?* Yes for the wire format:
+  every operation, field, description and constraint in all 15
+  `src/ingestion/sources/openapi/*.json` files is copied from a live fetch
+  of the provider's real published document, not hand-typed. Not true for
+  completeness: every curation script keeps only the handful of operations
+  each provider's seed already modeled, and unions/deep chains get stubbed
+  — see risk #1's revision below.
+- *Is the self-healing eval honest?* The numbers are real for what they
+  measure, but the dataset is small (13), hand-built by the same person who
+  wrote the classifier, and not adversarial — it doesn't yet test the
+  classifier against a drift shape it wasn't designed to catch. That's
+  exactly architecture.md's own recurring caution about the golden-query
+  set (§16), now true of a second dataset for the same reason.
+- *Does patching ever touch real code or a sandbox?* No. Every patch is a
+  structured, declarative change (a remapped path, a widened enum, a
+  refreshed token) applied to in-memory `PlanValidation`/`Capability`
+  objects. The product brief's "generate connector code plus contract
+  tests, run them in a sandbox container" step is entirely unbuilt — see
+  Day 4 recommendations.
+
+### What was implemented (cumulative additions this session)
+
+`scripts/lib/{openapi3,swagger2}-curator.ts`; 13 `scripts/vendor-*-spec.ts`
+provider scripts; a `tax_id_data`-shaped required-field fix in
+`schema.ts`; a `#/components/parameters/*` ref-resolution fix in the
+OpenAPI3 curator; an OpenRouter model backend; `src/healing/` (drift
+injection, classification, patching, repair loop); `tests/drift-injector.test.ts`,
+`tests/healing-classifier.test.ts`, `tests/self-healing.test.ts`; the
+`drift-scenarios.ts` eval fixture and `npm run eval:drift`. 247/247 tests
+passing, typecheck and production build clean.
+
+### New technical debt
+
+- The `openapi3`/`swagger2` curators' `x-integrelli-truncated` stubs are
+  silent unless you go looking at a provider's `info.description` — no
+  aggregate report of "how much of this provider's real schema got thrown
+  away." Fine at today's scale (a handful of stubs per provider); would
+  want a real report before trusting this at 50 providers.
+- `type_change`/`new_enum_value` patches mutate a capability record that
+  lives only in that request's in-memory `Map` — nothing persists the fix
+  back to `capability-store.json`. A repaired plan re-run tomorrow starts
+  from the same "wrong" graph and has to re-detect the same drift.
+- The eval script (`eval-drift.ts`) and the self-healing tests both
+  hand-construct their own `WorkflowPlan`s rather than going through the
+  planner — appropriate for testing the healing loop in isolation, but
+  means no test yet exercises "the *planner* built a plan around a
+  capability that then drifted."
+
+### Security concerns
+
+No change from §17 — the endpoint allowlist gap (§16, restated §17) is
+untouched and, again, now covers real hostnames for 15 providers instead of
+5.
+
+### Decisions to revisit
+
+1–5 unchanged from §17. Add:
+6. Knowledge-graph patches (`type_change`/`new_enum_value`) not persisting —
+   revisit once there's a real "apply this patch for real" flow, not just
+   an eval-time in-memory one.
+
+### Day 4 recommendations
+
+1. Expand `drift-scenarios.ts` toward the brief's 15-20, ideally against a
+   third real provider pair, and make at least a few scenarios adversarial
+   (a rename that lands on an already-used semantic type, a type change
+   that isn't a clean coercion) rather than only cases the classifier was
+   designed around.
+2. Build the hand-labeled ~50-field mapping dataset (precision/recall of
+   auto-accepted mappings) — the other eval table the brief asks for,
+   completely unstarted.
+3. Decide and build contract-test generation + sandbox execution (Vercel
+   Sandbox is already available in this environment) — the actual "runs in
+   a sandbox container" half of the brief, currently just "re-run the same
+   in-process mock engine."
+4. Persist knowledge-graph patches back to `capability-store.json` (or a
+   patch-overlay file) so a repair survives past one eval run.
+5. The React review-queue UI (confidence-threshold auto-accept, everything
+   else to a queue) — no UI exists yet for either the mapping-confidence
+   story or the self-healing loop's findings/patches.
+6. Everything §17's Day 3 recommendations already asked for is still open;
+   the endpoint allowlist is still the one to stop deferring.
+
+---
+
+## 19. Future Architecture
 
 ```text
                     ┌─────────────────────────────────────┐
