@@ -1,5 +1,15 @@
 # Integrelli — Technical Design (MVP, one-pass build)
 
+> **Status: historical, describes the original single-pack MVP only.** This
+> is the Day 0 design for the hand-authored `EndpointSpec` pack (`src/lib/llm`,
+> `src/lib/exec`, `/workspace`) — still running, still passing its tests, but
+> not where new work lands. Everything built since (the capability-graph
+> pack: ingestion, knowledge graph, planner, retrieval, model roles,
+> self-healing) lives in `architecture.md`, which is the maintained living
+> document — see its §2 for the current file tree and §16-18 for the
+> Day 1/2/3 review log. Kept here unedited as a record of the original
+> scope; don't extend this file, extend architecture.md.
+
 Scope is locked by the product brief. This doc is guidance for implementation, not a checklist.
 Build the thin slice. If a bullet here is not load-bearing for the core loop
 (prompt -> plan -> inspect -> run mock -> edit mapping -> re-run), defer it.
